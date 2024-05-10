@@ -1,0 +1,151 @@
+{
+  "cards": [
+    {
+      "title": "Emergency Food Package",
+      "category": "Food",
+      "amount": "1 Food Package",
+      "amount_money": "$50",
+      "description": "10 kg of rice , 5 cans of beans,5 cans of tuna,5 packets of instant noodles,1 liter of cooking oil",
+      "image_url": "https://example.com/food_image.jpg",
+      "reason": "To provide immediate sustenance to families affected by the disaster."
+    },
+    {
+      "title": "Clean Water Supply",
+      "category": "Hygiene",
+      "amount": "5 Gallons",
+      "amount_money": "$20",
+      "description": "5 gallons of drinking water",
+      "image_url": "https://example.com/water_image.jpg",
+      "reason": "To ensure access to safe and clean drinking water for hygiene and hydration."
+    },
+    {
+      "title": "Hygiene Essentials Kit",
+      "category": "Hygiene",
+      "amount": "1 Kit",
+      "amount_money": "$30",
+      "description": "2 bars of soap,1 toothpaste,1 toothbrush,1 pack of sanitary napkins",
+      "image_url": "https://example.com/hygiene_kit_image.jpg",
+      "reason": "To promote good hygiene practices and prevent the spread of diseases."
+    },
+    {
+      "title": "Warm Blanket",
+      "category": "Clothing",
+      "amount": "1 Blanket",
+      "amount_money": "$15",
+      "description": "1 warm blanket",
+      "image_url": "https://example.com/blanket_image.jpg",
+      "reason": "To provide warmth and comfort during cold nights."
+    },
+    {
+      "title": "Baby Care Package",
+      "category": "Baby Supplies",
+      "amount": "1 Package",
+      "amount_money": "$40",
+      "description": "20 diapers,2 packs of baby wipes,5 jars of baby food,1 baby blanket",
+      "image_url": "https://example.com/baby_care_image.jpg",
+
+      "reason": "To cater to the special needs of infants and young children."
+    },
+    {
+      "title": "First Aid Kit",
+      "category": "Medical Supplies",
+      "amount": "1 Kit",
+      "amount_money": "$25",
+      "description": "1 first aid kit (bandages, antiseptic, pain relievers),1 thermometer,5 surgical masks",
+      "image_url": "https://example.com/first_aid_image.jpg",
+
+      "reason": "To provide immediate medical assistance in case of injuries or emergencies."
+    },
+
+    {
+      "id": 7,
+      "title": "School Supplies Bundle",
+      "category": "Education",
+      "amount": "1 Bundle",
+      "amount_money": "$35",
+      "description": {
+        "items": [
+          "5 notebooks",
+          "10 pencils",
+          "1 ruler",
+          "1 eraser",
+          "1 pencil sharpener"
+        ]
+      },
+      "image_url": "https://example.com/school_supplies_image.jpg",
+      "extra_data": {
+        "reason": "To support children's education and learning continuity during crisis situations."
+      }
+    },
+    {
+      "id": 8,
+      "title": "Emergency Tent",
+      "category": "Shelter",
+      "amount": "1 Tent",
+      "amount_money": "$75",
+      "description": {
+        "items": ["1 emergency tent"]
+      },
+      "image_url": "https://example.com/tent_image.jpg",
+      "extra_data": {
+        "reason": "To provide temporary shelter to displaced families or individuals."
+      }
+    },
+    {
+      "id": 9,
+      "title": "Pet Care Package",
+      "category": "Animal Supplies",
+      "amount": "1 Package",
+      "amount_money": "$20",
+      "description": {
+        "items": ["5 cans of pet food", "1 leash", "1 pet blanket"]
+      },
+      "image_url": "https://example.com/pet_care_image.jpg",
+      "extra_data": {
+        "reason": "To ensure the welfare of pets and animals affected by disasters."
+      }
+    },
+    {
+      "id": 10,
+      "title": "Cooking Utensils Set",
+      "category": "Cooking Supplies",
+      "amount": "1 Set",
+      "amount_money": "$30",
+      "description": {
+        "items": ["1 cooking pot", "1 frying pan", "1 set of utensils"]
+      },
+      "image_url": "https://example.com/cooking_utensils_image.jpg",
+      "extra_data": {
+        "reason": "To facilitate cooking and food preparation for affected individuals or communities."
+      }
+    },
+    {
+      "id": 11,
+      "title": "Personal Hygiene Kit",
+      "category": "Hygiene",
+      "amount": "1 Kit",
+      "amount_money": "$25",
+      "description": {
+        "items": ["1 shampoo", "1 conditioner", "1 body wash", "1 towel"]
+      },
+      "image_url": "https://example.com/personal_hygiene_image.jpg",
+      "extra_data": {
+        "reason": "To promote personal cleanliness and hygiene practices for overall health and well-being."
+      }
+    },
+    {
+      "id": 12,
+      "title": "Emergency Light Source",
+      "category": "Utilities",
+      "amount": "1 Flashlight",
+      "amount_money": "$10",
+      "description": {
+        "items": ["1 flashlight", "1 pack of batteries"]
+      },
+      "image_url": "https://example.com/flashlight_image.jpg",
+      "extra_data": {
+        "reason": "To provide illumination during power outages or emergencies."
+      }
+    }
+  ]
+}
