@@ -10,6 +10,15 @@ export const baseApi = createApi({
         method: "GET",
       }),
     }),
+    getReliefGoodsByLimit: builder.query({
+      query: (num) => {
+        console.log("Limit Number =>", num);
+        return {
+          url: `relief-goods?_limit=${num}`,
+          method: "GET",
+        };
+      },
+    }),
     getRecentWorks: builder.query({
       query: () => ({
         url: "our-recent-works",
@@ -22,6 +31,21 @@ export const baseApi = createApi({
         method: "GET",
       }),
     }),
+    addReliefGoods: builder.mutation({
+      query: (data) => {
+        console.log(data);
+        return { url: "/relief-goods", method: "POST", body: data };
+      },
+    }),
+    deleteReliefGoods: builder.mutation({
+      query: (id) => {
+        console.log("inside base api =>", id);
+        return {
+          url: `relief-goods/${id}`,
+          method: "DELETE",
+        };
+      },
+    }),
   }),
 });
 
@@ -29,4 +53,7 @@ export const {
   useGetReliefGoodsQuery,
   useGetReliefGoodsByIdQuery,
   useGetRecentWorksQuery,
+  useAddReliefGoodsMutation,
+  useDeleteReliefGoodsMutation,
+  useLazyGetReliefGoodsByLimitQuery,
 } = baseApi;

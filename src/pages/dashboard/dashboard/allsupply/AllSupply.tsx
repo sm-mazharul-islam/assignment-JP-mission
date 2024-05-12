@@ -1,186 +1,78 @@
-const AllSupply = ({ title, category }) => {
+// type TReliefGoodsTableProps = {
+//   _id: string;
+//   title: string;
+//   category: string;
+//   amount_money: string;
+//   description: string;
+//   image: string;
+//   reason: string;
+// };
+
+const AllSupply = ({ title, category, amount_money }) => {
   return (
-    <div className="overflow-x-auto">
-      <table className="table">
-        {/* head */}
-        <thead>
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <th>{title}</th>
-            <th>Job</th>
-            <th>Favorite Color</th>
-            <th>Del</th>
-            <th>Edit</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* row 1 */}
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <td>
-              <div className="flex items-center gap-3">
-                <div className="avatar">
-                  <div className="mask mask-squircle w-12 h-12">
-                    <img
-                      src="https://img.daisyui.com/tailwind-css-component-profile-2@56w.png"
-                      alt="Avatar Tailwind CSS Component"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="font-bold">Hart Hagerty</div>
-                  <div className="text-sm opacity-50">United States</div>
-                </div>
+    <div>
+      <div className=" p-5  lg:h-full bg-gray-100">
+        <div className="overflow-auto rounded-lg shadow hidden md:block">
+          <table className=" w-full">
+            <thead>
+              <tr>
+                <th className="w-20">Title</th>
+                <th className="">Category</th>
+                <th className="w-24">Amount</th>
+                <th className="w-24">Edit</th>
+                <th className="w-32">Delete</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              <tr>
+                <td className="whitespace-nowrap">{title}</td>
+                <td className="whitespace-nowrap">{category}</td>
+                <td className="whitespace-nowrap">{amount_money}</td>
+                <td className="whitespace-nowrap">
+                  <button>Edit</button>
+                </td>
+                <td className="whitespace-nowrap">
+                  <button>Del</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden bg-red-500">
+          <div className="bg-white space-y-3 p-4 rounded-lg shadow">
+            <div className=" space-x-2 text-sm">
+              <div>
+                {/* <Link to="" className="text-blue-500 font-old hover:underline">
+                  Donate Now extend package
+                </Link> */}
               </div>
-            </td>
-            <td>
-              Zemlak, Daniel and Leannon
-              <br />
-              <span className="badge badge-ghost badge-sm">
-                Desktop Support Technician
-              </span>
-            </td>
-            <td>Purple</td>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-          </tr>
-          {/* row 2 */}
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <td>
-              <div className="flex items-center gap-3">
-                <div className="avatar">
-                  <div className="mask mask-squircle w-12 h-12">
-                    <img
-                      src="https://img.daisyui.com/tailwind-css-component-profile-3@56w.png"
-                      alt="Avatar Tailwind CSS Component"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="font-bold">Brice Swyre</div>
-                  <div className="text-sm opacity-50">China</div>
-                </div>
+
+              <div className=" text-gray-500">
+                <p className="text-center">Title: {title}</p>
               </div>
-            </td>
-            <td>
-              Carroll Group
-              <br />
-              <span className="badge badge-ghost badge-sm">Tax Accountant</span>
-            </td>
-            <td>Red</td>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-          </tr>
-          {/* row 3 */}
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <td>
-              <div className="flex items-center gap-3">
-                <div className="avatar">
-                  <div className="mask mask-squircle w-12 h-12">
-                    <img
-                      src="https://img.daisyui.com/tailwind-css-component-profile-4@56w.png"
-                      alt="Avatar Tailwind CSS Component"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="font-bold">Marjy Ferencz</div>
-                  <div className="text-sm opacity-50">Russia</div>
-                </div>
+              {/* <div>...</div> */}
+            </div>
+            <div className="text-sm text-gray-700">
+              <p className="text-center">Category : {category}</p>
+            </div>
+            <div className="text-center text-sm font-medium text-black">
+              total: {amount_money}
+            </div>
+
+            <div className="flex items-center space-x-2 text-sm">
+              <div>
+                <button className=" p-[3px]">Edit</button>
               </div>
-            </td>
-            <td>
-              Rowe-Schoen
-              <br />
-              <span className="badge badge-ghost badge-sm">
-                Office Assistant I
-              </span>
-            </td>
-            <td>Crimson</td>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-          </tr>
-          {/* row 4 */}
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <td>
-              <div className="flex items-center gap-3">
-                <div className="avatar">
-                  <div className="mask mask-squircle w-12 h-12">
-                    <img
-                      src="https://img.daisyui.com/tailwind-css-component-profile-5@56w.png"
-                      alt="Avatar Tailwind CSS Component"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="font-bold">Yancy Tear</div>
-                  <div className="text-sm opacity-50">Brazil</div>
-                </div>
+
+              <div>
+                <button className="ml-[260px] p-[3px] border border-red-50">
+                  Del
+                </button>
               </div>
-            </td>
-            <td>
-              Wyman-Ledner
-              <br />
-              <span className="badge badge-ghost badge-sm">
-                Community Outreach Specialist
-              </span>
-            </td>
-            <td>Indigo</td>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-          </tr>
-        </tbody>
-        {/* foot */}
-        <tfoot>
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Job</th>
-            <th>Favorite Color</th>
-            <th>details</th>
-            <th>details</th>
-          </tr>
-        </tfoot>
-      </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

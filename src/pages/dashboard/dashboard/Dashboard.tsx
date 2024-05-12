@@ -216,8 +216,9 @@ import DashboardLayout from "../../../components/layout/DashboardLayout";
 
 const Dashboard = () => {
   return (
-    <div className="drawer lg:drawer-open bg-orange-300">
+    <div className="drawer lg:drawer-open ">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+      {/* <h2 className="text-3xl">Welcome To your dashobard</h2> */}
       <div className="drawer-content flex flex-col items-center justify-center">
         {/* Page content here */}
         <DashboardLayout />
@@ -234,13 +235,19 @@ const Dashboard = () => {
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <ul className="menu p-4 w-80 min-h-full bg-base-200 text-xl ">
+        <ul className="menu p-4 w-80 min-h-full bg-base-200 bg-red-500 text-xl ">
           {/* Sidebar content here */}
           <li>
             <Link to="/">Home</Link>
           </li>
           <li>
+            <Link to="pie-chart">Pie Chart</Link>
+          </li>
+          <li>
             <Link to="supplies">All Supply</Link>
+          </li>
+          <li>
+            <Link to="create-supply">Add Supply</Link>
           </li>
         </ul>
       </div>

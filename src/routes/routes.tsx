@@ -13,6 +13,8 @@ import AllSupply from "../pages/dashboard/dashboard/allsupply/AllSupply";
 import AddSupply from "../pages/dashboard/dashboard/addsupply/AddSupply";
 import Dashboard from "../pages/dashboard/dashboard/Dashboard";
 import Login from "../pages/login/Login";
+import AllSupplys from "../pages/dashboard/dashboard/allsupply/AllSupplys";
+import PieCharts from "../pages/dashboard/dashboard/pieChart/PieCharts";
 
 const router = createBrowserRouter([
   {
@@ -51,11 +53,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: "supplies",
-        element: <AllSupply />,
+        element: <AllSupplys />,
       },
       {
         path: "create-supply",
         element: <AddSupply />,
+      },
+      {
+        path: "pie-chart",
+        element: <PieCharts />,
       },
     ],
   },

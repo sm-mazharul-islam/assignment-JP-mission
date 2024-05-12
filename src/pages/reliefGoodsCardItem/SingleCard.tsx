@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import AllSupply from "../dashboard/dashboard/allsupply/AllSupply";
 
 // "title": "Baby Care Package",
 //       "category": "Baby Supplies",
@@ -33,11 +32,7 @@ const SingleCard = ({ _id, title, image, category, amount_money }) => {
       <div>
         <div className="card min-w-full h-[550px] bg-base-100 shadow-xl">
           <div>
-            <img
-              className=" rounded-xl h-[400px] "
-              alt="example"
-              src="https://1cms-img.imgix.net/Paranaque-relief-goods.jpg"
-            />
+            <img className=" rounded-xl h-[400px] " alt="example" src={image} />
 
             <div className="">
               <h2 className="text-2xl  text-center font-bold">{title}</h2>
@@ -71,7 +66,6 @@ const SingleCard = ({ _id, title, image, category, amount_money }) => {
           </div>
         </div>
       </div>
-      <AllSupply item={item} />
     </>
   );
 };
