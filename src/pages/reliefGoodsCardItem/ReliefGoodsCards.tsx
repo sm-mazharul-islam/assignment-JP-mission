@@ -1,27 +1,27 @@
-// import { useGetReliefGoodsByIdQuery } from "../../redux/api/api";
+import { useGetReliefGoodsByIdQuery } from "../../redux/api/api";
 
-// const ReliefGoodsCards = ({ id }: { id: string }) => {
-//   // From Server
-//   const {
-//     data: reliefGoods,
-//     isLoading,
-//     isError,
-//   } = useGetReliefGoodsByIdQuery(id);
-//   console.log(reliefGoods);
+const ReliefGoodsCards = () => {
+  // From Server
+  const {
+    data: reliefGoods,
+    isLoading,
+    isError,
+  } = useGetReliefGoodsByIdQuery(undefined);
+  console.log(reliefGoods);
 
-//   // console.log(reliefGoods);
-//   if (isLoading) {
-//     return <p>Loading...</p>;
-//   }
-//   if (isError) {
-//     return <p>Loading...</p>;
-//   }
+  // console.log(reliefGoods);
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+  if (isError) {
+    return <p>Loading...</p>;
+  }
 
-//   return (
-//     <div>
-//       <h1>{reliefGoods.id.title}</h1>
-//     </div>
-//   );
-// };
+  return (
+    <div>
+      <h1>{reliefGoods.title}</h1>
+    </div>
+  );
+};
 
-// export default ReliefGoodsCards;
+export default ReliefGoodsCards;

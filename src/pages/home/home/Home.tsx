@@ -3,6 +3,8 @@ import HeroSection from "../../../components/ui/HeroSection";
 // import SingleCard from "../../reliefGoodsCardItem/SingleCard";
 import SingleCards from "../../reliefGoodsCardItem/SingleCards";
 import Testimonials from "../testimonials/testimonials";
+import OurRecentlyWork from "../transparencyInitiatives/OurRecentlyWork";
+// import OurRecentlyWork from "../transparencyInitiatives/OurRecentlyWork";
 // import OurRecentlyWork from "../transparencyInitiatives/OurRecentlyWork";
 
 const Home = () => {
@@ -13,7 +15,7 @@ const Home = () => {
         {/* <SingleCard></SingleCard> */}
         <SingleCards></SingleCards>
         <Testimonials></Testimonials>
-        {/* <OurRecentlyWork></OurRecentlyWork> */}
+        <OurRecentlyWork></OurRecentlyWork>
       </Container>
     </div>
   );

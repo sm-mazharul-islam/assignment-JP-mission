@@ -109,10 +109,7 @@ const OurWorks = () => {
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-48">
           {reliefCategories.map((someCategories) => (
-            <OurWork
-              key={someCategories.id}
-              someCategories={someCategories}
-            ></OurWork>
+            <OurWork key={someCategories.id} {...someCategories}></OurWork>
           ))}
         </div>
       </div>

@@ -6,7 +6,7 @@
       "item": "1 Food Package",
       "amount": 50,
       "description": "10 kg of rice , 5 cans of beans,5 cans of tuna,5 packets of instant noodles,1 liter of cooking oil",
-      "image": "https://example.com/food_image.jpg",
+      "image": "https://s3.amazonaws.com/usc-cache.salvationarmy.org/42bcd5c0-f0b9-4968-a0cd-05f498850333_Sarpy+DRC+3+web.jpg",
       "reason": "To provide immediate sustenance to families affected by the disaster."
     },
     {
@@ -24,7 +24,7 @@
       "item": "1 Kit",
       "amount": 30,
       "description": "2 bars of soap,1 toothpaste,1 toothbrush,1 pack of sanitary napkins",
-      "image": "https://example.com/hygiene_kit_image.jpg",
+      "image": "https://static.timesofisrael.com/www/uploads/2015/03/d-640x400.jpg",
       "reason": "To promote good hygiene practices and prevent the spread of diseases."
     },
     {
@@ -33,7 +33,7 @@
       "item": "1 Blanket",
       "amount": 15,
       "description": "1 warm blanket",
-      "image": "https://example.com/blanket_image.jpg",
+      "image": "https://intlweloveu.org/wp-content/uploads/2019/12/Typhoon-relief-support00-3.jpg",
       "reason": "To provide warmth and comfort during cold nights."
     },
     {
@@ -42,7 +42,7 @@
       "item": "1 Package",
       "amount": 40,
       "description": "20 diapers,2 packs of baby wipes,5 jars of baby food,1 baby blanket",
-      "image": "https://example.com/baby_care_image.jpg",
+      "image": "https://ashadeofteal.com/wp-content/uploads/2017/12/Gift-Basket-for-an-Expecting-Mom.aShadeofTeal-5.jpg",
 
       "reason": "To cater to the special needs of infants and young children."
     },
@@ -52,7 +52,7 @@
       "item": "1 Kit",
       "amount": 25,
       "description": "1 first aid kit (bandages, antiseptic, pain relievers),1 thermometer,5 surgical masks",
-      "image": "https://example.com/first_aid_image.jpg",
+      "image": "https://st2.depositphotos.com/4431055/7393/i/450/depositphotos_73938411-stock-photo-first-aid-kit-medicine-charity.jpg",
 
       "reason": "To provide immediate medical assistance in case of injuries or emergencies."
     },
@@ -64,7 +64,7 @@
       "amount": 35,
       "description": "5 notebooks, 10 pencils, 1 ruler,1 eraser, 1 pencil sharpener",
 
-      "image": "https://example.com/school_supplies_image.jpg",
+      "image": "https://media.istockphoto.com/id/1143006246/photo/buying-in-the-library-with-the-shopping-cart.jpg?s=612x612&w=0&k=20&c=OlzzpEBqFWJFMJuIpELipZJRI4gagTWpxL8piJUSOGU=",
 
       "reason": "To support children's education and learning continuity during crisis situations."
     },
@@ -75,7 +75,7 @@
       "amount": 75,
       "description": "1 emergency tent",
 
-      "image": "https://example.com/tent_image.jpg",
+      "image": "https://media.istockphoto.com/id/1161024064/photo/big-tents-of-the-ministry-of-emergency-situations-laid-out-on-the-lawn-in-the-forest.jpg?s=612x612&w=0&k=20&c=a8RXiW1ILNNAs-zSTZoDDjaCwRPCy_N4q40BdoeGUxs=",
 
       "reason": "To provide temporary shelter to displaced families or individuals."
     },
@@ -85,7 +85,7 @@
       "item": "1 Package",
       "amount": 20,
       "description": "5 cans of pet food, 1 leash, 1 pet blanket",
-      "image": "https://example.com/pet_care_image.jpg",
+      "image": "https://prod-cdn-thekrazycouponlady.imgix.net/wp-content/uploads/2021/07/petco-basket-2021-2-1627098385-1627098385.jpg?auto=format&fit=fill&q=25",
 
       "reason": "To ensure the welfare of pets and animals affected by disasters."
     },
@@ -96,7 +96,7 @@
       "amount": 30,
       "description": "1 cooking pot, 1 frying pan, 1 set of utensils",
 
-      "image": "https://example.com/cooking_utensils_image.jpg",
+      "image": "https://media.istockphoto.com/id/476392316/photo/kitchen-utensil.jpg?s=612x612&w=0&k=20&c=Mb2d_7WGJP6N5Jb__soAl74ZUhFwH47iSdJtXeoW47o=",
 
       "reason": "To facilitate cooking and food preparation for affected individuals or communities."
     },
@@ -106,7 +106,7 @@
       "item": "1 Kit",
       "amount": 25,
       "description": "1 shampoo, 1 conditioner, 1 body wash, 1 towel",
-      "image": "https://example.com/personal_hygiene_image.jpg",
+      "image": "https://worldhelp.net/wp-content/uploads/2023/03/IMG_1015_Edit-1.jpg",
 
       "reason": "To promote personal cleanliness and hygiene practices for overall health and well-being."
     },
@@ -116,7 +116,7 @@
       "item": "1 Flashlight",
       "amount": 10,
       "description": "1 flashlight, 1 pack of batteries",
-      "image": "https://example.com/flashlight_image.jpg",
+      "image": "https://media.istockphoto.com/id/1278451359/photo/emergency-preparedness-natural-disaster-supplies.jpg?s=612x612&w=0&k=20&c=Q81FP11SgrzOtGPtFGfBlgijhZvUSFLhlbqanYm08wQ=",
 
       "reason": "To provide illumination during power outages or emergencies."
     }

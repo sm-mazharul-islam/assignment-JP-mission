@@ -1,4 +1,3 @@
-import React from "react";
 import Testimonial from "./testimonial";
 import { Swiper, SwiperSlide } from "swiper/react";
 

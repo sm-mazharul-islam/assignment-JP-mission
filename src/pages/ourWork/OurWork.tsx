@@ -1,5 +1,11 @@
-const OurWork = ({ someCategories }) => {
-  const { title, description, image_url } = someCategories;
+type TSocialDonation = {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string;
+};
+
+const OurWork = ({ title, description, image_url }: TSocialDonation) => {
   return (
     <div>
       <img className="w-[200px] mx-auto" src={image_url} alt="" />

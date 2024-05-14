@@ -25,7 +25,18 @@ import { Link } from "react-router-dom";
 //   image_url: string;
 // };
 
-const SingleCard = ({ _id, title, image, category, amount_money }) => {
+export type TPackage = {
+  _id: string;
+  title: string;
+  category: string;
+  item: string;
+  amount: number;
+  description: string;
+  image: string;
+  reason: string;
+};
+
+const SingleCard = ({ _id, title, image, category, amount }: TPackage) => {
   // const { title } = item;
   return (
     <>
@@ -40,8 +51,7 @@ const SingleCard = ({ _id, title, image, category, amount_money }) => {
             </div>
             <div className=" justify-center items-end flex gap-x-24">
               <p className="text-xl pt-2">
-                Amount: <span className="font-bold"></span>
-                {amount_money}
+                Amount: <span className="font-bold"></span>${amount}
               </p>
               <Link className="flex " to={`/relief-goods/${_id}`}>
                 <button className="  text-md bg-violet-400 flex  rounded-md text-white-500 font-bold p-[5px] mt-4 ">

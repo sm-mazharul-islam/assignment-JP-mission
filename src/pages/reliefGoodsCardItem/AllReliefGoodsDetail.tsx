@@ -1,11 +1,14 @@
+import { useParams } from "react-router-dom";
 import { useGetReliefGoodsByIdQuery } from "../../redux/api/api";
 
 const AllReliefGoodsDetail = () => {
+  const { id } = useParams();
+  console.log(id);
   const {
     data: reliefGoods,
     isLoading,
     isError,
-  } = useGetReliefGoodsByIdQuery(null);
+  } = useGetReliefGoodsByIdQuery(id);
   console.log(reliefGoods);
   console.log(reliefGoods);
   if (isLoading) {
