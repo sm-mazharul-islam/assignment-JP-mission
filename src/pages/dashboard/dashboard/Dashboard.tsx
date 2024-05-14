@@ -1,218 +1,5 @@
-// import { Link } from "react-router-dom";
-// import DashboardLayout from "../../../components/layout/DashboardLayout";
-// import Container from "../../../components/ui/Container";
-
 import { Link } from "react-router-dom";
 import DashboardLayout from "../../../components/layout/DashboardLayout";
-
-// const Dashboard = () => {
-//   const toggleBar = (e: { preventDefault: () => void }) => {
-//     e.preventDefault();
-//     const sidebar = document.querySelector(".sidebar");
-//     sidebar?.classList.toggle("left-[-300px]");
-//   };
-//   return (
-//     <>
-//       <Container>
-//         <DashboardLayout></DashboardLayout>
-//       </Container>
-//       <span
-//         className="absolute text-white text-4xl top-5 left-4 cursor-pointer"
-//         onClick={toggleBar}
-//       >
-//         <svg
-//           className="w-[15%] px-2 bg-gray-900 rounded-md"
-//           fill="none"
-//           strokeWidth="1.5"
-//           stroke="currentColor"
-//           viewBox="0 0 24 24"
-//           xmlns="http://www.w3.org/2000/svg"
-//         >
-//           <path
-//             strokeLinecap="round"
-//             strokeLinejoin="round"
-//             d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-//           ></path>
-//         </svg>
-//       </span>
-//       <div className="sidebar fixed top-0 bottom-0 lg:left-0 left-[-300px] p-2 w-[300px] overflow-y-auto text-center bg-gray-900">
-//         <div className="text-gray-100 text-xl">
-//           <div className="p-2.5 mt-1 flex items-center">
-//             <svg
-//               className="w-[20%] px-2 py-1 bg-blue-600 rounded-md "
-//               fill="none"
-//               strokeWidth="1.5"
-//               stroke="currentColor"
-//               viewBox="0 0 24 24"
-//               xmlns="http://www.w3.org/2000/svg"
-//             >
-//               <path
-//                 strokeLinecap="round"
-//                 strokeLinejoin="round"
-//                 d="M6 18 18 6M6 6l12 12"
-//               ></path>
-//             </svg>
-//             <Link to="/">
-//               <h1 className="font-bold text-gray-200 text-[15px] ml-3">
-//                 Dashboard
-//               </h1>
-//             </Link>
-//             <svg
-//               className="w-[10%]  ml-20 cursor-pointer lg:hidden"
-//               fill="none"
-//               strokeWidth="1.5"
-//               stroke="currentColor"
-//               viewBox="0 0 24 24"
-//               xmlns="http://www.w3.org/2000/svg"
-//               onClick={toggleBar}
-//             >
-//               <path
-//                 strokeLinecap="round"
-//                 strokeLinejoin="round"
-//                 d="M6 18 18 6M6 6l12 12"
-//               ></path>
-//             </svg>
-//           </div>
-//           <hr className="my-2 text-gray-600" />
-//         </div>
-//         <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer bg-gray-700 text-white">
-//           <svg
-//             className="w-[20%] text-sm "
-//             fill="none"
-//             strokeWidth="1.5"
-//             stroke="currentColor"
-//             viewBox="0 0 24 24"
-//             xmlns="http://www.w3.org/2000/svg"
-//           >
-//             <path
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               d="M6 18 18 6M6 6l12 12"
-//             ></path>
-//           </svg>
-//           <input
-//             type="text"
-//             placeholder="Search"
-//             className="text-[15px] ml-4 w-full bg-transparent focus:outline-none"
-//           />
-//         </div>
-//         <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white">
-//           <svg
-//             className="w-[20%] text-sm "
-//             fill="none"
-//             strokeWidth="1.5"
-//             stroke="currentColor"
-//             viewBox="0 0 24 24"
-//             xmlns="http://www.w3.org/2000/svg"
-//           >
-//             <path
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               d="M6 18 18 6M6 6l12 12"
-//             ></path>
-//           </svg>
-//           <Link to="supplies">
-//             <span className="text-[15px] ml-4 text-gray-200 ">All Supply</span>
-//           </Link>
-//         </div>
-//         <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white">
-//           <svg
-//             className="w-[20%] text-sm "
-//             fill="none"
-//             strokeWidth="1.5"
-//             stroke="currentColor"
-//             viewBox="0 0 24 24"
-//             xmlns="http://www.w3.org/2000/svg"
-//           >
-//             <path
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               d="M6 18 18 6M6 6l12 12"
-//             ></path>
-//           </svg>
-//           <Link to="create-supply">
-//             <span className="text-[15px] ml-4 text-gray-200 ">Add Supply</span>
-//           </Link>
-//         </div>
-//         <hr className="my-2 text-gray-600" />
-
-//         <div
-//           className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white"
-//           // onClick={toggleDropdown}
-//         >
-//           <svg
-//             className="w-[20%] text-sm "
-//             fill="none"
-//             strokeWidth="1.5"
-//             stroke="currentColor"
-//             viewBox="0 0 24 24"
-//             xmlns="http://www.w3.org/2000/svg"
-//           >
-//             <path
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               d="M6 18 18 6M6 6l12 12"
-//             ></path>
-//           </svg>
-//           <div className="flex justify-between w-full items-center">
-//             <span className="text-[15px] ml-4 text-gray-200 ">Chatbox</span>
-//             <span className="text-sm rotate-180" id="arrow"></span>
-//             <svg
-//               className="w-[20%] text-sm "
-//               fill="none"
-//               strokeWidth="1.5"
-//               stroke="currentColor"
-//               viewBox="0 0 24 24"
-//               xmlns="http://www.w3.org/2000/svg"
-//             >
-//               <path
-//                 strokeLinecap="round"
-//                 strokeLinejoin="round"
-//                 d="M6 18 18 6M6 6l12 12"
-//               ></path>
-//             </svg>
-//           </div>
-//         </div>
-//         <div
-//           className="text-left text-sm font-thin mt-2 mx-auto text-gray-200"
-//           id="submenu"
-//         >
-//           <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
-//             Social
-//           </h1>
-//           <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
-//             Personal
-//           </h1>
-//           <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
-//             Friends
-//           </h1>
-//         </div>
-//         <div className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white">
-//           <svg
-//             className="w-[20%] text-sm "
-//             fill="none"
-//             strokeWidth="1.5"
-//             stroke="currentColor"
-//             viewBox="0 0 24 24"
-//             xmlns="http://www.w3.org/2000/svg"
-//           >
-//             <path
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               d="M6 18 18 6M6 6l12 12"
-//             ></path>
-//           </svg>
-//           <span className="text-[15px] ml-4 text-gray-200 ">Logout</span>
-//         </div>
-//       </div>
-//       {/* <Container>
-//         <DashboardLayout />
-//       </Container> */}
-//     </>
-//   );
-// };
-
-// export default Dashboard;
 
 const Dashboard = () => {
   return (
@@ -221,13 +8,13 @@ const Dashboard = () => {
       <div className="drawer-content flex flex-col items-center justify-center">
         {/* Page content here */}
 
-        <DashboardLayout />
         <label
           htmlFor="my-drawer-2"
-          className="btn btn-primary drawer-button lg:hidden"
+          className="btn bg-orange-200 w-[400px]  drawer-button lg:hidden text-xl "
         >
-          Open drawer
+          <span className="text-neutral-700"> Open Dashboard Nav</span>
         </label>
+        <DashboardLayout />
       </div>
       <div className="drawer-side ">
         <label
@@ -240,18 +27,36 @@ const Dashboard = () => {
           <li className="mt-[50px]">
             <div className="flex gap-8">
               <svg
-                className="w-[25px] "
-                data-slot="icon"
+                className="w-[25px]  text-indigo-400 "
                 fill="none"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                ></path>
+              </svg>
+              <p className="text-indigo-400 text-3xl">Dashboard</p>
+            </div>
+          </li>
+          <span className="divider"></span>
+          <li>
+            <div className="flex gap-8">
+              <svg
+                className="w-[25px] "
+                fill="none"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z"
                 ></path>
                 <path
@@ -260,7 +65,7 @@ const Dashboard = () => {
                   d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z"
                 ></path>
               </svg>
-              <Link to="pie-chart">Pie Chart</Link>
+              <Link to="pie-chart">pie chart</Link>
             </div>
           </li>
           <span className="divider"></span>
@@ -306,23 +111,27 @@ const Dashboard = () => {
             </div>
           </li>
           <span className="divider"></span>
+
           <li className="mx-auto">
-            <Link to="/">
-              <svg
-                className="w-[25px]"
-                fill="none"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
-                ></path>
-              </svg>
-            </Link>
+            <div>
+              <Link to="/" className="flex gap-8">
+                <svg
+                  className="w-[25px] text-indigo-400"
+                  fill="none"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+                  ></path>
+                </svg>
+                <p className="text-indigo-400">Back</p>
+              </Link>
+            </div>
           </li>
         </ul>
       </div>

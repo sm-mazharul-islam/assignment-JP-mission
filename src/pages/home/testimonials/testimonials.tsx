@@ -14,7 +14,7 @@ const Testimonials = () => {
   const clientReview = [
     {
       id: 1,
-      name: "anna mary",
+      name: "Emily",
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6dLNupXEgveO-w1vX8Gy31ibUTVVq4vlqLSKwKpbxNg&s",
       description:
@@ -23,7 +23,7 @@ const Testimonials = () => {
     },
     {
       id: 2,
-      name: "anna mary",
+      name: "Chloe",
       image:
         "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Woman_in_Tunisia.jpg/220px-Woman_in_Tunisia.jpg",
       description:
@@ -32,7 +32,7 @@ const Testimonials = () => {
     },
     {
       id: 3,
-      name: "anna mary",
+      name: "James",
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtsHjP3hNXOMVDnmfxKGvpV_JID7g4R_KVqYG_MhHBRqJPBmSpD-ZXzqxKGbp5IuNmY4c&usqp=CAU",
       description:
@@ -41,7 +41,7 @@ const Testimonials = () => {
     },
     {
       id: 4,
-      name: "anna mary",
+      name: "Sophia",
       image:
         "https://media.istockphoto.com/id/174813729/photo/happy-senior-woman-with-hands-on-chest.jpg?s=612x612&w=0&k=20&c=q-rj35PpsEnXWj-sG2YI0bPltI2thHgnb04f3Vz9z2E=",
       description:
@@ -50,16 +50,18 @@ const Testimonials = () => {
     },
     {
       id: 5,
-      name: "anna mary",
-      image: "https://i.ibb.co/NTDwNc7/image.webp",
+      name: "Ava",
+      image:
+        "https://media.istockphoto.com/id/1135381120/photo/portrait-of-a-young-woman-outdoors-smiling.jpg?s=612x612&w=0&k=20&c=T5dukPD1r-o0BFqeqlIap7xzw07icucetwKaEC2Ms5M=",
       description:
         "After a natural disaster left my family homeless, Success Relief Goods provided more than just shelter and sustenance. Their financial assistance and job placement services enabled us to rebuild our lives from the ground up. Today, we're thriving in our new home, grateful for their support in our journey to success.",
       star: 4,
     },
     {
       id: 6,
-      name: "anna mary",
-      image: "https://i.ibb.co/NTDwNc7/image.webp",
+      name: "Mila",
+      image:
+        "https://media.istockphoto.com/id/1961059691/photo/testimonial-portrait-of-a-mature-mexican-woman.webp?b=1&s=170667a&w=0&k=20&c=zvJlGaVQoQL7FZ1UhXRIsOuil6gyB6bUVorAjHpHj6E=",
       description:
         "Success Relief Goods doesn't just offer handouts; they offer a lifeline. Their entrepreneurship programs gave me the tools and mentorship I needed to turn my passion into a profitable business. Thanks to their support, I'm not just surviving—I'm thriving, making a positive impact in my community.",
       star: 4,

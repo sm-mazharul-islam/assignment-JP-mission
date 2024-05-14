@@ -3,14 +3,13 @@ import { useGetReliefGoodsByIdQuery } from "../../redux/api/api";
 
 const AllReliefGoodsDetail = () => {
   const { id } = useParams();
-  console.log(id);
+  // console.log(id);
   const {
     data: reliefGoods,
     isLoading,
     isError,
   } = useGetReliefGoodsByIdQuery(id);
-  console.log(reliefGoods);
-  console.log(reliefGoods);
+  // console.log(reliefGoods);
   if (isLoading) {
     return <p>Loading...</p>;
   }
@@ -19,15 +18,15 @@ const AllReliefGoodsDetail = () => {
   }
 
   return (
-    <div>
+    <div className="lg:m-[100px]">
       <div>
         <div className="hero  bg-base-100 ">
           <div className="hero-content flex-col lg:flex-row">
             <div>
               <div>
                 <img
-                  src=""
-                  style={{ width: "488px", height: "565px" }}
+                  src={reliefGoods.image}
+                  className="w-[100%] h-[500px] lg:w-[488px] lg:h-[565px]"
                   alt=""
                 />
               </div>
@@ -53,14 +52,19 @@ const AllReliefGoodsDetail = () => {
             </div>
 
             <div className="m-9">
-              <h1 className="text-5xl font-bold">{reliefGoods.title}</h1>
-              <p className="py-2">Write your comment</p>
-              <p className="py-2 text-[15px]">Not Available</p>
-              <div className="card-actions  justify-start text-center">
-                <del className="text-xl font-bold">MRP:$ 250</del>
-                <p className="px-4 text-xl font-bold">MRP: $5000</p>
-              </div>
-              <p className="py-4 text-xl">description</p>
+              <h1 className="text-2xl lg:text-5xl font-bold">
+                {reliefGoods.title}
+              </h1>
+              <p className="py-2 ">Category: {reliefGoods.category}</p>
+
+              <p className=" text-xl font-bold">USD: ${reliefGoods.amount}</p>
+
+              <p className="py-4 text-xl">{reliefGoods.description}</p>
+              <p className="py-4 text-xl">
+                " {""}
+                {reliefGoods.reason}
+                {""}"
+              </p>
               {/* <p className="py-2 ">
                 {" "}
                 Quantity:
@@ -79,10 +83,6 @@ const AllReliefGoodsDetail = () => {
                 </button>
               </p> */}
 
-              <button className="btn btn-outline  my-2">Add To Cart</button>
-              <br />
-              <button className="btn btn-outline  my-2">Add To Wishlist</button>
-              <br />
               <button className="btn btn-outline  my-2">Ask a Question</button>
             </div>
           </div>

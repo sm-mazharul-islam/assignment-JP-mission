@@ -126,7 +126,10 @@ const AllSupply = () => {
                 </div>
 
                 <div>
-                  <button className="ml-[240px] p-[4px] border border-red-500 bg-red-800 text-white">
+                  <button
+                    onClick={() => deleteReliefGoods(item._id)}
+                    className="ml-[240px] p-[4px] border border-red-500 bg-red-800 text-white"
+                  >
                     Del
                   </button>
                 </div>

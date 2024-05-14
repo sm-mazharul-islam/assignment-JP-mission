@@ -133,8 +133,8 @@ import { Link } from "react-router-dom";
 
 const Login = () => {
   return (
-    <div className="h-[500px] flex justify-center items-center card w-96 bg-base-100 shadow-xl mx-auto m-11 t4 ">
-      <div className="w-96 p-7">
+    <div className="h-[500px] flex justify-center items-center card w-96 bg-base-100 shadow-xl mx-auto m-11 t4 lg:mb-60 ">
+      <div className="w-96 p-7 ">
         <h2 className="text-xl text-center">Login</h2>
         <form>
           <div className="form-control w-full max-w-xs">

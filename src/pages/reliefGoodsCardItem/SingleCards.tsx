@@ -18,7 +18,10 @@ const SingleCards = () => {
   }
   return (
     <div>
-      <h1>Welcome to the SingleCards page</h1>
+      <h1 className="text-4xl text-center m-4 lg:p-[10px] font-bold">
+        Relief Goods
+      </h1>
+      <span className="divider"></span>
       <div className="  grid  grid-rows-1 justify-center lg:grid-cols-3 md:grid-cols-2 md:p-4  gap-10  ">
         {reliefGoods?.data?.slice(0, 6).map((item: TPackage) => (
           <SingleCard key={item._id} {...item} />

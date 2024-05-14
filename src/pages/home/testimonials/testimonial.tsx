@@ -1,7 +1,15 @@
 import mark from "../../../../src/assets/images/mark.png";
 
-const Testimonial = ({ testimonial }) => {
-  const { name, image, description, star } = testimonial;
+type TTestimonials = {
+  id: number;
+  name: string;
+  image: string;
+  description: string;
+  star: number;
+};
+
+const Testimonial = ({ testimonial }: { testimonial: TTestimonials }) => {
+  const { name, image, description } = testimonial;
   return (
     <div className=" card h-[550px] w-[80%] bg-base-100">
       <div className=" h-full rounded mx-auto ">

@@ -13,6 +13,7 @@ import AllSupply from "../pages/dashboard/dashboard/allsupply/AllSupply";
 import AddSupply from "../pages/dashboard/dashboard/addsupply/AddSupply";
 import Login from "../pages/login/Login";
 import PieCharts from "../pages/dashboard/dashboard/pieChart/PieCharts";
+import EditSupply from "../pages/dashboard/dashboard/editsupply/EditSupply";
 
 const router = createBrowserRouter([
   {
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
       {
         path: "pie-chart",
         element: <PieCharts />,
+      },
+      {
+        path: "edit-supply",
+        element: <EditSupply />,
       },
     ],
   },

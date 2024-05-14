@@ -104,10 +104,7 @@ const OurWorks = () => {
   return (
     <Container>
       <div>
-        <h1 className="text-6xl text-center m-20">
-          Welcome to the OurWorks page
-        </h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-48">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-48 mb-10">
           {reliefCategories.map((someCategories) => (
             <OurWork key={someCategories.id} {...someCategories}></OurWork>
           ))}

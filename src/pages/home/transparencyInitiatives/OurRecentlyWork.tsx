@@ -38,7 +38,7 @@ const OurRecentlyWork = () => {
       image:
         "https://www.ifrc.org/sites/default/files/styles/youtube_thumbnail_large/public/2024-04/p-mex0410.jpg?itok=IvgKX4Ae",
       description:
-        "Success Relief Goods doesn't just provide essentials; they empower individuals to overcome adversity. Their mentorship programs and resources have equipped me with the skills and confidence to pursue my dreams. I'm now running my own business, living proof that their aid fosters true success.",
+        "Success Relief Goods doesn't just provide essentials; they empower individuals to overcome adversity. Their mentorship programs and resources have equipped me with the skills and confidence to pursue my dreams.",
       star: 4,
     },
     {
@@ -46,7 +46,7 @@ const OurRecentlyWork = () => {
       image:
         "https://www.ifrc.org/sites/default/files/styles/youtube_thumbnail_large/public/2024-04/p-sle1328.jpg?itok=z32rxA6C",
       description:
-        "When setbacks threatened to derail my education, Success Relief Goods came to my rescue. With their scholarships and educational materials, I graduated college debt-free. Their belief in my potential gave me the tools to forge a successful career in a competitive industry.",
+        "When setbacks threatened to derail my education, Success Relief Goods came to my rescue. With their scholarships and educational materials, I graduated college debt-free. ",
       star: 4,
     },
     {
@@ -54,7 +54,7 @@ const OurRecentlyWork = () => {
       image:
         "https://www.mercycorps.org/sites/default/files/styles/tile_small_medium_2x/public/2024-02/ukraine-202310-emillstein-3224-2048px.webp?h=f42b6bbb&itok=kuUCS3jT",
       description:
-        "When setbacks threatened to derail my education, Success Relief Goods came to my rescue. With their scholarships and educational materials, I graduated college debt-free. Their belief in my potential gave me the tools to forge a successful career in a competitive industry.",
+        "When setbacks threatened to derail my education, Success Relief Goods came to my rescue. With their scholarships and educational materials, I graduated college debt-free.",
       star: 4,
     },
   ];
