@@ -1,6 +1,6 @@
 import Container from "../components/ui/Container";
 import { useGetReliefGoodsQuery } from "../redux/api/api";
-import SingleCard from "./reliefGoodsCardItem/SingleCard";
+import SingleCard, { TPackage } from "./reliefGoodsCardItem/SingleCard";
 
 const AllReliefGoods = () => {
   // From Server
@@ -21,7 +21,7 @@ const AllReliefGoods = () => {
     <Container>
       <div>
         <div className="  grid  grid-rows-1 justify-center lg:grid-cols-3 md:grid-cols-2 md:p-4  gap-10  ">
-          {reliefGoods?.data?.map((item) => (
+          {reliefGoods?.data?.map((item: TPackage) => (
             <SingleCard key={item._id} {...item} />
           ))}
         </div>
