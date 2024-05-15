@@ -14,8 +14,13 @@ import AddSupply from "../pages/dashboard/dashboard/addsupply/AddSupply";
 import Login from "../pages/login/Login";
 import PieCharts from "../pages/dashboard/dashboard/pieChart/PieCharts";
 import EditSupply from "../pages/dashboard/dashboard/editsupply/EditSupply";
+import NotFoundPage from "../pages/notfound/NotFoundPage";
 
 const router = createBrowserRouter([
+  {
+    path: "*",
+    element: <NotFoundPage />,
+  },
   {
     path: "/",
     element: <Main></Main>,
@@ -59,7 +64,7 @@ const router = createBrowserRouter([
         element: <AddSupply />,
       },
       {
-        path: "pie-chart",
+        index: true,
         element: <PieCharts />,
       },
       {
