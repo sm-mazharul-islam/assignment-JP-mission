@@ -44,7 +44,7 @@ const Dashboard = () => {
             </div>
           </li>
           <span className="divider"></span>
-          <li>
+          {/* <li>
             <div className="flex gap-8">
               <svg
                 className="w-[25px] "
@@ -68,7 +68,7 @@ const Dashboard = () => {
               <Link to="pie-chart">pie chart</Link>
             </div>
           </li>
-          <span className="divider"></span>
+          <span className="divider"></span> */}
           <li>
             <div className="flex gap-8">
               <svg
