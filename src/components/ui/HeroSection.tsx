@@ -33,7 +33,7 @@ const HeroSection = () => (
     <div>
       <div className=" ">
         <div className="bg-red-500  ">
-          <img src={headerOne} alt="" />
+          <img src={headerOne} className="md:h-[800px]" alt="" />
         </div>
         {/* <div>
           <img src={headerTwo} alt="" />

@@ -2,8 +2,11 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
+  // baseQuery: fetchBaseQuery({
+  //   baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
+  // }),
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
+    baseUrl: "http://localhost:5000/",
   }),
   tagTypes: ["supplies"],
   endpoints: (builder) => ({
@@ -55,6 +58,18 @@ export const baseApi = createApi({
       },
       invalidatesTags: ["supplies"],
     }),
+
+    updateSupplies: builder.mutation({
+      query: (options) => {
+        console.log("inside base api =>", options);
+        return {
+          url: `relief-goods/${options.id}`,
+          method: "PUT",
+          body: options.data,
+        };
+      },
+      invalidatesTags: ["supplies"],
+    }),
   }),
 });
 
@@ -65,4 +80,5 @@ export const {
   useAddReliefGoodsMutation,
   useDeleteReliefGoodsMutation,
   useLazyGetReliefGoodsByLimitQuery,
+  useUpdateSuppliesMutation,
 } = baseApi;

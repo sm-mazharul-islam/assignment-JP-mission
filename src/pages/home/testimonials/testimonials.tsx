@@ -8,7 +8,7 @@ import "swiper/css/navigation";
 // import required modules
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
-import "./testimonial.css";
+// import "./testimonial.css";
 
 const Testimonials = () => {
   const clientReview = [
@@ -88,7 +88,7 @@ const Testimonials = () => {
       <Swiper
         loop={true}
         pagination={{ clickable: true }}
-        slidesPerView={3}
+        slidesPerView={1}
         breakpoints={{
           0: {
             slidesPerView: 1,
@@ -103,7 +103,7 @@ const Testimonials = () => {
             spaceBetween: 10,
           },
           1024: {
-            slidesPerView: 3,
+            slidesPerView: 1,
             spaceBetween: 10,
           },
         }}

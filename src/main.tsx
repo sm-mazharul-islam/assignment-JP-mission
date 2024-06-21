@@ -5,6 +5,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "./routes/routes.tsx";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.ts";
+import { Toaster } from "sonner";
 // import App from "./App.tsx";
 // import App from "./App.tsx";
 
@@ -13,6 +14,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       {/* <App /> */}
       <RouterProvider router={router} />
+      <Toaster position="top-center" />
     </Provider>
   </React.StrictMode>
 );

@@ -84,6 +84,13 @@ const AllReliefGoodsDetail = () => {
               </p> */}
 
               <button className="btn btn-outline  my-2">Ask a Question</button>
+              <br />
+              <textarea
+                placeholder="Write your question"
+                className="textarea textarea-bordered textarea-lg w-full max-w-xs"
+              ></textarea>
+              <br />
+              <button className="btn btn-outline  my-2">Submit</button>
             </div>
           </div>
         </div>

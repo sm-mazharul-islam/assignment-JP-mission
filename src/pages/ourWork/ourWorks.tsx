@@ -16,56 +16,49 @@ const OurWorks = () => {
       title: "Save the Earth",
       description:
         "Supporting environmental conservation efforts aimed at preserving the planet for future generations.",
-      image_url:
-        "https://web.sociolib.com/relief/wp-content/uploads/sites/18/2023/06/rel9.png",
+      image_url: "https://i.ibb.co/DVh2rY0/rel9.png",
     },
     {
       id: 3,
       title: "Human Rights",
       description:
         "Advocating for and supporting initiatives that protect and uphold human rights for all individuals.",
-      image_url:
-        "https://web.sociolib.com/relief/wp-content/uploads/sites/18/2023/06/rel10.png",
+      image_url: "https://i.ibb.co/9bkTvrM/rel10.png",
     },
     {
       id: 4,
       title: "Blood Donation",
       description:
         "Encouraging voluntary blood donations to save lives and support healthcare systems.",
-      image_url:
-        "https://web.sociolib.com/relief/wp-content/uploads/sites/18/2023/06/rel28.png",
+      image_url: "https://i.ibb.co/SNsxYmm/rel28.png",
     },
     {
       id: 5,
       title: "Medicine",
       description:
         "Providing essential medicines and healthcare supplies to underserved communities.",
-      image_url:
-        "https://web.sociolib.com/relief/wp-content/uploads/sites/18/2023/06/rel29.png",
+      image_url: "https://i.ibb.co/g3qQ6GJ/rel29.png",
     },
     {
       id: 6,
       title: "Emergency",
       description:
         "Responding swiftly to urgent situations and providing immediate assistance to those affected.",
-      image_url:
-        "https://web.sociolib.com/relief/wp-content/uploads/sites/18/2023/06/rel30.png",
+      image_url: "https://i.ibb.co/v153RCX/rel30.png",
     },
     {
       id: 7,
       title: "Social Donation",
       description:
         "Supporting various social causes such as poverty alleviation and food security.",
-      image_url:
-        "https://web.sociolib.com/relief/wp-content/uploads/sites/18/2023/06/rel33.png",
+      image_url: "https://i.ibb.co/g6fyVVf/rel33.png",
     },
     {
       id: 8,
       title: "Healthcare",
       description:
         "Strengthening healthcare systems and providing access to quality medical services.",
-      image_url:
-        "https://web.sociolib.com/relief/wp-content/uploads/sites/18/2023/06/rel34.png",
+      image_url: "https://i.ibb.co/CJVrJfC/rel34.png",
     },
     {
       id: 9,

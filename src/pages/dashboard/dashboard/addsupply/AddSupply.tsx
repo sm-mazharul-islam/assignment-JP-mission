@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { useAddReliefGoodsMutation } from "../../../../redux/api/api";
 import "./AddSupply.css";
+import { toast } from "sonner";
 
 const AddSupply = () => {
   const [title, setTitle] = useState("");
@@ -19,6 +20,9 @@ const AddSupply = () => {
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+    toast.success("Added Product successfully!", {
+      // position: toast.POSITION.TOP_CENTER,
+    });
     const form = e.target as HTMLFormElement;
     form.reset();
 
