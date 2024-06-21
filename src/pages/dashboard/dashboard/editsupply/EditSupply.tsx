@@ -132,7 +132,7 @@
 
 // export default EditSupply;
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useUpdateSuppliesMutation } from "../../../../redux/api/api";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
