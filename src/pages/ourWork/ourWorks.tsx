@@ -95,15 +95,39 @@ const OurWorks = () => {
   ];
 
   return (
-    <Container>
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-48 mb-10">
-          {reliefCategories.map((someCategories) => (
-            <OurWork key={someCategories.id} {...someCategories}></OurWork>
+    <section className="py-28 bg-white overflow-hidden">
+      <Container>
+        {/* Header Section */}
+        <div className="flex flex-col items-center text-center mb-24 relative">
+          {/* Decorative blur element */}
+          <div className="absolute -top-20 w-64 h-64 bg-[#FDA4AF]/10 blur-[100px] -z-10 rounded-full" />
+
+          <span className="px-6 py-2 rounded-full bg-[#FDA4AF]/10 text-[#FDA4AF] text-xs font-bold uppercase tracking-widest mb-6">
+            Our Relief Programs
+          </span>
+          <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight">
+            Making a{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDA4AF] to-[#F87171]">
+              Difference
+            </span>{" "}
+            <br />
+            One Step at a Time
+          </h2>
+          <div className="mt-8 flex items-center gap-3">
+            <div className="w-12 h-1.5 bg-[#FDA4AF] rounded-full" />
+            <div className="w-3 h-3 bg-[#FDA4AF] rounded-full animate-pulse" />
+            <div className="w-12 h-1.5 bg-[#FDA4AF] rounded-full" />
+          </div>
+        </div>
+
+        {/* Grid Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+          {reliefCategories.map((category) => (
+            <OurWork key={category.id} {...category} />
           ))}
         </div>
-      </div>
-    </Container>
+      </Container>
+    </section>
   );
 };
 

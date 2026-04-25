@@ -45,7 +45,7 @@ const AddSupply = () => {
           Add New Supply
         </h1>
         <form onSubmit={onSubmit}>
-          <div className="m-4">
+          <div className="m-4 lg:ml-[450px]">
             <input
               onBlur={(e) => setTitle(e.target.value)}
               id="title"

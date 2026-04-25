@@ -9,65 +9,64 @@ import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
 // import "./testimonial.css";
+const clientReview = [
+  {
+    id: 1,
+    name: "Emily",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6dLNupXEgveO-w1vX8Gy31ibUTVVq4vlqLSKwKpbxNg&s",
+    description:
+      "During a time of crisis, Success Relief Goods stepped in with not just supplies, but hope. Their support helped me rebuild my life after losing everything. Today, I'm not just surviving, I'm thriving, all thanks to their unwavering commitment to our success.",
+    star: 4,
+  },
+  {
+    id: 2,
+    name: "Chloe",
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Woman_in_Tunisia.jpg/220px-Woman_in_Tunisia.jpg",
+    description:
+      "Success Relief Goods doesn't just provide essentials; they empower individuals to overcome adversity. Their mentorship programs and resources have equipped me with the skills and confidence to pursue my dreams. I'm now running my own business, living proof that their aid fosters true success.",
+    star: 4,
+  },
+  {
+    id: 3,
+    name: "James",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtsHjP3hNXOMVDnmfxKGvpV_JID7g4R_KVqYG_MhHBRqJPBmSpD-ZXzqxKGbp5IuNmY4c&usqp=CAU",
+    description:
+      "When setbacks threatened to derail my education, Success Relief Goods came to my rescue. With their scholarships and educational materials, I graduated college debt-free. Their belief in my potential gave me the tools to forge a successful career in a competitive industry.",
+    star: 6,
+  },
+  {
+    id: 4,
+    name: "Sophia",
+    image:
+      "https://media.istockphoto.com/id/174813729/photo/happy-senior-woman-with-hands-on-chest.jpg?s=612x612&w=0&k=20&c=q-rj35PpsEnXWj-sG2YI0bPltI2thHgnb04f3Vz9z2E=",
+    description:
+      "As a community leader, I've witnessed firsthand the impact of Success Relief Goods on families in need. Their holistic approach doesn't just address immediate challenges; it lays the groundwork for long-term success. Thanks to their assistance, our community is stronger and more resilient than ever.",
+    star: 2,
+  },
+  {
+    id: 5,
+    name: "Ava",
+    image:
+      "https://media.istockphoto.com/id/1135381120/photo/portrait-of-a-young-woman-outdoors-smiling.jpg?s=612x612&w=0&k=20&c=T5dukPD1r-o0BFqeqlIap7xzw07icucetwKaEC2Ms5M=",
+    description:
+      "After a natural disaster left my family homeless, Success Relief Goods provided more than just shelter and sustenance. Their financial assistance and job placement services enabled us to rebuild our lives from the ground up. Today, we're thriving in our new home, grateful for their support in our journey to success.",
+    star: 3,
+  },
+  {
+    id: 6,
+    name: "Mila",
+    image:
+      "https://media.istockphoto.com/id/1961059691/photo/testimonial-portrait-of-a-mature-mexican-woman.webp?b=1&s=170667a&w=0&k=20&c=zvJlGaVQoQL7FZ1UhXRIsOuil6gyB6bUVorAjHpHj6E=",
+    description:
+      "Success Relief Goods doesn't just offer handouts; they offer a lifeline. Their entrepreneurship programs gave me the tools and mentorship I needed to turn my passion into a profitable business. Thanks to their support, I'm not just surviving—I'm thriving, making a positive impact in my community.",
+    star: 2,
+  },
+];
 
 const Testimonials = () => {
-  const clientReview = [
-    {
-      id: 1,
-      name: "Emily",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6dLNupXEgveO-w1vX8Gy31ibUTVVq4vlqLSKwKpbxNg&s",
-      description:
-        "During a time of crisis, Success Relief Goods stepped in with not just supplies, but hope. Their support helped me rebuild my life after losing everything. Today, I'm not just surviving, I'm thriving, all thanks to their unwavering commitment to our success.",
-      star: 4,
-    },
-    {
-      id: 2,
-      name: "Chloe",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Woman_in_Tunisia.jpg/220px-Woman_in_Tunisia.jpg",
-      description:
-        "Success Relief Goods doesn't just provide essentials; they empower individuals to overcome adversity. Their mentorship programs and resources have equipped me with the skills and confidence to pursue my dreams. I'm now running my own business, living proof that their aid fosters true success.",
-      star: 4,
-    },
-    {
-      id: 3,
-      name: "James",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtsHjP3hNXOMVDnmfxKGvpV_JID7g4R_KVqYG_MhHBRqJPBmSpD-ZXzqxKGbp5IuNmY4c&usqp=CAU",
-      description:
-        "When setbacks threatened to derail my education, Success Relief Goods came to my rescue. With their scholarships and educational materials, I graduated college debt-free. Their belief in my potential gave me the tools to forge a successful career in a competitive industry.",
-      star: 4,
-    },
-    {
-      id: 4,
-      name: "Sophia",
-      image:
-        "https://media.istockphoto.com/id/174813729/photo/happy-senior-woman-with-hands-on-chest.jpg?s=612x612&w=0&k=20&c=q-rj35PpsEnXWj-sG2YI0bPltI2thHgnb04f3Vz9z2E=",
-      description:
-        "As a community leader, I've witnessed firsthand the impact of Success Relief Goods on families in need. Their holistic approach doesn't just address immediate challenges; it lays the groundwork for long-term success. Thanks to their assistance, our community is stronger and more resilient than ever.",
-      star: 4,
-    },
-    {
-      id: 5,
-      name: "Ava",
-      image:
-        "https://media.istockphoto.com/id/1135381120/photo/portrait-of-a-young-woman-outdoors-smiling.jpg?s=612x612&w=0&k=20&c=T5dukPD1r-o0BFqeqlIap7xzw07icucetwKaEC2Ms5M=",
-      description:
-        "After a natural disaster left my family homeless, Success Relief Goods provided more than just shelter and sustenance. Their financial assistance and job placement services enabled us to rebuild our lives from the ground up. Today, we're thriving in our new home, grateful for their support in our journey to success.",
-      star: 4,
-    },
-    {
-      id: 6,
-      name: "Mila",
-      image:
-        "https://media.istockphoto.com/id/1961059691/photo/testimonial-portrait-of-a-mature-mexican-woman.webp?b=1&s=170667a&w=0&k=20&c=zvJlGaVQoQL7FZ1UhXRIsOuil6gyB6bUVorAjHpHj6E=",
-      description:
-        "Success Relief Goods doesn't just offer handouts; they offer a lifeline. Their entrepreneurship programs gave me the tools and mentorship I needed to turn my passion into a profitable business. Thanks to their support, I'm not just surviving—I'm thriving, making a positive impact in my community.",
-      star: 4,
-    },
-  ];
-
   return (
     <div>
       {/* <img

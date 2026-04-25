@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useGetReliefGoodsByIdQuery } from "../../redux/api/api";
+import DetailsQuestion from "../../components/ui/detailsQuestion/DetailsQuestion";
 
 const AllReliefGoodsDetail = () => {
   const { id } = useParams();
@@ -82,19 +83,36 @@ const AllReliefGoodsDetail = () => {
                   -
                 </button>
               </p> */}
-
-              <button className="btn btn-outline  my-2">Ask a Question</button>
-              <br />
-              <textarea
-                placeholder="Write your question"
-                className="textarea textarea-bordered textarea-lg w-full max-w-xs"
-              ></textarea>
-              <br />
-              <button className="btn btn-outline  my-2">Submit</button>
+              {/* <span className="divider"></span> */}
+              <div className="lg:flex gap-8">
+                <div>
+                  <p className=" text-[15px] justify-center ">
+                    If you need this, click here to complete the process, and{" "}
+                    <br />
+                    send your identity along with an explanation of why you need
+                    this.
+                  </p>
+                  <button className="btn btn-outline mt-4">click here</button>
+                </div>
+                <div>
+                  <button className="btn btn-outline  my-2">
+                    Ask a Question
+                  </button>
+                  <br />
+                  <textarea
+                    placeholder="Write your question"
+                    className="textarea textarea-bordered textarea-lg w-full max-w-xs"
+                  ></textarea>
+                  <br />
+                  <button className="btn btn-outline  my-2">Submit</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <span className="divider"></span>
+      <DetailsQuestion />
     </div>
   );
 };

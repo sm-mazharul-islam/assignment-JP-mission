@@ -5,7 +5,6 @@ import Main from "../components/layout/Main";
 import Register from "../pages/Register";
 import AllReliefGoods from "../pages/AllReliefGoods";
 import Home from "../pages/home/home/Home";
-import DashboardHome from "../pages/dashboard/dashboard/DashboardHome";
 
 import OurWorks from "../pages/ourWork/ourWorks";
 import AllReliefGoodsDetail from "../pages/reliefGoodsCardItem/AllReliefGoodsDetail";
@@ -15,6 +14,8 @@ import Login from "../pages/login/Login";
 import PieCharts from "../pages/dashboard/dashboard/pieChart/PieCharts";
 import NotFoundPage from "../pages/notfound/NotFoundPage";
 import { EditSupplyWrapper } from "../lib/EditSupplyWrapper";
+import AddReview from "../pages/dashboard/dashboard/addReview/AddReview";
+import Dashboard from "../pages/dashboard/dashboard/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -53,7 +54,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <DashboardHome />,
+    element: <Dashboard />,
     children: [
       {
         path: "supplies",
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
       {
         path: "create-supply",
         element: <AddSupply />,
+      },
+      {
+        path: "add-review",
+        element: <AddReview />,
       },
       {
         index: true,

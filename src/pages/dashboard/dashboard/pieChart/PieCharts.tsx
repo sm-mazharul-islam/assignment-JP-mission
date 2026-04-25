@@ -180,35 +180,30 @@ const PieCharts = () => {
   ];
   return (
     <div className="text-center">
-      <div className="grid grid-cols-1 lg:grid-cols-2">
-        {/* <ResponsiveContainer width="100%" height="100%"> */}
-        <PieChart width={400} height={400}>
-          <Pie
-            dataKey="amount"
-            isAnimationActive={true}
-            data={data}
-            cx="50%"
-            cy="50%"
-            outerRadius={80}
-            fill="#8884d8"
-            label
-          />
+      <div className="grid grid-cols-1 lg:grid-rows-1 gap-4  justify-center">
+        <ResponsiveContainer width="100%" height={400}>
+          <PieChart width={400} height={400} className="lg:mt-24">
+            <Pie
+              dataKey="amount"
+              isAnimationActive={true}
+              data={data}
+              cx="50%"
+              cy="50%"
+              outerRadius={80}
+              fill="#8884d8"
+              label
+            />
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
 
-          <Tooltip />
-        </PieChart>
-        {/* </ResponsiveContainer> */}
-
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height={300}>
           <BarChart
+            className="lg:mt-32 lg:ml-[00px]"
             width={500}
             height={300}
             data={data}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             barSize={20}
           >
             <XAxis

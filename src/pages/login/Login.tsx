@@ -1,181 +1,88 @@
-// // import Container from "../../components/ui/Container";
-// // import { Link } from "react-router-dom";
-
 import { Link } from "react-router-dom";
-
-// // type FieldType = {
-// //   email?: string;
-// //   password?: string;
-// //   remember?: string;
-// // };
-
-// // const Login = () => {
-// // const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-// //   console.log('Success:', values);
-// // };
-
-// // const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-// //   console.log('Failed:', errorInfo);
-// // };
-// // return (
-// //   <Container>
-// //     <div className="h-[500px] flex justify-center items-center card w-96 bg-base-100 bg-white shadow-xl mx-auto m-11  ">
-// {
-//   /*
-//       <div className="w-96 p-7">
-//       <h2 className="text-xl text-center">Login</h2>
-//       <form>
-//       <div className="form-control w-full max-w-xs">
-//       <label className="label">
-//       <span className="label-text">Email</span>
-//       </label>
-//       <input
-//       type="text"
-//       className="input input-bordered w-full max-w-xs"
-//       />
-
-//       <p className="text-red-600"></p>
-//       </div>
-//       <div className="form-control w-full max-w-xs">
-//       <label className="label">
-//       <span className="label-text">Password</span>
-//       </label>
-//       <input
-//       type="password"
-//       className="input input-bordered w-full max-w-xs"
-//       />
-//       <label className="label">
-//       <span className="label-text">Forget Password?</span>
-//       </label>
-//       </div>
-
-//       <input
-//       className="btn btn-accent w-full"
-//       value="Login"
-//       type="submit"
-//       />
-//       <div></div>
-//       </form>
-//       <p>
-//       New to Wedding Planner?{" "}
-//       <Link className="text-secondary" to="/register">
-//       Create new account
-//       </Link>
-//       </p>
-//       <div className="divider">OR</div>
-//       <button className="btn btn-outline w-full">CONTINUE WITH GOOGLE</button>
-//     </div> */
-// }
-// // <Form
-// //   name="basic"
-// //   // labelCol={{ span: 8 }}
-// //   // wrapperCol={{ span: 16 }}
-// //   // style={{ maxWidth: 600 }}
-// //   initialValues={{ remember: true }}
-// //   // onFinish={onFinish}
-// //   // onFinishFailed={onFinishFailed}
-// //   autoComplete="off"
-// // >
-// //   <h2 className="text-2xl font-bold mb-4 text-center md:mb-[60px]">
-// //     Please Login
-// //   </h2>
-// //   <Form.Item<FieldType>
-// //     label="Email"
-// //     name="email"
-// //     rules={[{ required: true, message: "Please input your username!" }]}
-// //   >
-// //     <Input />
-// //   </Form.Item>
-
-// //   <Form.Item<FieldType>
-// //     label="Password"
-// //     name="password"
-// //     wrapperCol={{ offset: 0, span: 32 }}
-// //     rules={[{ required: true, message: "Please input your password!" }]}
-// //   >
-// //     <Input.Password />
-// //   </Form.Item>
-
-// {
-//   /* <Form.Item<FieldType>
-//             name="remember"
-//             valuePropName="checked"
-//             wrapperCol={{ offset: 8, span: 16 }}
-//           >
-//             <Checkbox>Remember me</Checkbox>
-//           </Form.Item> */
-// }
-// {
-//   /*
-//           <Form.Item className="text-center">
-//             <Button type="primary" htmlType="submit">
-//               Submit
-//             </Button>
-//           </Form.Item>
-//           <p className="text-center">
-//             New to this website?
-//             <Link className="text-black" to="/register">
-//               Create new account
-//             </Link>
-//           </p>
-//           <Divider>OR</Divider>
-//           <button className="w-full">CONTINUE WITH GOOGLE</button>
-//         </Form> */
-// }
-// {
-//   /* </div>
-//     </Container>
-//   );
-// }; */
-// }
-
-// // export default Login;
 
 const Login = () => {
   return (
-    <div className="h-[500px] flex justify-center items-center card w-96 bg-base-100 shadow-xl mx-auto m-11 t4 lg:mb-60 ">
-      <div className="w-96 p-7 ">
-        <h2 className="text-xl text-center">Login</h2>
-        <form>
-          <div className="form-control w-full max-w-xs">
-            <label className="label">
-              <span className="label-text">Email</span>
-            </label>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-            />
-          </div>
-          <div className="form-control w-full max-w-xs">
-            <label className="label">
-              <span className="label-text">Password</span>
-            </label>
-            <input
-              type="password"
-              className="input input-bordered w-full max-w-xs"
-            />
-            <label className="label">
-              <span className="label-text">Forget Password?</span>
-            </label>
+    <div className="min-h-screen flex justify-center items-center bg-slate-50/50 py-12 px-4">
+      {/* Main Card */}
+      <div className="card w-full max-w-md bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(253,164,175,0.15)] border border-slate-100 overflow-hidden">
+        {/* Top Accent Bar */}
+        <div className="h-2 w-full bg-gradient-to-r from-[#FDA4AF] to-[#fb7185]" />
+
+        <div className="p-10">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-black text-slate-800">Welcome Back</h2>
+            <p className="text-slate-500 text-sm mt-2">
+              Log in to continue your relief mission
+            </p>
           </div>
 
-          <input
-            className="btn btn-accent w-full"
-            value="Login"
-            type="submit"
-          />
-          <div>
-            <p className="text-red-600"></p>
+          <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
+            {/* Email Field */}
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text font-bold text-slate-700">
+                  Email Address
+                </span>
+              </label>
+              <input
+                type="email"
+                placeholder="example@gmail.com"
+                className="input input-bordered w-full rounded-2xl focus:border-[#FDA4AF] focus:outline-none bg-slate-50 border-slate-200 transition-all px-6"
+              />
+            </div>
+
+            {/* Password Field */}
+            <div className="form-control w-full">
+              <label className="label flex justify-between">
+                <span className="label-text font-bold text-slate-700">
+                  Password
+                </span>
+                <span className="label-text-alt text-[#FDA4AF] font-semibold cursor-pointer hover:underline">
+                  Forget Password?
+                </span>
+              </label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                className="input input-bordered w-full rounded-2xl focus:border-[#FDA4AF] focus:outline-none bg-slate-50 border-slate-200 transition-all px-6"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold text-lg h-14 mt-4 shadow-lg shadow-[#FDA4AF]/30 transition-all"
+            >
+              Login
+            </button>
+          </form>
+
+          <div className="text-center mt-6">
+            <p className="text-slate-500 text-sm">
+              New to Relief Project?{" "}
+              <Link
+                className="text-[#FDA4AF] font-bold hover:underline"
+                to="/register"
+              >
+                Create new account
+              </Link>
+            </p>
           </div>
-        </form>
-        <p>
-          New to Wedding Planner?{" "}
-          <Link className="text-secondary" to="/register">
-            Create new account
-          </Link>
-        </p>
-        <div className="divider">OR</div>
-        <button className="btn btn-outline w-full">CONTINUE WITH GOOGLE</button>
+
+          <div className="divider my-8 text-slate-400 text-xs font-bold uppercase tracking-widest">
+            OR
+          </div>
+
+          {/* Social Login */}
+          <button className="btn btn-outline border-slate-200 hover:bg-slate-50 hover:text-slate-800 hover:border-[#FDA4AF] w-full rounded-2xl h-14 font-bold flex items-center justify-center gap-3 transition-all">
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/smartlock/google.svg"
+              alt="google"
+              className="w-5 h-5"
+            />
+            CONTINUE WITH GOOGLE
+          </button>
+        </div>
       </div>
     </div>
   );
