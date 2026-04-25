@@ -11,19 +11,6 @@ import "./OurRecentlyWork.css";
 import OurRecentlyWorks from "./OurRecentlyWorks";
 
 const OurRecentlyWork = () => {
-  //   const {
-  //     data: reliefGoods,
-  //     isLoading,
-  //     isError,
-  //   } = useGetRecentWorksQuery(undefined);
-
-  //   console.log(reliefGoods);
-  //   if (isLoading) {
-  //     return <p>Loading...</p>;
-  //   }
-  //   if (isError) {
-  //     return <p>Loading...</p>;
-  //   }
   const works = [
     {
       id: 1,
@@ -60,9 +47,28 @@ const OurRecentlyWork = () => {
   ];
   return (
     <div>
-      <h2 className="text-3xl text-center mt-8 font-bold">Recently Work</h2>
+      <div className="relative text-center mb-12 group">
+        {/* Subtle Background Badge */}
+        <span className="text-[#FDA4AF] font-black uppercase tracking-[0.4em] text-[10px] mb-2 block animate-pulse">
+          Our Gallery
+        </span>
+
+        {/* Main Heading with Gradient */}
+        <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight">
+          Our Recently{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-[#FDA4AF]">
+            Works
+          </span>
+        </h2>
+
+        {/* Decorative Animated Line */}
+        <div className="flex justify-center items-center gap-2 mt-6">
+          <div className="h-1 w-12 bg-gradient-to-r from-[#FDA4AF] to-violet-400 rounded-full transition-all duration-500 group-hover:w-24" />
+          <div className="w-2 h-2 bg-violet-400 rounded-full" />
+          <div className="h-1 w-4 bg-slate-200 rounded-full" />
+        </div>
+      </div>
       {/* <Divider></Divider> */}
-      <span className="divider"></span>
       <Swiper
         loop={true}
         pagination={{ clickable: true }}

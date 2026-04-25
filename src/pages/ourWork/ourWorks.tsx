@@ -95,7 +95,7 @@ const OurWorks = () => {
   ];
 
   return (
-    <section className="py-28 bg-white overflow-hidden">
+    <section className=" bg-white overflow-hidden">
       <Container>
         {/* Header Section */}
         <div className="flex flex-col items-center text-center mb-24 relative">

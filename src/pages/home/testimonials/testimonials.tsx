@@ -69,21 +69,38 @@ const clientReview = [
 const Testimonials = () => {
   return (
     <div>
-      {/* <img
-        style={{
-          display: "block",
-          marginLeft: "auto",
-          marginRight: "auto",
-          width: "70px",
-          marginBottom: "-55px",
-          marginTop: "10px",
-        }}
-        src="https://i.ibb.co/PGSXyL3/section-title-1.png"
-        alt=""
-      /> */}
-      <h2 className="text-3xl text-center mt-8">Testimonials</h2>
-      <div className="divider w-[30%] mx-auto "></div>
-      <div className="divider w-[20%] mx-auto -mt-[20px]"></div>
+      <div className="relative text-center  mb-16 px-4 group ">
+        {/* Modern Floating Label */}
+        <div className="inline-block px-4 py-1.5 mb-4 rounded-full bg-[#FDA4AF]/10 border border-[#FDA4AF]/20 mt-20">
+          <span className="text-[#FDA4AF] font-bold uppercase tracking-[0.3em] text-[10px]">
+            Kind Words
+          </span>
+        </div>
+
+        {/* Main Heading with Gradient Accent */}
+        <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight leading-tight">
+          What Our{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDA4AF] to-violet-400">
+            Community
+          </span>{" "}
+          Says
+        </h2>
+
+        {/* Dynamic Decorative Underline */}
+        <div className="flex justify-center items-center gap-3 mt-8">
+          <div className="h-[2px] w-4 bg-slate-200 rounded-full" />
+          <div className="h-1 w-20 bg-gradient-to-r from-violet-400 to-[#FDA4AF] rounded-full transition-all duration-700 group-hover:w-32" />
+          <div className="w-2 h-2 bg-[#FDA4AF] rounded-full animate-ping" />
+        </div>
+
+        {/* Subtitle (Optional but recommended for premium feel) */}
+        <p className="mt-6 text-slate-500 max-w-lg mx-auto text-sm md:text-base leading-relaxed">
+          Real stories from those whose lives have been transformed through our
+          collective relief efforts.
+        </p>
+      </div>
+      {/* <div className="divider w-[30%] mx-auto "></div>
+      <div className="divider w-[20%] mx-auto -mt-[20px]"></div> */}
       <Swiper
         loop={true}
         pagination={{ clickable: true }}
