@@ -1,122 +1,43 @@
-// import React, { useContext } from "react";
-// import { SidebarContext } from "../../../pages/dashboard/dashboard/DashboardHome";
+import { ReactNode, useState } from "react";
 
-// interface SidebarItemProps {
-//   icon: JSX.Element;
-//   text: string;
-//   active: boolean;
-//   onClick: () => void;
-//   alert?: boolean;
-//   expanded?: boolean; // New prop for expanded state
-// }
+// 1. Define the Prop Types
+interface SidebarItemProps {
+  icon: ReactNode; // Allows Lucide icons, SVG, or components
+  text: string; // The label for the item
+  alert?: boolean; // Optional boolean for the red dot
+  onClick: () => void; // Function that returns nothing
+}
 
-// const SidebarItem: React.FC<SidebarItemProps> = ({
-//   icon,
-//   text,
-//   active,
-//   onClick,
-//   alert = false,
-// }) => {
-//   const { expanded } = useContext(SidebarContext);
-//   return (
-//     <li
-//       className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
-//         active
-//           ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
-//           : "hover:bg-indigo-50 text-gray-600"
-//       }`}
-//       onClick={onClick}
-//     >
-//       {icon}
-//       <span className="overflow-hidden transition-all w-52 ml-3">{text}</span>
-//       {alert && (
-//         <div
-//           className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${
-//             active ? "" : "top-2"
-//           }`}
-//         ></div>
-//       )}
-
-//       {!active && (
-//         <div
-//           className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-indigo-100 text-indigo-800 text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}
-//         >
-//           {text}
-//         </div>
-//       )}
-
-//       {expanded && ( // Conditionally render based on expanded prop
-//         <div
-//           className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-indigo-100 text-indigo-800 text-sm -translate-x-3 transition-all`}
-//         >
-//           {text}
-//         </div>
-//       )}
-//     </li>
-//   );
-// };
-
-// export default SidebarItem;
-
-// export function SidebarItem({ icon, text, active, alert }) {
-//   const { expanded } = useContext(SidebarContext);
-//   return (
-//     <li
-//       className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
-//         active
-//           ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
-//           : "hover:bg-indigo-50 text-gray-600"
-//       }`}
-//     >
-//       {icon}
-//       <span
-//         className={`overflow-hidden transition-all ${
-//           expanded ? "w-52 ml-3" : "w-0"
-//         }`}
-//       >
-//         {text}
-//       </span>
-//       {alert && (
-//         <div
-//           className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${
-//             expanded ? "" : "top-2"
-//           }`}
-//         ></div>
-//       )}
-
-//       {!expanded && (
-//         <div
-//           className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-indigo-100 text-indigo-800 text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}
-//         >
-//           {text}
-//         </div>
-//       )}
-//     </li>
-//   );
-// }
-
-// SidebarItem.js
-
-import React, { useState } from "react";
-
-const SidebarItem = ({ icon, text, alert, onClick }) => {
+const SidebarItem = ({ icon, text, alert, onClick }: SidebarItemProps) => {
   const [active, setActive] = useState(false);
 
   const handleClick = () => {
-    onClick(); // Execute the onClick handler from props
-    setActive(true); // Set active state locally
+    onClick(); // Execute the parent's function
+    setActive(true); // Set local active state
   };
 
   return (
     <div
-      className={`flex items-center space-x-2 p-4 cursor-pointer ${
-        active ? "bg-gray-200" : ""
-      }`}
       onClick={handleClick}
+      className={`
+        flex items-center space-x-2 p-4 cursor-pointer transition-colors duration-200 rounded-lg
+        ${
+          active
+            ? "bg-[#FDA4AF]/20 text-[#FDA4AF] font-bold"
+            : "hover:bg-slate-100 text-slate-600"
+        }
+      `}
     >
-      {icon}
-      <span className="text-sm">{text}</span>
-      {alert && <span className="ml-auto bg-red-500 rounded-full w-2 h-2" />}
+      {/* Icon size and color can be controlled here */}
+      <div className={`${active ? "text-[#FDA4AF]" : "text-slate-400"}`}>
+        {icon}
+      </div>
+
+      <span className="text-sm tracking-wide">{text}</span>
+
+      {alert && (
+        <span className="ml-auto bg-[#FDA4AF] rounded-full w-2 h-2 animate-pulse" />
+      )}
     </div>
   );
 };
