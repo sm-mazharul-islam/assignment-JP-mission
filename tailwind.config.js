@@ -1,8 +1,10 @@
+import daisyui from "daisyui";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
 
-  // costomized themes
+  // Customized daisyUI themes
   daisyui: {
     themes: [
       {
@@ -16,9 +18,24 @@ export default {
       },
     ],
   },
-  //
+
   theme: {
-    extend: {},
+    extend: {
+      // Ticker Animation
+      animation: {
+        "smooth-scroll": "infinite-scroll 25s linear infinite",
+      },
+      // Ticker Keyframes
+      keyframes: {
+        "infinite-scroll": {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-100%)" },
+        },
+      },
+    },
   },
-  plugins: [require("daisyui")],
+
+  plugins: [daisyui],
 };
+
+// plugins: [require("daisyui")]
