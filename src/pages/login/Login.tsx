@@ -7,33 +7,28 @@ const Login = () => {
   const navigate = useNavigate();
   const [loginUser, { isLoading }] = useLoginUserMutation();
 
-  // 1. Local State for Form Inputs
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  // 2. Update state when user types
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 3. Handle Form Submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("A. Attempting Login with:", formData.email);
 
     try {
-      // Trigger the mutation
       const response = await loginUser(formData).unwrap();
 
-      console.log("B. Login Success Response:", response);
-      toast.success("Welcome back!");
-      navigate("/"); // Redirect to home/dashboard
+      if (response.success) {
+        toast.success("Welcome back!");
+        navigate("/");
+      }
     } catch (err) {
       const error = err as { data?: { message?: string } };
-      console.error("C. Login Error:", error);
-      toast.error(error.data?.message || "Login failed. Check console.");
+      toast.error(error.data?.message || "Login failed. Please try again.");
     }
   };
 
@@ -51,7 +46,6 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email Field */}
             <div className="form-control w-full">
               <label className="label-text font-bold text-slate-700 mb-2">
                 Email Address
@@ -67,7 +61,6 @@ const Login = () => {
               />
             </div>
 
-            {/* Password Field */}
             <div className="form-control w-full">
               <div className="flex justify-between mb-2">
                 <label className="label-text font-bold text-slate-700">
@@ -88,11 +81,10 @@ const Login = () => {
               />
             </div>
 
-            {/* Login Button */}
             <button
               disabled={isLoading}
               type="submit"
-              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold text-lg h-14 mt-4"
+              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold text-lg h-14 mt-4 transition-all active:scale-95"
             >
               {isLoading ? (
                 <span className="loading loading-spinner"></span>

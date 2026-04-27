@@ -19,19 +19,20 @@ const Register = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("A. Frontend Submit Clicked. Data:", formData);
 
     try {
-      console.log("B. Calling registerUser mutation...");
       const response = await registerUser(formData).unwrap();
 
-      console.log("C. Mutation Success Response:", response);
-      toast.success("Welcome! Account created.");
-      navigate("/login");
+      if (response.success) {
+        toast.success("Welcome! Account created.");
+        navigate("/login");
+      }
     } catch (err) {
+      // Type assertion to fix the 'unexpected any' error
       const error = err as { data?: { message?: string } };
-      console.error("D. Mutation Catch Block Error:", error);
-      toast.error(error.data?.message || "Check console for connection error");
+      toast.error(
+        error.data?.message || "Registration failed. Please try again.",
+      );
     }
   };
 
@@ -50,8 +51,9 @@ const Register = () => {
               <input
                 name="name"
                 required
+                value={formData.name}
                 onChange={handleChange}
-                className="input input-bordered rounded-2xl bg-slate-50"
+                className="input input-bordered rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none"
                 placeholder="John Doe"
               />
             </div>
@@ -62,8 +64,9 @@ const Register = () => {
                 name="email"
                 type="email"
                 required
+                value={formData.email}
                 onChange={handleChange}
-                className="input input-bordered rounded-2xl bg-slate-50"
+                className="input input-bordered rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none"
                 placeholder="example@gmail.com"
               />
             </div>
@@ -74,24 +77,32 @@ const Register = () => {
                 name="password"
                 type="password"
                 required
+                value={formData.password}
                 onChange={handleChange}
-                className="input input-bordered rounded-2xl bg-slate-50"
+                className="input input-bordered rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none"
                 placeholder="••••••••"
               />
             </div>
 
             <button
               disabled={isLoading}
-              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold h-14 mt-4"
+              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold h-14 mt-4 transition-all active:scale-95"
             >
-              {isLoading ? "Creating Account..." : "Sign Up"}
+              {isLoading ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                "Sign Up"
+              )}
             </button>
           </form>
 
           <div className="text-center mt-6">
             <p className="text-sm text-slate-500">
               Already have an account?{" "}
-              <Link className="text-[#FDA4AF] font-bold" to="/login">
+              <Link
+                className="text-[#FDA4AF] font-bold hover:underline"
+                to="/login"
+              >
                 Login
               </Link>
             </p>
