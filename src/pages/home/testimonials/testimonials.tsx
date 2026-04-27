@@ -4,10 +4,6 @@ import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 import { motion } from "framer-motion";
 
 // CRITICAL: Ensure these styles are imported
-// In Testimonials.tsx
-import "swiper/swiper.min.css";
-import "swiper/modules/pagination.min.css";
-import "swiper/modules/effect-fade.min.css";
 
 const clientReview = [
   {
