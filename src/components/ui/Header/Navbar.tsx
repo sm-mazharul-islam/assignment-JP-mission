@@ -47,7 +47,7 @@ const Navbar = () => {
     <nav
       className={`w-full transition-all duration-500 ease-in-out ${
         isScrolled
-          ? "bg-white/80 backdrop-blur-md shadow-lg py-2"
+          ? "bg-white/80 backdrop-blur-md shadow-lg py-0"
           : "bg-transparent py-4 md:py-5"
       }`}
     >
@@ -106,7 +106,7 @@ const Navbar = () => {
 
             {/* The Logo Image: Z-index 50 ensures it stays on top */}
             <img
-              className="w-10 md:w-12 h-auto relative z-50 transition-transform duration-500 group-hover:scale-110 object-contain bg-gray-100"
+              className="w-10 md:w-12 h-auto relative z-50 transition-transform duration-500 group-hover:scale-110 object-contain "
               src={logo}
               alt="Big Hearts Logo"
               // Fallback if image fails to load

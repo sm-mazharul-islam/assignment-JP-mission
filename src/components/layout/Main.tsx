@@ -24,8 +24,8 @@ const Main = () => {
           <NavbarTwo />
         ) : (
           <>
-            <Navbar />
             {isHomePage && <ReliefTicker />}
+            <Navbar />
           </>
         )}
       </header>
