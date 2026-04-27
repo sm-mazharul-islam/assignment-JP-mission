@@ -1,151 +1,86 @@
 import Testimonial from "./testimonial";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, EffectFade } from "swiper/modules";
+import { motion } from "framer-motion";
 
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-// import required modules
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
+// CRITICAL: Ensure these styles are imported
+// In Testimonials.tsx
+import "swiper/swiper.min.css";
+import "swiper/modules/pagination.min.css";
+import "swiper/modules/effect-fade.min.css";
 
-// import "./testimonial.css";
 const clientReview = [
   {
     id: 1,
     name: "Emily",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6dLNupXEgveO-w1vX8Gy31ibUTVVq4vlqLSKwKpbxNg&s",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
     description:
-      "During a time of crisis, Success Relief Goods stepped in with not just supplies, but hope. Their support helped me rebuild my life after losing everything. Today, I'm not just surviving, I'm thriving, all thanks to their unwavering commitment to our success.",
-    star: 4,
+      "During a time of crisis, they stepped in with hope. Their support helped me rebuild my life from the ground up.",
+    star: 5,
   },
   {
     id: 2,
-    name: "Chloe",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Woman_in_Tunisia.jpg/220px-Woman_in_Tunisia.jpg",
+    name: "James",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
     description:
-      "Success Relief Goods doesn't just provide essentials; they empower individuals to overcome adversity. Their mentorship programs and resources have equipped me with the skills and confidence to pursue my dreams. I'm now running my own business, living proof that their aid fosters true success.",
-    star: 4,
+      "Success Relief Goods doesn't just provide essentials; they empower individuals to overcome adversity.",
+    star: 5,
   },
   {
     id: 3,
-    name: "James",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtsHjP3hNXOMVDnmfxKGvpV_JID7g4R_KVqYG_MhHBRqJPBmSpD-ZXzqxKGbp5IuNmY4c&usqp=CAU",
+    name: "Chloe",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
     description:
-      "When setbacks threatened to derail my education, Success Relief Goods came to my rescue. With their scholarships and educational materials, I graduated college debt-free. Their belief in my potential gave me the tools to forge a successful career in a competitive industry.",
-    star: 6,
-  },
-  {
-    id: 4,
-    name: "Sophia",
-    image:
-      "https://media.istockphoto.com/id/174813729/photo/happy-senior-woman-with-hands-on-chest.jpg?s=612x612&w=0&k=20&c=q-rj35PpsEnXWj-sG2YI0bPltI2thHgnb04f3Vz9z2E=",
-    description:
-      "As a community leader, I've witnessed firsthand the impact of Success Relief Goods on families in need. Their holistic approach doesn't just address immediate challenges; it lays the groundwork for long-term success. Thanks to their assistance, our community is stronger and more resilient than ever.",
-    star: 2,
-  },
-  {
-    id: 5,
-    name: "Ava",
-    image:
-      "https://media.istockphoto.com/id/1135381120/photo/portrait-of-a-young-woman-outdoors-smiling.jpg?s=612x612&w=0&k=20&c=T5dukPD1r-o0BFqeqlIap7xzw07icucetwKaEC2Ms5M=",
-    description:
-      "After a natural disaster left my family homeless, Success Relief Goods provided more than just shelter and sustenance. Their financial assistance and job placement services enabled us to rebuild our lives from the ground up. Today, we're thriving in our new home, grateful for their support in our journey to success.",
-    star: 3,
-  },
-  {
-    id: 6,
-    name: "Mila",
-    image:
-      "https://media.istockphoto.com/id/1961059691/photo/testimonial-portrait-of-a-mature-mexican-woman.webp?b=1&s=170667a&w=0&k=20&c=zvJlGaVQoQL7FZ1UhXRIsOuil6gyB6bUVorAjHpHj6E=",
-    description:
-      "Success Relief Goods doesn't just offer handouts; they offer a lifeline. Their entrepreneurship programs gave me the tools and mentorship I needed to turn my passion into a profitable business. Thanks to their support, I'm not just surviving—I'm thriving, making a positive impact in my community.",
-    star: 2,
+      "I'm now running my own business, living proof that their aid fosters true success.",
+    star: 4,
   },
 ];
 
 const Testimonials = () => {
   return (
-    <div>
-      <div className="relative text-center  mb-16 px-4 group ">
-        {/* Modern Floating Label */}
-        <div className="inline-block px-4 py-1.5 mb-4 rounded-full bg-[#FDA4AF]/10 border border-[#FDA4AF]/20 mt-20">
-          <span className="text-[#FDA4AF] font-bold uppercase tracking-[0.3em] text-[10px]">
-            Kind Words
-          </span>
+    <section className="py-32 px-6 bg-white overflow-hidden">
+      <div className="container mx-auto">
+        {/* Header Section */}
+        <div className="text-center mb-32">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="inline-block px-3 py-1 rounded-full bg-slate-50 border border-slate-100 text-[#FDA4AF] text-[9px] font-black uppercase tracking-[0.4em] mb-6"
+          >
+            Kind Feedback
+          </motion.div>
+          <h2 className="text-4xl md:text-6xl font-black text-slate-950 tracking-tighter leading-none">
+            Trust in{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-[#FDA4AF]">
+              Big Hearts.
+            </span>
+          </h2>
         </div>
 
-        {/* Main Heading with Gradient Accent */}
-        <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight leading-tight">
-          What Our{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDA4AF] to-violet-400">
-            Community
-          </span>{" "}
-          Says
-        </h2>
-
-        {/* Dynamic Decorative Underline */}
-        <div className="flex justify-center items-center gap-3 mt-8">
-          <div className="h-[2px] w-4 bg-slate-200 rounded-full" />
-          <div className="h-1 w-20 bg-gradient-to-r from-violet-400 to-[#FDA4AF] rounded-full transition-all duration-700 group-hover:w-32" />
-          <div className="w-2 h-2 bg-[#FDA4AF] rounded-full animate-ping" />
+        {/* --- FIXED SWIPER WRAPPER --- */}
+        <div className="max-w-4xl mx-auto relative group">
+          <Swiper
+            modules={[Autoplay, Pagination, EffectFade]}
+            effect="fade" // Swaps slides in place instead of sliding them
+            fadeEffect={{ crossFade: true }} // Prevents seeing the previous slide behind the current one
+            loop={true}
+            speed={800}
+            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            pagination={{ clickable: true, dynamicBullets: true }}
+            slidesPerView={1}
+            centeredSlides={true}
+            // Removed !overflow-visible to fix the peeking text issue
+            className="testimonial-swiper rounded-[4rem]"
+          >
+            {clientReview.map((testimonial) => (
+              <SwiperSlide key={testimonial.id} className="bg-white">
+                <Testimonial testimonial={testimonial} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
-
-        {/* Subtitle (Optional but recommended for premium feel) */}
-        <p className="mt-6 text-slate-500 max-w-lg mx-auto text-sm md:text-base leading-relaxed">
-          Real stories from those whose lives have been transformed through our
-          collective relief efforts.
-        </p>
       </div>
-      {/* <div className="divider w-[30%] mx-auto "></div>
-      <div className="divider w-[20%] mx-auto -mt-[20px]"></div> */}
-      <Swiper
-        loop={true}
-        pagination={{ clickable: true }}
-        slidesPerView={1}
-        breakpoints={{
-          0: {
-            slidesPerView: 1,
-            spaceBetween: 10,
-          },
-          640: {
-            slidesPerView: 2,
-            spaceBetween: 10,
-          },
-          768: {
-            slidesPerView: 2,
-            spaceBetween: 10,
-          },
-          1024: {
-            slidesPerView: 1,
-            spaceBetween: 10,
-          },
-        }}
-        autoplay={{
-          delay: 3000,
-          disableOnInteraction: false,
-        }}
-        spaceBetween={10}
-        // onSwiper={setSwiperRef}
-        centeredSlides={false}
-        navigation={false}
-        modules={[Autoplay, Pagination, Navigation]}
-        className="mySwiper max-w-[1440px] mx-auto mt-20 "
-      >
-        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 max-w-[1440px] mx-auto mt-28">
-          {clientReview.map((testimonial) => (
-            <SwiperSlide className="swiper-slide1">
-              <Testimonial
-                key={testimonial.id}
-                testimonial={testimonial}
-              ></Testimonial>
-            </SwiperSlide>
-          ))}
-        </div>
-      </Swiper>
-    </div>
+    </section>
   );
 };
 
