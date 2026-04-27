@@ -19,9 +19,9 @@
 
 ## 📖 Overview
 
-**Big Hearts** is a premium relief distribution platform designed to bridge the gap between global donors and local needs. Built as part of a mission-driven assignment, this project showcases a "Minimalist-Premium" aesthetic combined with robust full-stack logic.
+**Big Hearts** is a premium relief distribution platform designed to bridge the gap between global donors and local needs. Built with a "Minimalist-Premium" aesthetic, this project demonstrates a modern approach to humanitarian aid through technology.
 
-As a **CSE student at Bangladesh University**, I focused on creating a scalable architecture using **Redux Toolkit** and **TypeScript** to ensure type safety and predictable state management.
+The development focused on creating a scalable architecture using **Redux Toolkit** and **TypeScript** to ensure enterprise-grade type safety and predictable state management. By leveraging the MERN stack, the application maintains high performance while handling complex data flows across relief categories and donation tracking.
 
 ---
 

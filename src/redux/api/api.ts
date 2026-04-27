@@ -2,13 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
-  }),
   // baseQuery: fetchBaseQuery({
-  //   baseUrl: "http://localhost:5000/",
+  //   baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
   // }),
-  tagTypes: ["supplies"],
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:5000/",
+  }),
+  tagTypes: ["supplies", "user"],
   endpoints: (builder) => ({
     getReliefGoods: builder.query({
       query: () => {
@@ -70,6 +70,24 @@ export const baseApi = createApi({
       },
       invalidatesTags: ["supplies"],
     }),
+
+    registerUser: builder.mutation({
+      query: (userData) => ({
+        url: "register",
+        method: "POST",
+        body: userData,
+      }),
+      invalidatesTags: ["user"],
+    }),
+
+    loginUser: builder.mutation({
+      query: (credentials) => ({
+        url: "login",
+        method: "POST",
+        body: credentials,
+      }),
+      invalidatesTags: ["user"],
+    }),
   }),
 });
 
@@ -81,4 +99,6 @@ export const {
   useDeleteReliefGoodsMutation,
   useLazyGetReliefGoodsByLimitQuery,
   useUpdateSuppliesMutation,
+  useRegisterUserMutation,
+  useLoginUserMutation,
 } = baseApi;
