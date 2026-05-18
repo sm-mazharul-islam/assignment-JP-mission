@@ -72,6 +72,15 @@ export const baseApi = createApi({
       invalidatesTags: ["supplies"],
     }),
 
+    // এনডপয়েন্ট ব্লকের ভেতরে এটি যুক্ত করো
+    getReportingAnalytics: builder.query({
+      query: (range) => ({
+        url: `reporting-analytics?range=${range}`,
+        method: "GET",
+      }),
+      providesTags: ["supplies"], // ইনভেন্টরিতে কোনো চেঞ্জ আসলে রিপোর্ট অটো-আপডেট হবে
+    }),
+
     registerUser: builder.mutation({
       query: (userData) => ({
         url: "register",
@@ -102,4 +111,5 @@ export const {
   useUpdateSuppliesMutation,
   useRegisterUserMutation,
   useLoginUserMutation,
+  useGetReportingAnalyticsQuery,
 } = baseApi;

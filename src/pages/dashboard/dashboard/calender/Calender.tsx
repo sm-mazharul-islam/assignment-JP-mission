@@ -10,6 +10,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+import { EventClickArg } from "@fullcalendar/core";
+
 interface ReliefEvent {
   id: string;
   title: string;
@@ -73,9 +75,11 @@ export default function CalendarPage() {
   );
 
   // ক্যালেন্ডারের ইভেন্টে ক্লিক করলে সাইড প্যানেল আপডেট করার ফাংশন
-  const handleEventClick = (info: any) => {
+  const handleEventClick = (info: EventClickArg): void => {
     const clickedEvent = events.find((e) => e.id === info.event.id);
-    if (clickedEvent) setSelectedEvent(clickedEvent);
+    if (clickedEvent) {
+      setSelectedEvent(clickedEvent);
+    }
   };
 
   return (

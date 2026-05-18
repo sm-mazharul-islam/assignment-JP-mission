@@ -20,7 +20,7 @@ import DashboardLayout from "../../../components/layout/DashboardLayout";
 
 function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [userRole, setUserRole] = useState<string>(""); // শুরুতে ফাঁকা রাখো যেন সিঙ্ক হতে পারে
+  const [userRole, setUserRole] = useState<string>("");
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
@@ -130,12 +130,14 @@ function Dashboard() {
             />
           </Link>
 
-          <SidebarItem
-            icon={<Flag size={20} />}
-            text="Reporting"
-            alert={false}
-            active={false}
-          />
+          <Link to="reporting" onClick={() => setIsMobileMenuOpen(false)}>
+            <SidebarItem
+              icon={<Flag size={20} />}
+              text="Reporting"
+              alert={false}
+              active={isActive("/dashboard/reporting")}
+            />
+          </Link>
           <hr className="my-3 border-slate-100" />
           <SidebarItem
             icon={<Settings size={20} />}

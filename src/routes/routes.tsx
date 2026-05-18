@@ -109,6 +109,7 @@ import AddReview from "../pages/dashboard/dashboard/addReview/AddReview";
 import Dashboard from "../pages/dashboard/dashboard/Dashboard";
 import CalenderPage from "../pages/dashboard/dashboard/calender/Calender";
 import ProtectedRoute from "./ProtectedRoute"; // ✅ আমাদের তৈরি করা গার্ডটি ইমপোর্ট করো
+import Reporting from "../pages/dashboard/dashboard/reporting/Reporting";
 
 const router = createBrowserRouter([
   {
@@ -192,6 +193,10 @@ const router = createBrowserRouter([
       {
         path: "add-review",
         element: <AddReview />,
+      },
+      {
+        path: "reporting",
+        element: <Reporting />,
       },
       {
         index: true,
