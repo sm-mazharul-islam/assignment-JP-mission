@@ -13,11 +13,13 @@ import {
 } from "recharts";
 import { Users, Briefcase, Box, Heart } from "lucide-react";
 import {
+  useGetAllUsersQuery,
   useGetRecentWorksQuery,
   useGetReliefGoodsQuery,
+  UserAccount,
 } from "../../../../redux/api/api";
 
-// 🎯 Recharts ইন্টারনাল defaultProps অবচিত ওয়ার্নিং চিরতরে বন্ধ করার মেকানিজম
+// 🎯 Recharts ইন্টারনাল defaultProps অবচিত ওয়ার্নিং চিরতরে বন্ধ করার মেকানিজম
 const silentConsoleError = console.error;
 console.error = (...args) => {
   if (typeof args[0] === "string" && args[0].includes("defaultProps")) return;
@@ -66,6 +68,7 @@ interface TooltipPayload {
   name: string;
   color: string;
   fill: string;
+  image?: string;
 }
 
 interface CustomTooltipProps {
@@ -79,7 +82,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     const item = payload[0].payload;
     return (
-      <div className="bg-slate-900/90 backdrop-blur-xl p-4 rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] border border-white/10 max-w-[260px] md:max-w-xs transition-all duration-300">
+      <div className="bg-slate-900/90 backdrop-blur-xl p-4 rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] border border-white/10 max-w-[260px] md:max-w-xs transition-all duration-300 text-left">
         <div className="flex items-center gap-3 mb-3">
           <img
             src={
@@ -99,7 +102,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
           </div>
         </div>
         <div className="flex justify-between items-center border-t border-white/5 pt-2 mt-1">
-          <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+          <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">
             Quantity
           </span>
           <span className="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
@@ -113,7 +116,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 };
 
 const PieCharts = () => {
-  // 🎯 RTK Query API Integrations
+  // 🎯 RTK Query Live API Integrations
   const {
     data: reliefGoods,
     isLoading: goodsLoading,
@@ -124,9 +127,14 @@ const PieCharts = () => {
     isLoading: worksLoading,
     isError: worksError,
   } = useGetRecentWorksQuery(undefined);
+  const {
+    data: systemUsers,
+    isLoading: usersLoading,
+    isError: usersError,
+  } = useGetAllUsersQuery(undefined); // 👈 লাইভ হুক কল
 
   // 💎 Premium Glow Skeleton Loading Animation
-  if (goodsLoading || worksLoading) {
+  if (goodsLoading || worksLoading || usersLoading) {
     return (
       <div className="space-y-8 py-4 animate-pulse">
         <div className="h-28 bg-slate-100 rounded-[2.5rem] w-full" />
@@ -139,7 +147,7 @@ const PieCharts = () => {
           {[1, 2].map((n) => (
             <div
               key={n}
-              className="bg-white p-8 rounded-[2.5rem] border border-slate-100 min-h-[460px] flex flex-col justify-between items-center"
+              className="bg-white p-8 rounded-[2.5rem] border border-slate-100 min-h-[460px]"
             />
           ))}
         </div>
@@ -147,7 +155,7 @@ const PieCharts = () => {
     );
   }
 
-  if (goodsError || worksError) {
+  if (goodsError || worksError || usersError) {
     return (
       <div className="min-h-[200px] flex justify-center items-center bg-rose-50 border border-rose-100 rounded-2xl p-6">
         <p className="text-rose-500 font-bold text-sm">
@@ -158,7 +166,7 @@ const PieCharts = () => {
     );
   }
 
-  // 🛡️ Data Sanitization & Fallback Guard (স্পেলিং এরর ফিক্সড)
+  // 🛡️ Data Sanitization Clusters
   let goodsData: ReliefGood[] = [];
   if (Array.isArray(reliefGoods)) {
     goodsData = reliefGoods;
@@ -177,6 +185,16 @@ const PieCharts = () => {
     else if (Array.isArray(response.result)) worksData = response.result;
   }
 
+  // 🎯 ইউজার রেসপন্স স্যানিটাইজেশন
+  let usersData: UserAccount[] = [];
+  if (Array.isArray(systemUsers)) {
+    usersData = systemUsers;
+  } else if (systemUsers && typeof systemUsers === "object") {
+    const response = systemUsers as APIResponse<UserAccount>;
+    if (Array.isArray(response.data)) usersData = response.data;
+    else if (Array.isArray(response.result)) usersData = response.result;
+  }
+
   const formattedGoods: ReliefGood[] = goodsData.map((item: ReliefGood) => ({
     ...item,
     amount: Number(item.amount) || 0,
@@ -188,7 +206,7 @@ const PieCharts = () => {
     0,
   );
   const totalRecentWorksCount = worksData.length;
-  const totalRegisteredUsers = 12;
+  const totalRegisteredUsers = usersData.length; // 👈 এখন এটি লাইভ ডাটাবেজ থেকে কাউন্ট হবে
 
   return (
     <div className="space-y-8 py-2">
@@ -209,10 +227,10 @@ const PieCharts = () => {
             ecosystem status.
           </p>
         </div>
-        <div className="flex gap-2 items-center shrink-0 bg-slate-50 border border-slate-100 px-4 py-2 rounded-2xl">
+        <div className="flex gap-2 items-center shrink-0 bg-slate-50 border border-slate-100 px-4 py-2 rounded-2xl w-fit">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
-            Synced Live with Tag ["supplies"]
+            Synced Live with MongoDB
           </span>
         </div>
       </div>
@@ -220,7 +238,7 @@ const PieCharts = () => {
       {/* 📊 BENTO SUMMARY CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Card 1: Total Supplies */}
-        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.01)] hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.01)] hover:scale-[1.01] transition-transform duration-300 text-left">
           <div className="space-y-2">
             <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
               Total Supply Stock
@@ -236,7 +254,7 @@ const PieCharts = () => {
         </div>
 
         {/* Card 2: Recent Works */}
-        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.01)] hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.01)] hover:scale-[1.01] transition-transform duration-300 text-left">
           <div className="space-y-2">
             <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
               Deployment Missions
@@ -253,8 +271,8 @@ const PieCharts = () => {
           </div>
         </div>
 
-        {/* Card 3: Users */}
-        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.01)] hover:scale-[1.01] transition-transform duration-300">
+        {/* Card 3: Users (Live Counter) */}
+        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.01)] hover:scale-[1.01] transition-transform duration-300 text-left">
           <div className="space-y-2">
             <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
               Registered Access Tokens
@@ -322,7 +340,6 @@ const PieCharts = () => {
               </PieChart>
             </ResponsiveContainer>
 
-            {/* Center Absolute Indicators */}
             <div className="absolute inset-0 m-auto w-24 h-24 flex flex-col items-center justify-center pointer-events-none">
               <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
                 Aggregate
@@ -397,8 +414,8 @@ const PieCharts = () => {
         </div>
       </div>
 
-      {/* 📝 BOTTOM SECTION: DEPLOYMENTS & OPERATIONAL ACCOUNTS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* 📝 BOTTOM SECTION: DEPLOYMENTS & LIVE OPERATIONAL ACCOUNTS */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
         {/* 1. Recent Works Deployment Table */}
         <div className="bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-sm">
           <div className="flex justify-between items-center mb-4 border-b border-slate-50 pb-3">
@@ -414,7 +431,7 @@ const PieCharts = () => {
               Live Sync
             </span>
           </div>
-          <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1">
+          <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1 scrollbar-thin">
             {worksData.length > 0 ? (
               worksData.map((work: RecentWork, idx: number) => (
                 <div
@@ -422,7 +439,7 @@ const PieCharts = () => {
                   className="flex items-center justify-between p-3.5 bg-slate-50 rounded-2xl hover:bg-slate-100/60 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-500">
+                    <div className="w-8 h-8 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-500 shrink-0">
                       <Heart size={16} />
                     </div>
                     <div className="min-w-0">
@@ -447,7 +464,7 @@ const PieCharts = () => {
           </div>
         </div>
 
-        {/* 2. Operational User Accounts */}
+        {/* 2. Live Operational User Accounts (এখন ডাটাবেজ থেকে ডায়নামিক!) */}
         <div className="bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-sm">
           <div className="flex justify-between items-center mb-4 border-b border-slate-50 pb-3">
             <div>
@@ -455,55 +472,49 @@ const PieCharts = () => {
                 Operational Gateways
               </h3>
               <p className="text-slate-400 text-[10px]">
-                Ecosystem encryption tokens and access levels.
+                Ecosystem encryption tokens and access levels live tracking.
               </p>
             </div>
             <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2.5 py-1 rounded-xl">
-              Security Node
+              Security Live Node
             </span>
           </div>
-          <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1">
-            {[
-              {
-                name: "S M Mazharul Islam Masum",
-                email: "masum@gmail.com",
-                role: "admin",
-              },
-              {
-                name: "Test Administrator",
-                email: "test1@gmail.com",
-                role: "admin",
-              },
-              {
-                name: "General User Access",
-                email: "test2@gmail.com",
-                role: "user",
-              },
-            ].map((usr, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl hover:bg-slate-100/50 transition-colors"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#FDA4AF] to-[#fb7185] text-white flex items-center justify-center text-[10px] font-black shrink-0">
-                    {usr.name.substring(0, 2)}
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="text-xs font-bold text-slate-800 truncate">
-                      {usr.name}
-                    </h4>
-                    <span className="text-[10px] text-slate-400 block truncate max-w-[160px] sm:max-w-xs">
-                      {usr.email}
-                    </span>
-                  </div>
-                </div>
-                <span
-                  className={`text-[9px] font-black uppercase tracking-wider px-2 py-1 rounded-md shrink-0 ${usr.role === "admin" ? "bg-rose-50 text-[#fb7185]" : "bg-slate-200 text-slate-600"}`}
+          <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1 scrollbar-thin">
+            {usersData.length > 0 ? (
+              usersData.map((usr: UserAccount, index: number) => (
+                <div
+                  key={usr._id || index}
+                  className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl hover:bg-slate-100/50 transition-colors"
                 >
-                  {usr.role}
-                </span>
-              </div>
-            ))}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#FDA4AF] to-[#fb7185] text-white flex items-center justify-center text-[10px] font-black shrink-0 uppercase">
+                      {(usr.name || "US").substring(0, 2)}
+                    </div>
+                    <div className="min-w-0 text-left">
+                      <h4 className="text-xs font-bold text-slate-800 truncate">
+                        {usr.name || "Anonymous User"}
+                      </h4>
+                      <span className="text-[10px] text-slate-400 block truncate max-w-[160px] sm:max-w-xs font-mono">
+                        {usr.email}
+                      </span>
+                    </div>
+                  </div>
+                  <span
+                    className={`text-[9px] font-black uppercase tracking-wider px-2 py-1 rounded-md shrink-0 ${
+                      usr.role === "admin"
+                        ? "bg-rose-50 text-[#fb7185]"
+                        : "bg-slate-200 text-slate-600"
+                    }`}
+                  >
+                    {usr.role || "user"}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <p className="text-xs text-slate-400 py-6 text-center">
+                No active users found in database sequences.
+              </p>
+            )}
           </div>
         </div>
       </div>

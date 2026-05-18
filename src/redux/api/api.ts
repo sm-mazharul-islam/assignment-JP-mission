@@ -9,6 +9,13 @@ export interface TDonationLog {
   timestamp: string;
 }
 
+export interface UserAccount {
+  _id?: string;
+  name?: string;
+  email: string;
+  role: string;
+}
+
 export const baseApi = createApi({
   reducerPath: "baseApi",
 
@@ -188,6 +195,16 @@ export const baseApi = createApi({
       invalidatesTags: ["user"],
     }),
 
+    getAllUsers: builder.query<UserAccount[], void>({
+      query: () => "admin/all-users",
+      transformResponse: (
+        response: UserAccount[] | { data: UserAccount[] },
+      ): UserAccount[] => {
+        // 🛡️ ব্যাকেন্ড থেকে অবজেক্ট বা এরে যেটাই আসুক, ফ্রন্টএন্ডের জন্য স্যানিটাইজড এরে রিটার্ন করবে
+        return Array.isArray(response) ? response : response?.data || [];
+      },
+      providesTags: ["user"],
+    }),
     // 👑 AUTH MUTATION: Exchange system verification matrices for a session authentication token
     loginUser: builder.mutation({
       query: (credentials) => ({
@@ -217,4 +234,5 @@ export const {
   useGetLoggedUserQuery,
   useGetUserHistoryQuery,
   useGetAllUsersHistoryQuery,
+  useGetAllUsersQuery,
 } = baseApi;
