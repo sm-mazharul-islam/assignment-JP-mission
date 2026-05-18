@@ -12,6 +12,7 @@ const Main = () => {
     "/login",
     "/relief-goods",
     "/our-work",
+    "/about",
   ];
   const isFloatingNav = floatingNavPaths.includes(location.pathname);
   const isHomePage = location.pathname === "/" || location.pathname === "/home";

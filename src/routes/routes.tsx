@@ -112,6 +112,7 @@ import ProtectedRoute from "./ProtectedRoute"; // ✅ আমাদের তৈ�
 import Reporting from "../pages/dashboard/dashboard/reporting/Reporting";
 import HelpSection from "../pages/dashboard/dashboard/help/Help";
 import SettingsSection from "../pages/dashboard/dashboard/settings/Settings";
+import AboutPage from "../pages/about/About";
 
 const router = createBrowserRouter([
   {
@@ -129,6 +130,10 @@ const router = createBrowserRouter([
       {
         path: "/relief-goods",
         element: <AllReliefGoods></AllReliefGoods>,
+      },
+      {
+        path: "/about",
+        element: <AboutPage></AboutPage>,
       },
       {
         path: "/login",
