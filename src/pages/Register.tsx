@@ -1,10 +1,9 @@
 import { useState, FormEvent, ChangeEvent } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useRegisterUserMutation } from "../redux/api/api";
 
 const Register = () => {
-  const navigate = useNavigate();
   const [registerUser, { isLoading }] = useRegisterUserMutation();
 
   const [formData, setFormData] = useState({
@@ -21,18 +20,26 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const response = await registerUser(formData).unwrap();
+      // 🎯 সাবমিট করার আগে ইনপুট ডেটা ক্লিন এবং ট্রিম করে নেওয়া হলো
+      const submitPayload = {
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        password: formData.password,
+      };
+
+      const response = await registerUser(submitPayload).unwrap();
 
       if (response.success) {
-        // Automatically save token on success if backend passes it back
         if (response.token) {
+          // নতুন ফ্রেশ টোকেন লোকাল স্টোরেজে সেভ করা হলো
           localStorage.setItem("token", response.token);
-          toast.success("Account created! Welcome to the mission.");
-          navigate("/"); // Direct redirect bypassing the manual login page step
+          toast.success("Account created! Welcome to the dashboard.");
+
+          // ✅ হার্ড রিফ্রেশ সহ রিডাইরেক্ট যাতে টোকেন এবং রোল স্টেট ইনস্ট্যান্ট সিঙ্ক হয়
+          window.location.href = "/dashboard";
         } else {
-          // Fallback if backend requires manual step verification
           toast.success("Welcome! Account created successfully.");
-          navigate("/login");
+          window.location.href = "/login";
         }
       }
     } catch (err) {
@@ -53,50 +60,62 @@ const Register = () => {
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Full Name Field */}
             <div className="form-control">
-              <label className="label-text font-bold mb-2">Full Name</label>
+              <label className="label-text font-bold mb-2 text-slate-700">
+                Full Name
+              </label>
               <input
                 name="name"
+                type="text"
                 required
                 value={formData.name}
                 onChange={handleChange}
-                className="input input-bordered rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none"
+                className="input input-bordered rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none w-full p-4 h-12"
                 placeholder="John Doe"
               />
             </div>
 
+            {/* Email Field */}
             <div className="form-control">
-              <label className="label-text font-bold mb-2">Email</label>
+              <label className="label-text font-bold mb-2 text-slate-700">
+                Email
+              </label>
               <input
                 name="email"
                 type="email"
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="input input-bordered rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none"
+                className="input input-bordered rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none w-full p-4 h-12"
                 placeholder="example@gmail.com"
               />
             </div>
 
+            {/* Password Field */}
             <div className="form-control">
-              <label className="label-text font-bold mb-2">Password</label>
+              <label className="label-text font-bold mb-2 text-slate-700">
+                Password
+              </label>
               <input
                 name="password"
                 type="password"
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className="input input-bordered rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none"
+                className="input input-bordered rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none w-full p-4 h-12"
                 placeholder="••••••••"
               />
             </div>
 
+            {/* Submit Button */}
             <button
               disabled={isLoading}
-              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold h-14 mt-4 transition-all active:scale-95"
+              type="submit"
+              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold h-14 mt-4 transition-all active:scale-95 flex items-center justify-center gap-2"
             >
               {isLoading ? (
-                <span className="loading loading-spinner"></span>
+                <span className="loading loading-spinner h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               ) : (
                 "Sign Up"
               )}
@@ -104,10 +123,10 @@ const Register = () => {
           </form>
 
           <div className="text-center mt-6">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 font-medium">
               Already have an account?{" "}
               <Link
-                className="text-[#FDA4AF] font-bold hover:underline"
+                className="text-[#FDA4AF] font-bold hover:underline transition-colors hover:text-[#fb7185]"
                 to="/login"
               >
                 Login

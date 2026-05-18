@@ -1,11 +1,9 @@
-//!
 import { useState, ChangeEvent, FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useLoginUserMutation } from "../../redux/api/api";
 
 const Login = () => {
-  const navigate = useNavigate();
   const [loginUser, { isLoading }] = useLoginUserMutation();
 
   const [formData, setFormData] = useState({
@@ -21,16 +19,23 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await loginUser(formData).unwrap();
+      // 🎯 ব্যাকেন্ডের কেস-সেন্সিটিভিটি এবং স্পেস ট্রিম লজিকের সাথে ম্যাচ করার জন্য ডাটা প্রসেস
+      const loginPayload = {
+        email: formData.email.trim().toLowerCase(), // 👈 এটি ব্যাকেন্ডের ফাইন্ড কুয়েরির সাথে ১০০% ম্যাচ করবে
+        password: formData.password,
+      };
+
+      const response = await loginUser(loginPayload).unwrap();
 
       if (response.success) {
-        // ✅ Save the token to local storage so the Navbar can read the logged-in state
         if (response.token) {
           localStorage.setItem("token", response.token);
         }
 
         toast.success("Welcome back!");
-        navigate("/");
+
+        // ✅ হার্ড রিফ্রেশ সহ রিডাইরেক্ট যাতে টোকেন এবং রোল স্টেট ইনস্ট্যান্ট সিঙ্ক হয়
+        window.location.href = "/dashboard";
       }
     } catch (err) {
       const error = err as { data?: { message?: string } };
@@ -52,6 +57,7 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email Input */}
             <div className="form-control w-full">
               <label className="label-text font-bold text-slate-700 mb-2">
                 Email Address
@@ -63,10 +69,11 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="example@gmail.com"
-                className="input input-bordered w-full rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none"
+                className="input input-bordered w-full rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none p-4 h-12"
               />
             </div>
 
+            {/* Password Input */}
             <div className="form-control w-full">
               <div className="flex justify-between mb-2">
                 <label className="label-text font-bold text-slate-700">
@@ -83,28 +90,30 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
-                className="input input-bordered w-full rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none"
+                className="input input-bordered w-full rounded-2xl bg-slate-50 border-slate-200 focus:border-[#FDA4AF] focus:outline-none p-4 h-12"
               />
             </div>
 
+            {/* Submit Button */}
             <button
               disabled={isLoading}
               type="submit"
-              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold text-lg h-14 mt-4 transition-all active:scale-95"
+              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold text-lg h-14 mt-4 transition-all active:scale-95 flex items-center justify-center gap-2"
             >
               {isLoading ? (
-                <span className="loading loading-spinner"></span>
+                <span className="loading loading-spinner h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               ) : (
                 "Login"
               )}
             </button>
           </form>
 
+          {/* Account Creation Link */}
           <div className="text-center mt-6">
-            <p className="text-slate-500 text-sm">
+            <p className="text-slate-500 text-sm font-medium">
               New to Relief Project?{" "}
               <Link
-                className="text-[#FDA4AF] font-bold hover:underline"
+                className="text-[#FDA4AF] font-bold hover:underline transition-colors hover:text-[#fb7185]"
                 to="/register"
               >
                 Create account
