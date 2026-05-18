@@ -110,6 +110,8 @@ import Dashboard from "../pages/dashboard/dashboard/Dashboard";
 import CalenderPage from "../pages/dashboard/dashboard/calender/Calender";
 import ProtectedRoute from "./ProtectedRoute"; // ✅ আমাদের তৈরি করা গার্ডটি ইমপোর্ট করো
 import Reporting from "../pages/dashboard/dashboard/reporting/Reporting";
+import HelpSection from "../pages/dashboard/dashboard/help/Help";
+import SettingsSection from "../pages/dashboard/dashboard/settings/Settings";
 
 const router = createBrowserRouter([
   {
@@ -197,6 +199,14 @@ const router = createBrowserRouter([
       {
         path: "reporting",
         element: <Reporting />,
+      },
+      {
+        path: "help",
+        element: <HelpSection />,
+      },
+      {
+        path: "setting",
+        element: <SettingsSection />,
       },
       {
         index: true,

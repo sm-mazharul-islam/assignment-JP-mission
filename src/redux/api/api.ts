@@ -89,6 +89,15 @@ export const baseApi = createApi({
       }),
       invalidatesTags: ["user"],
     }),
+    // 🎯 এই এনডপয়েন্টটি endpoints ব্লকের একদম নিচে যুক্ত করো
+    updateUserProfile: builder.mutation({
+      query: (profileData) => ({
+        url: "update-profile",
+        method: "PUT",
+        body: profileData,
+      }),
+      invalidatesTags: ["user"], // ইউজার ক্যাশে স্টেট ইনভ্যালিডেট করে রি-সিঙ্ক করবে
+    }),
 
     loginUser: builder.mutation({
       query: (credentials) => ({
@@ -112,4 +121,5 @@ export const {
   useRegisterUserMutation,
   useLoginUserMutation,
   useGetReportingAnalyticsQuery,
+  useUpdateUserProfileMutation,
 } = baseApi;

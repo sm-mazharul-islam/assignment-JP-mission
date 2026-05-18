@@ -139,19 +139,23 @@ function Dashboard() {
             />
           </Link>
           <hr className="my-3 border-slate-100" />
-          <SidebarItem
-            icon={<Settings size={20} />}
-            text="Settings"
-            alert={false}
-            active={false}
-          />
-          <SidebarItem
-            icon={<LifeBuoy size={20} />}
-            text="Help"
-            alert={false}
-            active={false}
-          />
-
+          {/* 🟢 SHARED SETTINGS LINK IN SIDEBAR */}
+          <Link to="setting" onClick={() => setIsMobileMenuOpen(false)}>
+            <SidebarItem
+              icon={<Settings size={20} />}
+              text="Settings"
+              alert={false}
+              active={isActive("/dashboard/setting")}
+            />
+          </Link>
+          <Link to="help" onClick={() => setIsMobileMenuOpen(false)}>
+            <SidebarItem
+              icon={<LifeBuoy size={20} />}
+              text="Help"
+              alert={false}
+              active={isActive("/dashboard/help")}
+            />
+          </Link>
           <Link to="/">
             <SidebarItem
               icon={<LifeBuoy size={20} />}
