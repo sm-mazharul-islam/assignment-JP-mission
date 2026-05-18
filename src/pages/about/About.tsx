@@ -135,7 +135,7 @@ export default function AboutPage() {
         <div className="lg:col-span-7 space-y-6">
           <div className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-violet-500/10 to-indigo-500/5 border border-violet-200/30">
             <span className="text-violet-600 font-black uppercase tracking-[0.2em] text-[9px] block">
-              // Our Sovereign Mission
+              Our Sovereign Mission
             </span>
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-none uppercase">

@@ -1,13 +1,21 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
 import { toast } from "sonner";
+
+interface DecodedUser {
+  name?: string;
+  email?: string;
+}
 
 export default function NavbarTwo() {
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [userName, setUserName] = useState<string>("Community User");
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Dynamic Auth Checker: Verifies user token session
   const isLoggedIn = !!localStorage.getItem("token");
@@ -18,7 +26,7 @@ export default function NavbarTwo() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Closes open dropdown windows when viewport configuration alters
+  // Closes open dropdown windows when viewport configuration alters or route shifts
   useEffect(() => {
     const handleOutsideClick = () => {
       setIsProfileOpen(false);
@@ -26,6 +34,30 @@ export default function NavbarTwo() {
     window.addEventListener("click", handleOutsideClick);
     return () => window.removeEventListener("click", handleOutsideClick);
   }, []);
+
+  // 🎯 টোকেন থেকে ইউজারের অরিজিনাল নাম ডিকোড করে নেকড ক্যানভাসে পুশ করার মেকানিজম
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const base64Url = token.split(".")[1];
+        if (base64Url) {
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const jsonPayload = decodeURIComponent(
+            window
+              .atob(base64)
+              .split("")
+              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+              .join(""),
+          );
+          const decoded: DecodedUser = JSON.parse(jsonPayload);
+          if (decoded.name) setUserName(decoded.name);
+        }
+      } catch (error) {
+        console.error("Navbar identity extraction matrix failure:", error);
+      }
+    }
+  }, [location.pathname]); // রাউট শিফট হলেই টোকেন রি-ভেরিফাই করবে
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -35,13 +67,25 @@ export default function NavbarTwo() {
     navigate("/login");
   };
 
-  const navLinks = [
+  // ১. মেম্বারদের জন্য বেস নেভিগেশন স্কিমা
+  const baseLinks = [
     { name: "Home", path: "/" },
     { name: "All Relief", path: "/relief-goods" },
     { name: "Our Work", path: "/our-work" },
-    { name: "Dashboard", path: "/dashboard" },
     { name: "About", path: "/about" },
   ];
+
+  // 🎯 ২. [CRITICAL FIX]: ইউজার লগইন থাকলে ড্যাশবোর্ড পুশ হবে, না থাকলে হাইড থাকবে
+  const navLinks = isLoggedIn
+    ? [
+        ...baseLinks.slice(0, 3),
+        { name: "Dashboard", path: "/dashboard" },
+        baseLinks[3],
+      ]
+    : baseLinks;
+
+  // ডাইনামিক অ্যাভাটার ফার্স্ট লেটার জেনারেশন
+  const avatarLetter = userName.substring(0, 1).toUpperCase();
 
   return (
     <nav className="fixed top-0 w-full z-[100] px-4 py-4 transition-all duration-500">
@@ -96,7 +140,7 @@ export default function NavbarTwo() {
           </svg>
         </button>
 
-        {/* Navigation Links - Desktop */}
+        {/* Navigation Links - Desktop (কন্ডিশনাল ফিল্টারড) */}
         <div className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
@@ -117,19 +161,19 @@ export default function NavbarTwo() {
             <div className="relative" onClick={(e) => e.stopPropagation()}>
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="w-10 h-10 rounded-full ring-2 ring-[#FDA4AF] ring-offset-2 bg-gradient-to-tr from-[#FDA4AF] to-[#fb7185] flex items-center justify-center text-white font-black text-xs shadow-md transition-transform active:scale-95 cursor-pointer"
+                className="w-10 h-10 rounded-full ring-2 ring-[#FDA4AF] ring-offset-2 bg-gradient-to-tr from-[#FDA4AF] to-[#fb7185] flex items-center justify-center text-white font-black text-xs shadow-md transition-transform active:scale-95 cursor-pointer select-none"
               >
-                U
+                {avatarLetter}
               </button>
 
               {isProfileOpen && (
-                <div className="absolute right-0 mt-3 w-52 bg-white rounded-2xl p-4 shadow-2xl border border-slate-100 flex flex-col gap-2 z-[150] animate-fade-in font-bold text-slate-700 text-sm">
+                <div className="absolute right-0 mt-3 w-52 bg-white rounded-2xl p-4 shadow-2xl border border-slate-100 flex flex-col gap-2 z-[150] font-bold text-slate-700 text-sm">
                   <div className="pb-2 border-b border-slate-50 px-1">
                     <p className="text-[10px] text-slate-400 font-medium tracking-wide uppercase">
                       Account Node
                     </p>
                     <p className="text-slate-800 font-black truncate">
-                      Community User
+                      {userName}
                     </p>
                   </div>
                   <Link
@@ -137,7 +181,7 @@ export default function NavbarTwo() {
                     onClick={() => setIsProfileOpen(false)}
                     className="hover:bg-slate-50 py-2 px-2.5 rounded-xl transition-colors"
                   >
-                    Dashboard
+                    Dashboard Overview
                   </Link>
                   <button
                     onClick={handleLogout}
@@ -168,7 +212,7 @@ export default function NavbarTwo() {
 
         {/* Mobile Menu Dropdown Panel */}
         {isOpen && (
-          <div className="w-full lg:hidden pt-4 pb-2 animate-fade-in">
+          <div className="w-full lg:hidden pt-4 pb-2">
             <div className="flex flex-col gap-4 border-t border-slate-100 pt-4">
               {navLinks.map((link) => (
                 <Link
@@ -187,14 +231,14 @@ export default function NavbarTwo() {
                   <>
                     <div className="py-2 px-3 bg-slate-50 rounded-xl border border-slate-100/60 flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#FDA4AF] to-[#fb7185] flex items-center justify-center text-white font-black text-xs shadow-xs">
-                        U
+                        {avatarLetter}
                       </div>
                       <div>
                         <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
                           Session Profile
                         </p>
-                        <p className="text-xs font-black text-slate-700">
-                          Community User
+                        <p className="text-xs font-black text-slate-700 truncate max-w-[160px]">
+                          {userName}
                         </p>
                       </div>
                     </div>
