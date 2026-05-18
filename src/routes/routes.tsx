@@ -19,6 +19,8 @@ import Reporting from "../pages/dashboard/dashboard/reporting/Reporting";
 import HelpSection from "../pages/dashboard/dashboard/help/Help";
 import SettingsSection from "../pages/dashboard/dashboard/settings/Settings";
 import AboutPage from "../pages/about/About";
+import UserHistoryDashboard from "../pages/dashboard/dashboard/donationHistory/UserHistoryDashboard";
+import AdminHistoryDashboard from "../pages/dashboard/dashboard/donationHistory/AdminHistoryDashboard";
 
 const router = createBrowserRouter([
   {
@@ -95,9 +97,28 @@ const router = createBrowserRouter([
         ),
       },
 
+      {
+        path: "all-user-history",
+        element: (
+          <ProtectedRoute isAdminRoute={true}>
+            <AdminHistoryDashboard />
+          </ProtectedRoute>
+        ),
+      },
+
       /* ==========================================
          🔵 USER ROUTES (Common for Both Admin & User)
          ========================================== */
+
+      {
+        path: "history",
+        element: (
+          <ProtectedRoute isUserRoute={true}>
+            <UserHistoryDashboard />
+          </ProtectedRoute>
+        ),
+      },
+
       {
         path: "calender",
         element: <CalenderPage />,

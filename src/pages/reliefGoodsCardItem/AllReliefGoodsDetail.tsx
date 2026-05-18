@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import DetailsQuestion from "../../components/ui/detailsQuestion/DetailsQuestion";
 import { toast } from "sonner";
+import { jwtDecode } from "jwt-decode"; // 🎯 JWT Decoder ইম্পোর্ট করা হলো
 import {
   ShieldCheck,
   Tag,
@@ -19,14 +20,19 @@ import {
   useGetReliefGoodsByIdQuery,
 } from "../../redux/api/api";
 
+// 🎯 টোকেনের ভেতরের ইমেইল অবজেক্ট টাইপ ডিক্লেয়ারেশন
+interface IDecodedToken {
+  email?: string;
+  exp?: number;
+  iat?: number;
+}
+
 const AllReliefGoodsDetail = () => {
   const { id } = useParams();
   const [customAmount, setCustomAmount] = useState<number>(10);
-
-  // মোডাল কন্ট্রোল করার জন্য লোকাল স্টেট
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  // 📡 ১. RTK Query দিয়ে ডাটা লোড করা
+  // 📡 ১. RTK Query দিয়ে নির্দিষ্ট রিলিফ গুডসের লাইভ ডাটা রিড করা
   const {
     data: reliefGoods,
     isLoading,
@@ -53,12 +59,16 @@ const AllReliefGoodsDetail = () => {
     );
   }
 
-  // 🎯 ৩. ডাটাবেজ স্ট্রাকচার অনুযায়ী এমাউন্ট ট্র্যাক করা
+  // 🎯 ৩. ডাটাবেজ স্ট্রাকচার অনুযায়ী এماউন্ট ও টাইটেল ট্র্যাক করা
   const targetAmount = reliefGoods?.amount || reliefGoods?.data?.amount || 0;
   const raisedAmount =
     reliefGoods?.raisedAmount || reliefGoods?.data?.raisedAmount || 0;
+  const campaignTitle =
+    reliefGoods?.title || reliefGoods?.data?.title || "Relief Package Aid";
+  const campaignCategory =
+    reliefGoods?.category || reliefGoods?.data?.category || "General Aid";
 
-  // 🎯 [NEW CRITICAL CALCULATIONS]: কত টাকা আর বাকি আছে তা হিসাব করা
+  // কত টাকা আর বাকি আছে তা হিসাব করা
   const remainingAmount = targetAmount - raisedAmount;
 
   // লাইভ প্রোগ্রেস পার্সেন্টেজ জেনারেটর
@@ -67,12 +77,26 @@ const AllReliefGoodsDetail = () => {
       ? Math.min(Math.round((raisedAmount / targetAmount) * 100), 100)
       : 0;
 
-  // ফান্ড কি ফুল ফিলাপ হয়েছে কিনা চেক করা
+  // ফান্ড কি ফুল ফিলাপ হয়েছে কিনা চেক করা
   const isFullyFunded = raisedAmount >= targetAmount && targetAmount > 0;
 
-  // 🎯 8. ডোনেশন সাবমিট হ্যান্ডলার উইথ ওভার-ডোনেশন প্রোটেকশন
+  // 🎯 ৪. [THE BETTER OPTION]: লোকাল স্টোরেজের টোকেন থেকে সরাসরি ইমেইল ডিকোড করা
+  const token = localStorage.getItem("token");
+  let loggedUserEmail = "anonymous@responder.node"; // ডিফল্ট ফলব্যাক মেইল
+
+  if (token) {
+    try {
+      const decoded = jwtDecode<IDecodedToken>(token);
+      if (decoded?.email) {
+        loggedUserEmail = decoded.email.trim().toLowerCase(); // 👈 সফলভাবে আসল ইমেইল রিসিভ হলো
+      }
+    } catch (err) {
+      console.error("Token decoding operational flaw:", err);
+    }
+  }
+
+  // 🎯 ৫. ডোনেশন সাবমিট হ্যান্ডলার
   const handleDonationSubmit = async () => {
-    // যদি অলরেডি ফুল ফান্ডেড থাকে, তবে সাবমিট করতে না দিয়ে মোডাল ওপেন করবে
     if (isFullyFunded) {
       setIsModalOpen(true);
       return;
@@ -83,21 +107,26 @@ const AllReliefGoodsDetail = () => {
       return;
     }
 
-    // 🎯 [THE CORE LOGIC FIXED]: ইউজার যদি বাকি থাকা টাকার চেয়ে বেশি টাকা টাইপ করে তবে বাধা দেওয়া হবে
+    // BUDGET OVERFLOW PROTECTION: বাকি থাকা টাকার চেয়ে বেশি ডোনেট করতে বাধা দেবে
     if (customAmount > remainingAmount) {
       toast.error(
         `Over-budget alert! You can only donate up to $${remainingAmount} to complete this fund.`,
-        {
-          duration: 5000,
-        },
+        { duration: 5000 },
       );
-      // অটোমেটিক ইউজারের ইনপুট বক্সের এমাউন্ট কমিয়ে ঠিক যতটুকু বাকি আছে তত করে দেবে
       setCustomAmount(remainingAmount);
       return;
     }
 
     try {
-      await donateToPackage({ id, donateAmount: customAmount }).unwrap();
+      // 🚀 ডিকোড হওয়া আসল ইমেইল সহ পেলোড পাঠানো হচ্ছে
+      await donateToPackage({
+        id,
+        donateAmount: customAmount,
+        userEmail: loggedUserEmail,
+        campaignTitle: campaignTitle,
+        category: campaignCategory,
+      }).unwrap();
+
       toast.success(
         `Successfully committed $${customAmount} to the central ledger!`,
       );
@@ -137,14 +166,14 @@ const AllReliefGoodsDetail = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <span className="px-4 py-1 rounded-full bg-rose-50 border border-rose-100 text-[#fb7185] text-[10px] font-black uppercase tracking-[0.2em]">
-                {reliefGoods?.category || reliefGoods?.data?.category}
+                {campaignCategory}
               </span>
               <span className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
                 <Tag size={12} /> ID: {id?.slice(-6)}
               </span>
             </div>
             <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none uppercase">
-              {reliefGoods?.title || reliefGoods?.data?.title}
+              {campaignTitle}
             </h1>
           </div>
 
@@ -210,7 +239,7 @@ const AllReliefGoodsDetail = () => {
               <p className="text-slate-400">of ${targetAmount}</p>
             </div>
 
-            {/* 🎯 [NEW STATS DISPLAY]: আর কত ডলারের ফান্ড প্রয়োজন তা লাইভ দেখাবে */}
+            {/* LIVE REMAINING BUDGET BALANCE */}
             {!isFullyFunded && (
               <div className="text-[11px] font-bold text-slate-500 bg-white/60 border border-slate-200/40 px-4 py-2 rounded-xl w-fit flex items-center gap-1.5 shadow-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
@@ -279,7 +308,7 @@ const AllReliefGoodsDetail = () => {
                     type="number"
                     value={customAmount}
                     disabled={isFullyFunded}
-                    max={remainingAmount} // HTML ৫ লেভেল প্রোটেকশন
+                    max={remainingAmount}
                     onChange={(e) => setCustomAmount(Number(e.target.value))}
                     min="1"
                     className="w-full bg-slate-50 border border-slate-200/80 focus:border-violet-400 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -291,7 +320,7 @@ const AllReliefGoodsDetail = () => {
               {isFullyFunded ? (
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest py-4 rounded-2xl transition-all cursor-pointer"
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest py-4 rounded-2xl transition-all cursor-pointer mt-4"
                 >
                   Fully Funded (Check Status)
                 </button>
@@ -338,8 +367,7 @@ const AllReliefGoodsDetail = () => {
               <HelpCircle size={24} />
             </div>
             <h2 className="text-3xl font-black text-slate-900 uppercase leading-none">
-              Inquiries & <br />
-              Clarifications
+              Inquiries & <br /> Clarifications
             </h2>
             <p className="text-slate-400 text-xs font-medium leading-relaxed">
               Have questions regarding the logistics, items, or deployment

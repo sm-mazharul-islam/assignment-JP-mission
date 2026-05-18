@@ -1,24 +1,69 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+export interface TDonationLog {
+  _id?: string;
+  userEmail: string;
+  campaignTitle: string;
+  category: string;
+  amount: number;
+  timestamp: string;
+}
+
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  // baseQuery: fetchBaseQuery({
-  //   baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
-  // }),
+
+  // 🎯 Configuration with automated JWT Bearer token injection
   baseQuery: fetchBaseQuery({
+    //   baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
+
     baseUrl: "http://localhost:5000/",
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
-  tagTypes: ["supplies", "user", "reliefGoods"],
+
+  // 🎯 Declaring centralized cache tags for automated UI state synchronization
+  tagTypes: ["supplies", "user", "reliefGoods", "donationHistory"],
+
   endpoints: (builder) => ({
-    getReliefGoods: builder.query({
-      query: () => {
-        return {
-          url: "relief-goods",
-          method: "GET",
-        };
+    // 👑 AUTH ENDPOINT: Fetch authenticated active profile data
+    getLoggedUser: builder.query({
+      query: () => ({
+        url: "user/me",
+        method: "GET",
+      }),
+      providesTags: ["user"],
+    }),
+
+    // Inside your endpoints block:
+    getUserHistory: builder.query<TDonationLog[], string>({
+      query: (email) => ({
+        url: `user/donation-history/${email}`,
+        method: "GET",
+      }),
+      // 🎯 Fix: Strongly typing the response parameter as an array of TDonationLog or an object container
+      transformResponse: (
+        response: TDonationLog[] | { data: TDonationLog[] },
+      ) => {
+        return Array.isArray(response) ? response : response?.data || [];
       },
+      providesTags: ["donationHistory"],
+    }),
+
+    // 📡 LEDGER QUERY: Get all active relief campaign packages
+    getReliefGoods: builder.query({
+      query: () => ({
+        url: "relief-goods",
+        method: "GET",
+      }),
       providesTags: ["supplies"],
     }),
+
+    // 📡 LEDGER QUERY: Get relief goods limited by a specific quantitative number
     getReliefGoodsByLimit: builder.query({
       query: (num) => {
         console.log("Limit Number =>", num);
@@ -29,37 +74,67 @@ export const baseApi = createApi({
       },
       providesTags: ["supplies"],
     }),
+
+    // 📡 GRAPH QUERY: Fetch organizational operational logs
     getRecentWorks: builder.query({
       query: () => ({
         url: "our-recent-works",
         method: "GET",
       }),
     }),
+
+    // 📡 LEDGER QUERY: Read details of a specific package using explicit ID mapping
     getReliefGoodsById: builder.query({
       query: (id) => ({
         url: `relief-goods/${id}`,
         method: "GET",
       }),
+      // 👇 Coupled with dynamic ID tags for immediate selective background caching
+      providesTags: (_result, _error, id) => [{ type: "reliefGoods", id }],
     }),
+
+    // 📡 MUTATION: Insert a brand new campaign pack into the centralized database
     addReliefGoods: builder.mutation({
       query: (data) => {
         console.log(data);
-        return { url: "relief-goods", method: "POST", body: data };
+        return {
+          url: "relief-goods",
+          method: "POST",
+          body: data,
+        };
       },
       invalidatesTags: ["supplies"],
     }),
 
+    // 📡 MUTATION: Transmit multi-layered contribution logs and increment package funding metrics
     donateToPackage: builder.mutation({
-      query: ({ id, donateAmount }) => ({
+      query: ({ id, donateAmount, userEmail, campaignTitle, category }) => ({
         url: `relief-goods/${id}`,
         method: "PUT",
-        body: { donateAmount },
+        body: { donateAmount, userEmail, campaignTitle, category },
       }),
-      // arg থেকে সরাসরি id প্রপার্টি ট্রিগার করা হচ্ছে
-      invalidatesTags: (result, error, arg) => [
+      // 👇 Simultaneously destroys targeted package cache and active user history logs to force a silent refetch
+      invalidatesTags: (_result, _error, arg) => [
         { type: "reliefGoods", id: arg.id },
+        "donationHistory",
       ],
     }),
+
+    getAllUsersHistory: builder.query<TDonationLog[], void>({
+      query: () => ({
+        url: "admin/all-donation-history",
+        method: "GET",
+      }),
+      transformResponse: (
+        response: TDonationLog[] | { data: TDonationLog[] },
+      ): TDonationLog[] => {
+        return Array.isArray(response) ? response : response?.data || [];
+      },
+      // 'donationHistory' ট্যাগ অ্যাড করা হলো যাতে ইউজার ডোনেট করলে অ্যাডমিন প্যানেলও অটো-রিফেচ হয়
+      providesTags: ["donationHistory"],
+    }),
+
+    // 📡 MUTATION: Remove a relief node cleanly from the cloud ledger database
     deleteReliefGoods: builder.mutation({
       query: (id) => {
         console.log("inside base api =>", id);
@@ -71,6 +146,7 @@ export const baseApi = createApi({
       invalidatesTags: ["supplies"],
     }),
 
+    // 📡 MUTATION: Overwrite existing operational fields within target packages
     updateSupplies: builder.mutation({
       query: (options) => {
         console.log("inside base api =>", options);
@@ -83,15 +159,16 @@ export const baseApi = createApi({
       invalidatesTags: ["supplies"],
     }),
 
-    // এনডপয়েন্ট ব্লকের ভেতরে এটি যুক্ত করো
+    // 📡 BENTO REPORT: Aggregate reporting matrices linked to real-time supply inventory shifts
     getReportingAnalytics: builder.query({
       query: (range) => ({
         url: `reporting-analytics?range=${range}`,
         method: "GET",
       }),
-      providesTags: ["supplies"], // ইনভেন্টরিতে কোনো চেঞ্জ আসলে রিপোর্ট অটো-আপডেট হবে
+      providesTags: ["supplies"],
     }),
 
+    // 👑 AUTH MUTATION: Provision fresh credentials into database nodes
     registerUser: builder.mutation({
       query: (userData) => ({
         url: "register",
@@ -100,16 +177,18 @@ export const baseApi = createApi({
       }),
       invalidatesTags: ["user"],
     }),
-    // 🎯 এই এনডপয়েন্টটি endpoints ব্লকের একদম নিচে যুক্ত করো
+
+    // 👑 AUTH MUTATION: Overwrite account operational variables
     updateUserProfile: builder.mutation({
       query: (profileData) => ({
         url: "update-profile",
         method: "PUT",
         body: profileData,
       }),
-      invalidatesTags: ["user"], // ইউজার ক্যাশে স্টেট ইনভ্যালিডেট করে রি-সিঙ্ক করবে
+      invalidatesTags: ["user"],
     }),
 
+    // 👑 AUTH MUTATION: Exchange system verification matrices for a session authentication token
     loginUser: builder.mutation({
       query: (credentials) => ({
         url: "login",
@@ -121,17 +200,21 @@ export const baseApi = createApi({
   }),
 });
 
+// 🚀 Exporting automated functional hooks for unified component integration
 export const {
   useGetReliefGoodsQuery,
   useGetReliefGoodsByIdQuery,
   useGetRecentWorksQuery,
   useAddReliefGoodsMutation,
   useDeleteReliefGoodsMutation,
-  useLazyGetReliefGoodsByLimitQuery,
+  useGetReliefGoodsByLimitQuery,
   useUpdateSuppliesMutation,
   useRegisterUserMutation,
   useLoginUserMutation,
   useGetReportingAnalyticsQuery,
   useUpdateUserProfileMutation,
   useDonateToPackageMutation,
+  useGetLoggedUserQuery,
+  useGetUserHistoryQuery,
+  useGetAllUsersHistoryQuery,
 } = baseApi;

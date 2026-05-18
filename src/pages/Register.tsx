@@ -20,7 +20,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      // 🎯 সাবমিট করার আগে ইনপুট ডেটা ক্লিন এবং ট্রিম করে নেওয়া হলো
+      // 🎯 Standardizing input data payload before sending to backend database node
       const submitPayload = {
         name: formData.name.trim(),
         email: formData.email.trim().toLowerCase(),
@@ -29,20 +29,31 @@ const Register = () => {
 
       const response = await registerUser(submitPayload).unwrap();
 
-      if (response.success) {
-        if (response.token) {
-          // নতুন ফ্রেশ টোকেন লোকাল স্টোরেজে সেভ করা হলো
-          localStorage.setItem("token", response.token);
+      // 🎯 [FLEXIBLE RESPONSE MAPPING]: Safely checking for token structure patterns
+      const token =
+        response?.token || response?.data?.token || response?.accessToken;
+      const isSuccess = response?.success || (token ? true : false);
+
+      if (isSuccess) {
+        if (token) {
+          // 🔒 Save session security context in local storage for automated header handling
+          localStorage.setItem("token", token);
           toast.success("Account created! Welcome to the dashboard.");
 
-          // ✅ হার্ড রিফ্রেশ সহ রিডাইরেক্ট যাতে টোকেন এবং রোল স্টেট ইনস্ট্যান্ট সিঙ্ক হয়
+          // ✅ Hard redirect to force quick state synchronization over system layout contexts
           window.location.href = "/dashboard";
         } else {
           toast.success("Welcome! Account created successfully.");
           window.location.href = "/login";
         }
+      } else {
+        toast.error(
+          "Account created, but authentication mapping failed. Please log in manually.",
+        );
+        window.location.href = "/login";
       }
     } catch (err) {
+      console.error("Registration operational failure:", err);
       const error = err as { data?: { message?: string } };
       toast.error(
         error.data?.message || "Registration failed. Please try again.",
@@ -112,7 +123,7 @@ const Register = () => {
             <button
               disabled={isLoading}
               type="submit"
-              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold h-14 mt-4 transition-all active:scale-95 flex items-center justify-center gap-2"
+              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold h-14 mt-4 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isLoading ? (
                 <span className="loading loading-spinner h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>

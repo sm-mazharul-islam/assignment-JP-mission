@@ -10,6 +10,7 @@ import {
   Settings,
   Menu,
   X,
+  History,
 } from "lucide-react";
 import Sidebar, { SidebarItem } from "./DashboardHome";
 import { Link, useLocation } from "react-router-dom";
@@ -62,15 +63,15 @@ function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-slate-50 overflow-hidden">
-      {/* মোবাইল মেনু বাটন */}
+      {/* Mobile Menu Open/Close Action Toggle */}
       <button
         onClick={toggleMobileMenu}
-        className="lg:hidden fixed top-4 right-4 z-[60] p-2 bg-[#FDA4AF] text-white rounded-xl shadow-lg"
+        className="lg:hidden fixed top-4 right-4 z-[60] p-2 bg-[#FDA4AF] text-white rounded-xl shadow-lg transition-transform active:scale-95"
       >
         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {/* সাইডবার কন্টেইনার */}
+      {/* Sidebar Viewport Layer Container */}
       <div
         className={`
           fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
@@ -78,6 +79,7 @@ function Dashboard() {
         `}
       >
         <Sidebar>
+          {/* Global Core Shared Viewport Link */}
           <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
             <SidebarItem
               icon={<Home size={20} />}
@@ -109,27 +111,52 @@ function Dashboard() {
                   active={isActive("/dashboard/create-supply")}
                 />
               </Link>
+              <Link
+                to="all-user-history"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <SidebarItem
+                  icon={<Layers size={20} />}
+                  text="All History"
+                  alert={false}
+                  active={isActive("/dashboard/all-user-history")}
+                />
+              </Link>
             </>
           )}
 
-          <Link to="calender" onClick={() => setIsMobileMenuOpen(false)}>
-            <SidebarItem
-              icon={<Calendar size={20} />}
-              text="Calendar"
-              active={isActive("/dashboard/calender")}
-              alert={false}
-            />
-          </Link>
+          {/* 🟢 USER-ONLY SIDEBAR LINKS (Hidden from Administrative viewports) */}
+          {userRole !== "admin" && (
+            <>
+              <Link to="calender" onClick={() => setIsMobileMenuOpen(false)}>
+                <SidebarItem
+                  icon={<Calendar size={20} />}
+                  text="Calendar"
+                  active={isActive("/dashboard/calender")}
+                  alert={false}
+                />
+              </Link>
+              <Link to="history" onClick={() => setIsMobileMenuOpen(false)}>
+                <SidebarItem
+                  icon={<History size={20} />}
+                  text="History"
+                  active={isActive("/dashboard/history")}
+                  alert={false}
+                />
+              </Link>
 
-          <Link to="add-review" onClick={() => setIsMobileMenuOpen(false)}>
-            <SidebarItem
-              icon={<Layers size={20} />}
-              text="Review"
-              alert={false}
-              active={isActive("/dashboard/add-review")}
-            />
-          </Link>
+              <Link to="add-review" onClick={() => setIsMobileMenuOpen(false)}>
+                <SidebarItem
+                  icon={<Layers size={20} />}
+                  text="Review"
+                  alert={false}
+                  active={isActive("/dashboard/add-review")}
+                />
+              </Link>
+            </>
+          )}
 
+          {/* Global Analytics Section */}
           <Link to="reporting" onClick={() => setIsMobileMenuOpen(false)}>
             <SidebarItem
               icon={<Flag size={20} />}
@@ -138,8 +165,10 @@ function Dashboard() {
               active={isActive("/dashboard/reporting")}
             />
           </Link>
+
           <hr className="my-3 border-slate-100" />
-          {/* 🟢 SHARED SETTINGS LINK IN SIDEBAR */}
+
+          {/* SHARED INFRASTRUCTURE NAVIGATION FOOTER ACTIONS */}
           <Link to="setting" onClick={() => setIsMobileMenuOpen(false)}>
             <SidebarItem
               icon={<Settings size={20} />}
@@ -167,7 +196,7 @@ function Dashboard() {
         </Sidebar>
       </div>
 
-      {/* মোবাইল ওভারলে ব্যাকড্রপ */}
+      {/* Mobile Drop Overlay Backdrop element */}
       {isMobileMenuOpen && (
         <div
           className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden"
@@ -175,7 +204,7 @@ function Dashboard() {
         />
       )}
 
-      {/* মেইন কন্টেন্ট এরিয়া */}
+      {/* Main Panel Routing Workspace Viewport Area */}
       <main className="flex-1 h-screen overflow-y-auto p-4 lg:p-8 pt-16 lg:pt-8">
         <div className="max-w-7xl mx-auto">
           {location.pathname === "/dashboard" ? (

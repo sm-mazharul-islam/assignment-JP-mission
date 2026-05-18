@@ -19,25 +19,34 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      // 🎯 ব্যাকেন্ডের কেস-সেন্সিটিভিটি এবং স্পেস ট্রিম লজিকের সাথে ম্যাচ করার জন্য ডাটা প্রসেস
+      // 🎯 Standardizing payload text arrays before committing authentication pipeline
       const loginPayload = {
-        email: formData.email.trim().toLowerCase(), // 👈 এটি ব্যাকেন্ডের ফাইন্ড কুয়েরির সাথে ১০০% ম্যাচ করবে
+        email: formData.email.trim().toLowerCase(),
         password: formData.password,
       };
 
       const response = await loginUser(loginPayload).unwrap();
 
-      if (response.success) {
-        if (response.token) {
-          localStorage.setItem("token", response.token);
-        }
+      // 🎯 [CRITICAL TOKEN MAPPING FIXED]: Fallback checks to catch token regardless of response design
+      const token =
+        response?.token || response?.data?.token || response?.accessToken;
+      const isSuccess = response?.success || (token ? true : false);
+
+      if (isSuccess && token) {
+        // 🔒 Store security context in local storage for interceptor baseApi.ts usage
+        localStorage.setItem("token", token);
 
         toast.success("Welcome back!");
 
-        // ✅ হার্ড রিফ্রেশ সহ রিডাইরেক্ট যাতে টোকেন এবং রোল স্টেট ইনস্ট্যান্ট সিঙ্ক হয়
+        // ✅ Immediate location relocation to trigger fresh state sync across layout boundaries
         window.location.href = "/dashboard";
+      } else {
+        toast.error(
+          "Invalid response matrix received from the authentication provider.",
+        );
       }
     } catch (err) {
+      console.error("Login compilation fault:", err);
       const error = err as { data?: { message?: string } };
       toast.error(error.data?.message || "Login failed. Please try again.");
     }
@@ -98,7 +107,7 @@ const Login = () => {
             <button
               disabled={isLoading}
               type="submit"
-              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold text-lg h-14 mt-4 transition-all active:scale-95 flex items-center justify-center gap-2"
+              className="btn border-none w-full bg-[#FDA4AF] hover:bg-[#fb7185] text-white rounded-2xl font-bold text-lg h-14 mt-4 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isLoading ? (
                 <span className="loading loading-spinner h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
