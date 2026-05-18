@@ -21,9 +21,9 @@ export const baseApi = createApi({
 
   // 🎯 Configuration with automated JWT Bearer token injection
   baseQuery: fetchBaseQuery({
-    //   baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
+    baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
 
-    baseUrl: "http://localhost:5000/",
+    // baseUrl: "http://localhost:5000/",
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
       if (token) {
