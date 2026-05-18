@@ -20,7 +20,7 @@ const AllReliefGoods = () => {
   return (
     <Container>
       <div>
-        <div className="  grid  grid-rows-1 justify-center lg:grid-cols-3 md:grid-cols-2 md:p-4  gap-10  ">
+        <div className="grid  grid-rows-1 justify-center lg:grid-cols-3 md:grid-cols-2 md:p-4 gap-10 ">
           {reliefGoods?.data?.map((item: TPackage) => (
             <SingleCard key={item._id} {...item} />
           ))}

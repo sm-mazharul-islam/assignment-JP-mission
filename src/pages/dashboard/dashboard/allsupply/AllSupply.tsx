@@ -3,7 +3,10 @@ import {
   useGetReliefGoodsQuery,
   useDeleteReliefGoodsMutation,
 } from "../../../../redux/api/api";
-import { MouseEventHandler, useState } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Edit3, Trash2, AlertTriangle, X } from "lucide-react";
+
 type TReliefGoodsTableProps = {
   _id: string;
   title: string;
@@ -22,228 +25,219 @@ interface ItemType {
 const AllSupply = () => {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<ItemType | null>(null);
+
   const {
     data: reliefGoods,
     isLoading,
     isError,
   } = useGetReliefGoodsQuery(undefined);
-  // console.log(reliefGoods);
 
   const [deleteReliefGoods] = useDeleteReliefGoodsMutation();
 
-  // const handleDelete = async (item) => {
-  //   try {
-  //     await deleteReliefGoods(item).unwrap();
-  //     toast.success("Item deleted successfully");
-  //   } catch (error) {
-  //     toast.error("Error deleting item");
-  //   }
-  // };
-
-  const handleAcceptClick = (item: ItemType) => {
+  const handleDeleteClick = (item: ItemType) => {
     setSelectedItem(item);
     setShowPopup(true);
   };
 
-  const handleConfirmDelete: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleConfirmDelete = async () => {
     if (selectedItem && selectedItem._id) {
-      deleteReliefGoods(selectedItem._id);
-      setShowPopup(false);
-      setSelectedItem(null);
+      try {
+        await deleteReliefGoods(selectedItem._id).unwrap();
+        toast.success(`${selectedItem.title} deleted successfully!`);
+      } catch (err) {
+        toast.error("Failed to delete the item.");
+      } finally {
+        setShowPopup(false);
+        setSelectedItem(null);
+      }
     }
   };
 
-  const handleDeny = () => {
+  const handleCancelDelete = () => {
     setShowPopup(false);
     setSelectedItem(null);
   };
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg text-[#fb7185]"></span>
+      </div>
+    );
   }
-  if (isError) {
-    return <p>Loading...</p>;
-  }
-  // const deleteHandler = (id) => {
-  //   deleteReliefGoods(id);
-  // };
-  return (
-    <div>
-      <div className=" p-5 lg:w-[1300px] lg:h-full ">
-        <div className="overflow-auto rounded-lg shadow hidden md:block">
-          <table className=" w-full">
-            <thead>
-              <tr className="text-2xl">
-                <th className="w-20 text-center">Title</th>
-                <th className="text-center">Category</th>
-                <th className="w-24 text-center">Amount</th>
-                <th className="w-24 text-center">Edit</th>
-                <th className="w-32 text-center">Delete</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 text-xl">
-              {reliefGoods?.data?.map((item: TReliefGoodsTableProps) => (
-                <tr>
-                  <td className="whitespace-nowrap text-center">
-                    {item.title}
-                  </td>
-                  <td className="whitespace-nowrap text-center">
-                    {item.category}
-                  </td>
-                  <td className="whitespace-nowrap text-center">
-                    <span className="font-bold">$</span>
-                    {item.amount}
-                  </td>
-                  <td className="whitespace-nowrap text-center">
-                    <Link to={`/dashboard/edit-supply/${item._id}`}>
-                      <button>
-                        <svg
-                          className="w-[25px] text-purple-500"
-                          fill="none"
-                          key={item._id}
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                          ></path>
-                        </svg>
-                      </button>
-                    </Link>
-                  </td>
-                  <td className="whitespace-nowrap text-center">
-                    <div>
-                      <button onClick={() => handleAcceptClick(item)}>
-                        <svg
-                          className="w-[25px] text-red-500"
-                          fill="none"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                          ></path>
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
 
-          {/* <div role="alert" className="alert">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              className="stroke-info shrink-0 w-6 h-6"
+  if (isError) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <p className="text-red-500 font-bold bg-red-50 px-6 py-3 rounded-2xl border border-red-100">
+          Failed to load relief goods supplies. Please check server connection.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto transition-all duration-300">
+      {/* SECTION HEADER */}
+      <div className="mb-8">
+        <h2 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">
+          Inventory <span className="text-[#fb7185]">Supplies</span>
+        </h2>
+        <p className="text-slate-400 text-xs md:text-sm mt-1 font-medium">
+          Manage, refine, or remove dynamic relief goods allocation structures.
+        </p>
+      </div>
+
+      {/* 🖥️ DESKTOP & TABLET VIEW: GLASSMORPHIC TABLE */}
+      <div className="hidden md:block overflow-hidden bg-white/60 backdrop-blur-md rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-100/50">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
+              <th className="py-5 px-6">Title</th>
+              <th className="py-5 px-4">Category</th>
+              <th className="py-5 px-4 text-center">Amount</th>
+              <th className="py-5 px-4 text-center">Edit</th>
+              <th className="py-5 px-6 text-center">Delete</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 text-[14px] font-semibold text-slate-700">
+            {reliefGoods?.data?.map((item: TReliefGoodsTableProps) => (
+              <tr
+                key={item._id}
+                className="hover:bg-slate-50/50 transition-colors group"
+              >
+                <td className="py-4 px-6 font-bold text-slate-800 max-w-[220px] truncate">
+                  {item.title}
+                </td>
+                <td className="py-4 px-4">
+                  <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-bold tracking-wide">
+                    {item.category}
+                  </span>
+                </td>
+                <td className="py-4 px-4 text-center font-black text-slate-900">
+                  <span className="text-[#fb7185] font-bold mr-0.5">$</span>
+                  {item.amount.toLocaleString()}
+                </td>
+                <td className="py-4 px-4 text-center">
+                  <Link to={`/dashboard/edit-supply/${item._id}`}>
+                    <button className="p-2 mx-auto rounded-xl hover:bg-purple-50 text-purple-500 hover:text-purple-600 transition-all active:scale-95 flex items-center justify-center">
+                      <Edit3 size={18} />
+                    </button>
+                  </Link>
+                </td>
+                <td className="py-4 px-6 text-center">
+                  <button
+                    onClick={() => handleDeleteClick(item)}
+                    className="p-2 mx-auto rounded-xl hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all active:scale-95 flex items-center justify-center"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* 📱 MOBILE VIEW: SINGLE COMPACT CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
+        {reliefGoods?.data?.map((item: TReliefGoodsTableProps) => (
+          <div
+            key={item._id}
+            className="bg-white rounded-3xl p-5 border border-slate-100 shadow-md shadow-slate-100/40 relative overflow-hidden flex flex-col justify-between group"
+          >
+            <div className="h-1.5 w-full bg-[#FDA4AF]/40 absolute top-0 left-0" />
+
+            <div className="space-y-2 mt-1">
+              <span className="text-[10px] uppercase tracking-widest font-black text-[#fb7185] bg-rose-50 px-2.5 py-0.5 rounded-md">
+                {item.category}
+              </span>
+              <h3 className="text-base font-black text-slate-800 tracking-tight truncate pt-1">
+                {item.title}
+              </h3>
+              <div className="flex justify-between items-center bg-slate-50 p-3 rounded-2xl border border-slate-100/50 mt-3">
+                <span className="text-xs font-bold text-slate-400">
+                  Total Value
+                </span>
+                <span className="text-base font-black text-slate-900">
+                  <span className="text-[#fb7185] font-extrabold">$</span>
+                  {item.amount.toLocaleString()}
+                </span>
+              </div>
+            </div>
+
+            {/* CARD ACTION BUTTONS */}
+            <div className="flex items-center gap-3 mt-5 pt-3 border-t border-slate-50">
+              <Link
+                className="flex-1"
+                to={`/dashboard/edit-supply/${item._id}`}
+              >
+                <button className="w-full py-2.5 rounded-xl bg-slate-50 hover:bg-purple-50 text-slate-600 hover:text-purple-600 font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
+                  <Edit3 size={14} /> Edit Info
+                </button>
+              </Link>
+              <button
+                onClick={() => handleDeleteClick(item)}
+                className="flex-1 py-2.5 rounded-xl bg-rose-50 text-rose-600 font-bold text-xs hover:bg-rose-100 transition-colors flex items-center justify-center gap-1.5"
+              >
+                <Trash2 size={14} /> Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 🚨 MODERN CLEAN CONFIRMATION MODAL */}
+      {showPopup && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+          {/* Blur Overlay Backdrop */}
+          <div
+            onClick={handleCancelDelete}
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300"
+          />
+
+          {/* Card Window Container */}
+          <div className="relative bg-white w-full max-w-sm rounded-[2rem] shadow-2xl border border-slate-100 p-6 overflow-hidden transform scale-100 transition-all duration-300">
+            <button
+              onClick={handleCancelDelete}
+              className="absolute top-4 right-4 p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-50 transition-colors"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              ></path>
-            </svg>
-            <span>Are you sure you want to delete {selectedItem?.title}</span>
-            <div>
-              <button className="btn btn-sm" onClick={handleDeny}>
-                Deny
+              <X size={18} />
+            </button>
+
+            <div className="flex flex-col items-center text-center mt-2">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 text-amber-500 flex items-center justify-center mb-4 shadow-sm">
+                <AlertTriangle size={24} />
+              </div>
+              <h3 className="text-lg font-black text-slate-800 tracking-tight">
+                Confirm Destruction
+              </h3>
+              <p className="text-slate-400 text-xs mt-2 leading-relaxed">
+                Are you absolutely sure you want to permanently remove{" "}
+                <span className="text-slate-700 font-bold">
+                  "{selectedItem?.title}"
+                </span>
+                ? This process cannot be undone.
+              </p>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleCancelDelete}
+                className="flex-1 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs tracking-wider transition-colors uppercase"
+              >
+                Cancel
               </button>
               <button
-                className="btn btn-sm btn-primary"
                 onClick={handleConfirmDelete}
+                className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold text-xs tracking-wider shadow-lg shadow-red-500/20 transition-all active:scale-95 uppercase"
               >
-                Accept
+                Delete Now
               </button>
             </div>
-          </div> */}
-
-          {showPopup && (
-            <div role="alert" className="toast toast-top toast-left">
-              <div className="alert bg-slate-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  // viewBox="0 0 24 24"
-                  className="stroke-info shrink-0 w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
-                </svg>
-                <div className="stroke-info shrink-0 w-96 h-45">
-                  <span className="ml-[8px] justify-center text-[20px] text-white">
-                    Are you sure you want to delete {selectedItem?.title} ?
-                  </span>
-                  <div className="flex gap-56">
-                    <button className="btn btn-sm" onClick={handleDeny}>
-                      Deny
-                    </button>
-                    <button
-                      className="btn btn-sm btn-primary"
-                      onClick={handleConfirmDelete}
-                    >
-                      Accept
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden ">
-          {reliefGoods?.data?.map((item: TReliefGoodsTableProps) => (
-            <div className="bg-white space-y-3 p-4 rounded-lg shadow">
-              <div className=" space-x-2 text-sm">
-                <div>
-                  {/* <Link to="" className="text-blue-500 font-old hover:underline">
-                  Donate Now extend package
-                </Link> */}
-                </div>
-
-                <div className=" text-gray-500">
-                  <p className="text-center">Title: {item.title}</p>
-                </div>
-                {/* <div>...</div> */}
-              </div>
-              <div className="text-sm text-gray-700">
-                <p className="text-center">Category : {item.category}</p>
-              </div>
-              <div className="text-center text-sm font-medium text-black">
-                total: {item.amount}
-              </div>
-
-              <div className="flex items-center space-x-2 text-sm">
-                <div>
-                  <button className=" p-[3px]">Edit</button>
-                </div>
-
-                <div>
-                  <button
-                    onClick={() => deleteReliefGoods(item._id)}
-                    className="ml-[140px] p-[4px] border border-red-500 bg-red-800 text-white"
-                  >
-                    Del
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      )}
     </div>
   );
 };

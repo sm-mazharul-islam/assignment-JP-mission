@@ -4,7 +4,7 @@ import logo from "../../../assets/images/logo.png";
 
 export default function NavbarTwo() {
   const [scrolled, setScrolled] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); // মোবাইলে মেনু ওপেন/ক্লোজ করার জন্য
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);

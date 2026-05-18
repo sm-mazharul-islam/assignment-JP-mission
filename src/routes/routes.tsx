@@ -16,6 +16,7 @@ import NotFoundPage from "../pages/notfound/NotFoundPage";
 import { EditSupplyWrapper } from "../lib/EditSupplyWrapper";
 import AddReview from "../pages/dashboard/dashboard/addReview/AddReview";
 import Dashboard from "../pages/dashboard/dashboard/Dashboard";
+import CalenderPage from "../pages/dashboard/dashboard/calender/Calender";
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
       {
         path: "create-supply",
         element: <AddSupply />,
+      },
+      {
+        path: "calender",
+        element: <CalenderPage />,
       },
       {
         path: "add-review",

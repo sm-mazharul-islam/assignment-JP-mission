@@ -24,11 +24,18 @@ const Register = () => {
       const response = await registerUser(formData).unwrap();
 
       if (response.success) {
-        toast.success("Welcome! Account created.");
-        navigate("/login");
+        // Automatically save token on success if backend passes it back
+        if (response.token) {
+          localStorage.setItem("token", response.token);
+          toast.success("Account created! Welcome to the mission.");
+          navigate("/"); // Direct redirect bypassing the manual login page step
+        } else {
+          // Fallback if backend requires manual step verification
+          toast.success("Welcome! Account created successfully.");
+          navigate("/login");
+        }
       }
     } catch (err) {
-      // Type assertion to fix the 'unexpected any' error
       const error = err as { data?: { message?: string } };
       toast.error(
         error.data?.message || "Registration failed. Please try again.",

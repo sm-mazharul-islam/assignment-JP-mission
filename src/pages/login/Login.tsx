@@ -1,3 +1,4 @@
+//!
 import { useState, ChangeEvent, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -23,6 +24,11 @@ const Login = () => {
       const response = await loginUser(formData).unwrap();
 
       if (response.success) {
+        // ✅ Save the token to local storage so the Navbar can read the logged-in state
+        if (response.token) {
+          localStorage.setItem("token", response.token);
+        }
+
         toast.success("Welcome back!");
         navigate("/");
       }

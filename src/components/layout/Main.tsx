@@ -29,14 +29,9 @@ const Main = () => {
           </>
         )}
       </header>
-
-      {/* MAIN CONTENT:
-          - On Home: We use pt-0 so the Hero background goes BEHIND the navbar.
-          - On other pages: We keep pt to avoid content being hidden.
-      */}
       <main
         className={`flex-grow ${
-          isFloatingNav ? "pt-[70px]" : isHomePage ? "pt-0" : "pt-[70px]"
+          isFloatingNav ? "pt-[170px]" : isHomePage ? "pt-0" : "pt-[70px]"
         }`}
       >
         <Outlet />

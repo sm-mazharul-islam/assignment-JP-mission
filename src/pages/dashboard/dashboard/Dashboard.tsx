@@ -45,7 +45,7 @@ function Dashboard() {
           <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
             <SidebarItem
               icon={<Home size={20} />}
-              text="Pie Chart"
+              text="Over View"
               alert={false}
               active={isActive("/dashboard")}
               onClick={() => {}}
@@ -69,13 +69,15 @@ function Dashboard() {
               onClick={() => {}}
             />
           </Link>
-          <SidebarItem
-            icon={<Calendar size={20} />}
-            text="Calendar"
-            active={false}
-            alert={false}
-            onClick={() => {}}
-          />
+          <Link to="calender" onClick={() => setIsMobileMenuOpen(false)}>
+            <SidebarItem
+              icon={<Calendar size={20} />}
+              text="Calendar"
+              active={isActive("/dashboard/calender")}
+              alert={false}
+              onClick={() => {}}
+            />
+          </Link>
           <Link to="add-review" onClick={() => setIsMobileMenuOpen(false)}>
             <SidebarItem
               icon={<Layers size={20} />}
@@ -107,6 +109,16 @@ function Dashboard() {
             active={false}
             onClick={() => {}}
           />
+
+          <Link to="/">
+            <SidebarItem
+              icon={<LifeBuoy size={20} />}
+              text="Back to Home"
+              alert={false}
+              active={false}
+              onClick={() => {}}
+            />
+          </Link>
         </Sidebar>
       </div>
 
