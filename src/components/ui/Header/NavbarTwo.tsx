@@ -1,16 +1,39 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
+import { toast } from "sonner";
 
 export default function NavbarTwo() {
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Dynamic Auth Checker: Verifies user token session
+  const isLoggedIn = !!localStorage.getItem("token");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Closes open dropdown windows when viewport configuration alters
+  useEffect(() => {
+    const handleOutsideClick = () => {
+      setIsProfileOpen(false);
+    };
+    window.addEventListener("click", handleOutsideClick);
+    return () => window.removeEventListener("click", handleOutsideClick);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    toast.success("Logged out successfully");
+    setIsOpen(false);
+    setIsProfileOpen(false);
+    navigate("/login");
+  };
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -40,7 +63,7 @@ export default function NavbarTwo() {
             />
           </div>
           <span className="font-black text-xl md:text-2xl tracking-tighter text-slate-900">
-            RELIEF<span className="text-[#FDA4AF]">GOODS</span>
+            RELIEFE<span className="text-[#FDA4AF]">GOODS</span>
           </span>
         </Link>
 
@@ -87,14 +110,54 @@ export default function NavbarTwo() {
           ))}
         </div>
 
-        {/* Action Button - Desktop */}
-        <div className="hidden lg:flex items-center gap-4">
-          <Link
-            to="/login"
-            className="text-sm font-black text-slate-900 hover:text-[#FDA4AF] transition-colors"
-          >
-            LOGIN
-          </Link>
+        {/* Action Controls - Desktop */}
+        <div className="hidden lg:flex items-center gap-5 relative">
+          {isLoggedIn ? (
+            /* 👤 USER PROFILE ACCENT MENU SYSTEM (DESKTOP) */
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
+              <button
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="w-10 h-10 rounded-full ring-2 ring-[#FDA4AF] ring-offset-2 bg-gradient-to-tr from-[#FDA4AF] to-[#fb7185] flex items-center justify-center text-white font-black text-xs shadow-md transition-transform active:scale-95 cursor-pointer"
+              >
+                U
+              </button>
+
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-3 w-52 bg-white rounded-2xl p-4 shadow-2xl border border-slate-100 flex flex-col gap-2 z-[150] animate-fade-in font-bold text-slate-700 text-sm">
+                  <div className="pb-2 border-b border-slate-50 px-1">
+                    <p className="text-[10px] text-slate-400 font-medium tracking-wide uppercase">
+                      Account Node
+                    </p>
+                    <p className="text-slate-800 font-black truncate">
+                      Community User
+                    </p>
+                  </div>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="hover:bg-slate-50 py-2 px-2.5 rounded-xl transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="text-left text-red-500 hover:bg-rose-50/50 py-2 px-2.5 rounded-xl transition-colors w-full font-bold"
+                  >
+                    Logout Account
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* 🔑 BASE GUEST SYSTEM LABELS (DESKTOP) */
+            <Link
+              to="/login"
+              className="text-sm font-black text-slate-900 hover:text-[#FDA4AF] transition-colors"
+            >
+              LOGIN
+            </Link>
+          )}
+
           <Link
             to="/donate"
             className="bg-[#FDA4AF] text-white px-7 py-3 rounded-full font-black text-xs uppercase tracking-widest hover:bg-rose-400 hover:shadow-[0_10px_20px_rgba(253,164,175,0.4)] transition-all active:scale-95"
@@ -103,7 +166,7 @@ export default function NavbarTwo() {
           </Link>
         </div>
 
-        {/* Mobile Menu Dropdown */}
+        {/* Mobile Menu Dropdown Panel */}
         {isOpen && (
           <div className="w-full lg:hidden pt-4 pb-2 animate-fade-in">
             <div className="flex flex-col gap-4 border-t border-slate-100 pt-4">
@@ -117,18 +180,46 @@ export default function NavbarTwo() {
                   {link.name}
                 </Link>
               ))}
+
               <div className="flex flex-col gap-3 pt-2">
-                <Link
-                  to="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="text-sm font-black text-slate-900"
-                >
-                  LOGIN
-                </Link>
+                {isLoggedIn ? (
+                  /* 👤 USER RUNTIME CONTEXT NAVIGATION ELEMENT ROW (MOBILE) */
+                  <>
+                    <div className="py-2 px-3 bg-slate-50 rounded-xl border border-slate-100/60 flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#FDA4AF] to-[#fb7185] flex items-center justify-center text-white font-black text-xs shadow-xs">
+                        U
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
+                          Session Profile
+                        </p>
+                        <p className="text-xs font-black text-slate-700">
+                          Community User
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="text-left text-sm font-black text-red-500 hover:text-red-600 py-1"
+                    >
+                      LOGOUT ACCOUNT
+                    </button>
+                  </>
+                ) : (
+                  /* 🔑 GUEST ACTION ROW (MOBILE) */
+                  <Link
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="text-sm font-black text-slate-900"
+                  >
+                    LOGIN
+                  </Link>
+                )}
+
                 <Link
                   to="/donate"
                   onClick={() => setIsOpen(false)}
-                  className="bg-[#FDA4AF] text-white text-center py-3 rounded-xl font-black text-xs uppercase tracking-widest"
+                  className="bg-[#FDA4AF] text-white text-center py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-md shadow-[#FDA4AF]/20"
                 >
                   Donate Now
                 </Link>
