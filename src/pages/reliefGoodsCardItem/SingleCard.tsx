@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight, ShieldCheck, HeartHandshake } from "lucide-react";
 
+// 🎯 ১. টাইপ ডেফিনিশনে raisedAmount প্রপার্টি যুক্ত করা হয়েছে যা ডাটাবেজ থেকে আসবে
 export type TPackage = {
   _id: string;
   title: string;
   category: string;
   item: string;
-  amount: number; // এটিকে আমরা টার্গেট গোল (Goal) হিসেবে ধরছি
+  amount: number; // টার্গেট গোল (Goal)
+  raisedAmount?: number; // 👈 ডাটাবেজের লাইভ অনুদান ট্র্যাকিং ফিল্ড
   description: string;
   image: string;
   reason: string;
@@ -18,15 +20,18 @@ const SingleCard = ({
   image,
   category,
   amount,
+  raisedAmount, // 👈 ডিকনস্ট্রাকশনে রিয়েল ফিল্ড রিসিভ করা হচ্ছে
   description,
 }: TPackage) => {
-  // 🎯 রিলায়েবিলিটি বাড়াতে সিমুলেটেড লাইভ ডোনেশন ডাটা ক্যালকুলেশন
-  // রিয়েল প্রজেক্টে এগুলো ডাটাবেজ থেকে (currAmount/raised) আকারে আসবে
-  const mockRaisedAmount = Math.round(amount * 0.65); // ডামি হিসেবে ৬৫% ফান্ড রাইজড দেখাচ্ছি
-  const progressPercent = Math.min(
-    Math.round((mockRaisedAmount / amount) * 100),
-    100,
-  );
+  // 🎯 ২. [LIVE METRIC INTERPOLATION]: সিমুলেটেড মক ডাটা বাদ দিয়ে রিয়েল ক্যালকুলেশন
+  const targetAmount = amount || 0;
+  const currentRaised = raisedAmount || 0; // ডাটাবেজে আগে থেকে জমা হওয়া আসল টাকা
+
+  // পার্সেন্টেজ জেনারেটর (সর্বোচ্চ ১০০% প্রোটেকশন সহ)
+  const progressPercent =
+    targetAmount > 0
+      ? Math.min(Math.round((currentRaised / targetAmount) * 100), 100)
+      : 0;
 
   return (
     <div className="group relative border border-slate-200/60 rounded-[2.5rem] transition-all duration-500 hover:border-pink-200 hover:shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:-translate-y-2 overflow-hidden flex flex-col h-full cursor-default">
@@ -61,7 +66,7 @@ const SingleCard = ({
           </p>
         </div>
 
-        {/* 📊 [CRITICAL TRUST METRIC]: Live Progress Status */}
+        {/* 📊 [CRITICAL TRUST METRIC]: Live Progress Status Connected to MongoDB */}
         <div className="space-y-2 pt-1">
           <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-wider">
             <span className="text-emerald-500 flex items-center gap-1">
@@ -78,15 +83,17 @@ const SingleCard = ({
             />
           </div>
 
-          {/* Ledger Numbers Balance */}
+          {/* Ledger Numbers Balance (Live Data Stream) */}
           <div className="flex justify-between items-baseline pt-0.5">
             <p className="text-slate-900 font-black text-base">
-              ${mockRaisedAmount}{" "}
+              ${currentRaised}{" "}
               <span className="text-[10px] text-slate-400 font-bold uppercase">
                 Raised
               </span>
             </p>
-            <p className="text-slate-500 font-bold text-xs">of ${amount}</p>
+            <p className="text-slate-500 font-bold text-xs">
+              of ${targetAmount}
+            </p>
           </div>
         </div>
 

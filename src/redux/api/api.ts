@@ -2,13 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
-  }),
   // baseQuery: fetchBaseQuery({
-  //   baseUrl: "http://localhost:5000/",
+  //   baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
   // }),
-  tagTypes: ["supplies", "user"],
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:5000/",
+  }),
+  tagTypes: ["supplies", "user", "reliefGoods"],
   endpoints: (builder) => ({
     getReliefGoods: builder.query({
       query: () => {
@@ -47,6 +47,18 @@ export const baseApi = createApi({
         return { url: "relief-goods", method: "POST", body: data };
       },
       invalidatesTags: ["supplies"],
+    }),
+
+    donateToPackage: builder.mutation({
+      query: ({ id, donateAmount }) => ({
+        url: `relief-goods/${id}`,
+        method: "PUT",
+        body: { donateAmount },
+      }),
+      // arg থেকে সরাসরি id প্রপার্টি ট্রিগার করা হচ্ছে
+      invalidatesTags: (result, error, arg) => [
+        { type: "reliefGoods", id: arg.id },
+      ],
     }),
     deleteReliefGoods: builder.mutation({
       query: (id) => {
@@ -121,4 +133,5 @@ export const {
   useLoginUserMutation,
   useGetReportingAnalyticsQuery,
   useUpdateUserProfileMutation,
+  useDonateToPackageMutation,
 } = baseApi;
