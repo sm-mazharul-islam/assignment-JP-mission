@@ -61,7 +61,6 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    // 🔐 COMMON PROTECTION: টোকেন না থাকলে কেউ ড্যাশবোর্ডের কোনো পেজে ঢুকতে পারবে না
     element: (
       <ProtectedRoute>
         <Dashboard />

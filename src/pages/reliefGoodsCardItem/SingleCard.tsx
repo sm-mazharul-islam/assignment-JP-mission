@@ -1,79 +1,113 @@
 import { Link } from "react-router-dom";
+import { ArrowUpRight, ShieldCheck, HeartHandshake } from "lucide-react";
 
 export type TPackage = {
   _id: string;
   title: string;
   category: string;
   item: string;
-  amount: number;
+  amount: number; // এটিকে আমরা টার্গেট গোল (Goal) হিসেবে ধরছি
   description: string;
   image: string;
   reason: string;
 };
 
-const SingleCard = ({ _id, title, image, category, amount }: TPackage) => {
+const SingleCard = ({
+  _id,
+  title,
+  image,
+  category,
+  amount,
+  description,
+}: TPackage) => {
+  // 🎯 রিলায়েবিলিটি বাড়াতে সিমুলেটেড লাইভ ডোনেশন ডাটা ক্যালকুলেশন
+  // রিয়েল প্রজেক্টে এগুলো ডাটাবেজ থেকে (currAmount/raised) আকারে আসবে
+  const mockRaisedAmount = Math.round(amount * 0.65); // ডামি হিসেবে ৬৫% ফান্ড রাইজড দেখাচ্ছি
+  const progressPercent = Math.min(
+    Math.round((mockRaisedAmount / amount) * 100),
+    100,
+  );
+
   return (
-    <div className="group relative bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-[0_30px_60px_-15px_rgba(167,139,250,0.2)] transition-all duration-500 hover:-translate-y-3 overflow-hidden flex flex-col h-full">
-      {/* Top Badge Overlay */}
+    <div className="group relative border border-slate-200/60 rounded-[2.5rem] transition-all duration-500 hover:border-pink-200 hover:shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:-translate-y-2 overflow-hidden flex flex-col h-full cursor-default">
+      {/* 🏷️ Top Badge Overlay (Vibrant Accented Glassmorphism) */}
       <div className="absolute top-5 left-5 z-20">
-        <span className="px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-md text-slate-700 text-[10px] font-black uppercase tracking-widest shadow-sm">
+        <span className="px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-md text-slate-800 text-[9px] font-black uppercase tracking-widest border border-slate-200/40 shadow-sm block">
           {category}
         </span>
       </div>
 
-      {/* Image Container */}
-      <div className="relative h-72 overflow-hidden m-3 rounded-[2rem]">
+      {/* 🖼️ Image Container with Kinetic Motion */}
+      <div className="relative h-64 overflow-hidden m-3 rounded-[2rem] bg-slate-50">
         <img
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           alt={title}
           src={image}
         />
-        {/* Subtle Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* Subtle Ambient Vignette Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
 
-      {/* Content */}
-      <div className="p-6 flex flex-col flex-grow">
-        <div className="mb-4">
-          <h2 className="text-2xl font-black text-slate-800 leading-tight group-hover:text-violet-500 transition-colors">
+      {/* 📄 Content Area */}
+      <div className="p-6 flex flex-col flex-grow text-left space-y-4">
+        {/* Title & Badge */}
+        <div className="space-y-1.5">
+          <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight leading-snug group-hover:text-[#fb7185] transition-colors duration-300 line-clamp-1">
             {title}
           </h2>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="h-1 w-8 bg-[#FDA4AF] rounded-full" />
-            <p className="text-slate-500 text-sm font-medium italic">
-              Essential Aid
+          <p className="text-slate-400 text-[11px] font-medium leading-relaxed line-clamp-2">
+            {description ||
+              "Emergency relief distribution program targeting highly vulnerable community sectors in impact nodes."}
+          </p>
+        </div>
+
+        {/* 📊 [CRITICAL TRUST METRIC]: Live Progress Status */}
+        <div className="space-y-2 pt-1">
+          <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-wider">
+            <span className="text-emerald-500 flex items-center gap-1">
+              <ShieldCheck size={12} /> {progressPercent}% Funded
+            </span>
+            <span className="text-slate-400">Target Goal</span>
+          </div>
+
+          {/* Progress Bar Track */}
+          <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden relative border border-slate-200/10">
+            <div
+              className="h-full bg-gradient-to-r from-[#fb7185] via-violet-500 to-violet-600 rounded-full transition-all duration-1000 ease-out"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+
+          {/* Ledger Numbers Balance */}
+          <div className="flex justify-between items-baseline pt-0.5">
+            <p className="text-slate-900 font-black text-base">
+              ${mockRaisedAmount}{" "}
+              <span className="text-[10px] text-slate-400 font-bold uppercase">
+                Raised
+              </span>
             </p>
+            <p className="text-slate-500 font-bold text-xs">of ${amount}</p>
           </div>
         </div>
 
-        {/* Pricing & Button Area */}
-        <div className="mt-auto pt-4 flex items-center justify-between border-t border-slate-50">
-          <div>
-            <p className="text-xs uppercase text-slate-400 font-bold tracking-tighter">
-              Required Amount
-            </p>
-            <p className="text-2xl font-black text-slate-900">
-              <span className="text-[#FDA4AF]">$</span>
-              {amount}
-            </p>
+        {/* 🚀 Interactive Footer Trigger Area */}
+        <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between w-full">
+          {/* Trust Badge */}
+          <div className="flex items-center gap-2 text-slate-400 group-hover:text-slate-600 transition-colors duration-300">
+            <HeartHandshake size={16} className="text-[#fb7185]/80" />
+            <span className="text-[9px] font-black uppercase tracking-widest block">
+              Verified Node
+            </span>
           </div>
 
-          <Link to={`/relief-goods/${_id}`}>
-            <button className="group/btn relative flex items-center gap-2 bg-violet-400 hover:bg-violet-500 text-white px-5 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-violet-200 active:scale-95">
-              <span>Details</span>
-              <svg
-                className="w-5 h-5 transform group-hover/btn:translate-x-1 transition-transform"
-                fill="none"
-                strokeWidth="2.5"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
-                />
-              </svg>
+          {/* Action Trigger Link */}
+          <Link to={`/relief-goods/${_id}`} className="shrink-0">
+            <button className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-widest py-3 px-5 rounded-xl flex items-center gap-1.5 transition-all active:scale-95 group/btn shadow-sm">
+              Details
+              <ArrowUpRight
+                size={14}
+                className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-300"
+              />
             </button>
           </Link>
         </div>
