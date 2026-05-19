@@ -45,8 +45,6 @@ function Dashboard() {
 
           const decodedUser = JSON.parse(jsonPayload);
 
-          console.log("Dashboard Mounted/Updated. Token Payload:", decodedUser);
-
           if (decodedUser && decodedUser.role) {
             setUserRole(decodedUser.role);
           } else {

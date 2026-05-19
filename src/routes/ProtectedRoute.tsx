@@ -24,9 +24,6 @@ export default function ProtectedRoute({
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     const user = JSON.parse(window.atob(base64));
 
-    // 🔴 Debugging logs inside browser ecosystem
-    console.log("Current Logged In User Payload:", user);
-
     // 🛡️ অ্যাডমিন রাউট প্রোটেকশন গেটওয়ে
     if (isAdminRoute && user.role !== "admin") {
       console.log("❌ Admin route blocked! User role is:", user.role);
