@@ -11,30 +11,38 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { Users, Briefcase, Box, Heart } from "lucide-react";
+import {
+  Users,
+  DollarSign,
+  Box,
+  ArrowUpRight,
+  ShieldAlert,
+  Heart,
+} from "lucide-react";
 import {
   useGetAllUsersQuery,
-  useGetRecentWorksQuery,
   useGetReliefGoodsQuery,
+  useGetAllUsersHistoryQuery,
   UserAccount,
+  TDonationLog,
 } from "../../../../redux/api/api";
 
-// 🎯 Recharts ইন্টারনাল defaultProps অবচিত ওয়ার্নিং চিরতরে বন্ধ করার মেকানিজম
+// 🎯 Recharts ইন্টারনাল defaultProps ওয়ার্নিং সাপ্রেস করার মেকানিজম
 const silentConsoleError = console.error;
-console.error = (...args) => {
+console.error = (...args: unknown[]) => {
   if (typeof args[0] === "string" && args[0].includes("defaultProps")) return;
   silentConsoleError(...args);
 };
 
-// Premium Bento Theme Vibrant Palette
+// Premium Bento Theme Luxurious Palette
 const COLORS = [
-  "#FF6B8B",
-  "#8B5CF6",
-  "#EC4899",
-  "#3B82F6",
-  "#10B981",
-  "#F59E0B",
-  "#06B6D4",
+  "#8B5CF6", // Deep Violet
+  "#FF6B8B", // Rose Pink
+  "#3B82F6", // Electric Blue
+  "#10B981", // Emerald Green
+  "#F59E0B", // Amber Gold
+  "#EC4899", // Neon Pink
+  "#06B6D4", // Cyber Cyan
 ];
 
 interface ReliefGood {
@@ -43,98 +51,41 @@ interface ReliefGood {
   title: string;
   category: string;
   amount: number | string;
+  raisedAmount?: number | string;
   description: string;
   image: string;
 }
 
-interface RecentWork {
-  _id?: string;
-  title: string;
-  location?: string;
-  budget?: number | string;
-}
-
-// 🎯 RTK Query রেসপন্স অবজেক্ট ফরম্যাট হ্যান্ডেল করার জন্য কাস্টম ইন্টারফেস
 interface APIResponse<T> {
   success?: boolean;
   data?: T[];
   result?: T[];
 }
 
-interface TooltipPayload {
-  payload: ReliefGood;
-  value: number;
-  dataKey: string;
+interface IBarChartItem {
   name: string;
-  color: string;
-  fill: string;
-  image?: string;
+  amount: number;
 }
-
-interface CustomTooltipProps {
-  active?: boolean;
-  payload?: TooltipPayload[];
-  label?: string;
-}
-
-// 👑 Premium Dark Glassmorphic Tooltip
-const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-  if (active && payload && payload.length) {
-    const item = payload[0].payload;
-    return (
-      <div className="bg-slate-900/90 backdrop-blur-xl p-4 rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] border border-white/10 max-w-[260px] md:max-w-xs transition-all duration-300 text-left">
-        <div className="flex items-center gap-3 mb-3">
-          <img
-            src={
-              item.image ||
-              "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=150"
-            }
-            alt={item.title}
-            className="w-12 h-12 rounded-xl object-cover ring-2 ring-white/20"
-          />
-          <div className="min-w-0">
-            <p className="text-sm font-bold text-white tracking-tight truncate">
-              {item.title}
-            </p>
-            <span className="inline-block px-2 py-0.5 mt-1 rounded-md bg-white/10 text-[#FDA4AF] text-[9px] font-black uppercase tracking-widest">
-              {item.category}
-            </span>
-          </div>
-        </div>
-        <div className="flex justify-between items-center border-t border-white/5 pt-2 mt-1">
-          <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">
-            Quantity
-          </span>
-          <span className="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
-            {item.amount} Pcs
-          </span>
-        </div>
-      </div>
-    );
-  }
-  return null;
-};
 
 const PieCharts = () => {
-  // 🎯 RTK Query Live API Integrations
+  // 📡 RTK Query Central Live API Nodes
   const {
     data: reliefGoods,
     isLoading: goodsLoading,
     isError: goodsError,
   } = useGetReliefGoodsQuery(undefined);
   const {
-    data: recentWorks,
-    isLoading: worksLoading,
-    isError: worksError,
-  } = useGetRecentWorksQuery(undefined);
+    data: globalHistory,
+    isLoading: historyLoading,
+    isError: historyError,
+  } = useGetAllUsersHistoryQuery();
   const {
     data: systemUsers,
     isLoading: usersLoading,
     isError: usersError,
-  } = useGetAllUsersQuery(undefined); // 👈 লাইভ হুক কল
+  } = useGetAllUsersQuery(undefined);
 
-  // 💎 Premium Glow Skeleton Loading Animation
-  if (goodsLoading || worksLoading || usersLoading) {
+  if (goodsLoading || historyLoading || usersLoading) {
     return (
       <div className="space-y-8 py-4 animate-pulse">
         <div className="h-28 bg-slate-100 rounded-[2.5rem] w-full" />
@@ -155,18 +106,18 @@ const PieCharts = () => {
     );
   }
 
-  if (goodsError || worksError || usersError) {
+  if (goodsError || historyError || usersError) {
     return (
       <div className="min-h-[200px] flex justify-center items-center bg-rose-50 border border-rose-100 rounded-2xl p-6">
         <p className="text-rose-500 font-bold text-sm">
-          ⚠️ Server Synchronization Error. Please verify MongoDB connection or
-          RTK Tags.
+          ⚠️ Server Synchronization Failure. Please verify MongoDB architecture
+          or RTK query tags.
         </p>
       </div>
     );
   }
 
-  // 🛡️ Data Sanitization Clusters
+  // 🛡️ Data Sanitization Layer
   let goodsData: ReliefGood[] = [];
   if (Array.isArray(reliefGoods)) {
     goodsData = reliefGoods;
@@ -176,16 +127,6 @@ const PieCharts = () => {
     else if (Array.isArray(response.result)) goodsData = response.result;
   }
 
-  let worksData: RecentWork[] = [];
-  if (Array.isArray(recentWorks)) {
-    worksData = recentWorks;
-  } else if (recentWorks && typeof recentWorks === "object") {
-    const response = recentWorks as APIResponse<RecentWork>;
-    if (Array.isArray(response.data)) worksData = response.data;
-    else if (Array.isArray(response.result)) worksData = response.result;
-  }
-
-  // 🎯 ইউজার রেসপন্স স্যানিটাইজেশন
   let usersData: UserAccount[] = [];
   if (Array.isArray(systemUsers)) {
     usersData = systemUsers;
@@ -195,217 +136,293 @@ const PieCharts = () => {
     else if (Array.isArray(response.result)) usersData = response.result;
   }
 
-  const formattedGoods: ReliefGood[] = goodsData.map((item: ReliefGood) => ({
-    ...item,
-    amount: Number(item.amount) || 0,
-  }));
+  // 🔒 ফিল্টারিং: শুধুমাত্র PAID ট্রানজেকশনগুলো আলাদা করা হলো
+  const validPaidLogs = (globalHistory || []).filter(
+    (log: TDonationLog) => log.status === "PAID",
+  );
 
-  // Analytical Metrics Calculations
-  const totalSuppliesCount = formattedGoods.reduce(
-    (acc: number, curr: ReliefGood) => acc + (Number(curr.amount) || 0),
+  // 📊 ডাইনামিক পাই চার্ট ডাটা ম্যাপিং
+  const pieChartData = goodsData
+    .map((item, idx) => ({
+      name: item.title,
+      value: Number(item.raisedAmount || 0),
+      fill: COLORS[idx % COLORS.length],
+    }))
+    .filter((item) => item.value > 0);
+
+  // মোট প্লাটফর্ম কালেকশন সামেশন
+  const platformTotalInflow = validPaidLogs.reduce(
+    (sum, log) => sum + (Number(log.amount) || 0),
     0,
   );
-  const totalRecentWorksCount = worksData.length;
-  const totalRegisteredUsers = usersData.length; // 👈 এখন এটি লাইভ ডাটাবেজ থেকে কাউন্ট হবে
+  const totalRegisteredUsers = usersData.length;
+  const totalUniqueCampaigns = goodsData.length;
+
+  // 📈 বার চার্ট প্রসেসিং: শেষ ৫টি লেটেস্ট ট্রানজেকশনের গ্রাফিকাল ভেলোসিটি ভিউ
+  const barChartData: IBarChartItem[] = validPaidLogs
+    .slice(0, 5)
+    .reverse()
+    .map((log) => ({
+      name: log.transactionId.slice(0, 8),
+      amount: Number(log.amount) || 0,
+    }));
+
+  const finalBarChartData =
+    barChartData.length > 0
+      ? barChartData
+      : [
+          { name: "Node Alpha", amount: 0 },
+          { name: "Node Beta", amount: 0 },
+        ];
 
   return (
     <div className="space-y-8 py-2">
-      {/* 👑 TOP BANNER BENOT ACCENT */}
-      <div className="relative text-left bg-white border border-slate-100 rounded-[2.5rem] p-6 md:p-8 shadow-sm overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-[#FDA4AF]/30 to-transparent rounded-full blur-3xl pointer-events-none" />
+      {/* 👑 TOP MASTER CONTROL BANNER */}
+      <div className="relative text-left bg-gradient-to-r from-slate-900 to-slate-800 border border-slate-800 rounded-[2.5rem] p-6 md:p-8 shadow-md overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-[#FDA4AF]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
         <div>
-          <div className="inline-block px-3 py-1 mb-2 rounded-full bg-rose-50 border border-rose-100">
-            <span className="text-[#fb7185] font-black uppercase tracking-[0.2em] text-[9px]">
-              RTK Query Core Control Hub
+          <div className="inline-block px-3 py-1 mb-2 rounded-full bg-white/5 border border-white/10">
+            <span className="text-[#FDA4AF] font-black uppercase tracking-[0.2em] text-[9px] flex items-center gap-1">
+              <ShieldAlert size={12} /> Root Administrative Command Hub
             </span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
             System Logistics Dashboard
           </h2>
           <p className="text-slate-400 text-xs mt-1 font-medium">
-            Unified center live syncing distributed stocks, camp operations, and
-            ecosystem status.
+            Unified control center tracking gross inflows, product-scope
+            funding, and global validation streams.
           </p>
         </div>
-        <div className="flex gap-2 items-center shrink-0 bg-slate-50 border border-slate-100 px-4 py-2 rounded-2xl w-fit">
+        <div className="flex gap-2 items-center shrink-0 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl w-fit">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
-            Synced Live with MongoDB
+          <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+            Live Synchronized Ledger
           </span>
         </div>
       </div>
 
       {/* 📊 BENTO SUMMARY CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Card 1: Total Supplies */}
-        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.01)] hover:scale-[1.01] transition-transform duration-300 text-left">
-          <div className="space-y-2">
-            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
-              Total Supply Stock
+        {/* Card 1: Gross Platform Inflow */}
+        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-sm hover:scale-[1.01] transition-transform text-left">
+          <div className="space-y-1">
+            <span className="text-slate-400 text-xs font-black uppercase tracking-wider block">
+              Cumulative System Inflow
             </span>
-            <h3 className="text-3xl font-black text-slate-800 tracking-tight">
-              {totalSuppliesCount}{" "}
-              <span className="text-xs text-slate-400 font-medium">Units</span>
+            <h3 className="text-3xl font-black text-slate-800 tracking-tight flex items-center">
+              <DollarSign
+                size={24}
+                className="text-emerald-500 -ml-1 shrink-0"
+              />
+              {platformTotalInflow}
             </h3>
           </div>
-          <div className="p-4 bg-rose-50 rounded-2xl text-[#fb7185]">
-            <Box size={24} />
+          <div className="p-4 bg-emerald-50 rounded-2xl text-emerald-500">
+            <ArrowUpRight size={24} />
           </div>
         </div>
 
-        {/* Card 2: Recent Works */}
-        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.01)] hover:scale-[1.01] transition-transform duration-300 text-left">
-          <div className="space-y-2">
-            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
-              Deployment Missions
+        {/* Card 2: Total Active Campaigns */}
+        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-sm hover:scale-[1.01] transition-transform text-left">
+          <div className="space-y-1">
+            <span className="text-slate-400 text-xs font-black uppercase tracking-wider block">
+              Ecosystem Node Tracks
             </span>
             <h3 className="text-3xl font-black text-slate-800 tracking-tight">
-              {totalRecentWorksCount}{" "}
-              <span className="text-xs text-slate-400 font-medium">
-                Projects
+              {totalUniqueCampaigns}{" "}
+              <span className="text-xs text-slate-400 font-bold uppercase">
+                Campaigns
               </span>
             </h3>
           </div>
           <div className="p-4 bg-violet-50 rounded-2xl text-violet-500">
-            <Briefcase size={24} />
+            <Box size={24} />
           </div>
         </div>
 
-        {/* Card 3: Users (Live Counter) */}
-        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.01)] hover:scale-[1.01] transition-transform duration-300 text-left">
-          <div className="space-y-2">
-            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider block">
-              Registered Access Tokens
+        {/* Card 3: Registered Users Counter */}
+        <div className="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-between shadow-sm hover:scale-[1.01] transition-transform text-left">
+          <div className="space-y-1">
+            <span className="text-slate-400 text-xs font-black uppercase tracking-wider block">
+              Verified Core Profiles
             </span>
             <h3 className="text-3xl font-black text-slate-800 tracking-tight">
               {totalRegisteredUsers}{" "}
-              <span className="text-xs text-slate-400 font-medium">
-                Profiles
+              <span className="text-xs text-slate-400 font-bold uppercase">
+                Accounts
               </span>
             </h3>
           </div>
-          <div className="p-4 bg-emerald-50 rounded-2xl text-emerald-500">
+          <div className="p-4 bg-rose-50 rounded-2xl text-[#fb7185]">
             <Users size={24} />
           </div>
         </div>
       </div>
 
-      {/* 📈 DUAL GRAPHS PANEL SECTION */}
+      {/* 📈 DUAL CHARTS ACCENT PANEL */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* 🎨 Pie Chart Card */}
-        <div className="lg:col-span-5 bg-white p-6 md:p-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.02)] border border-slate-100 flex flex-col items-center justify-between min-h-[460px] hover:shadow-[0_30px_70px_rgba(251,113,133,0.05)] transition-all duration-500 group">
+        {/* 🎨 Left Side: Live Donation Revenue Share (Pie) */}
+        <div className="lg:col-span-5 bg-white p-6 md:p-8 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col items-center justify-between min-h-[460px] hover:shadow-md transition-all duration-500 group">
           <div className="w-full text-left border-b border-slate-50 pb-4 mb-2">
             <h3 className="text-base font-black text-slate-800 tracking-tight">
-              Distribution Volumetrics
+              Donation Capital Allocation
             </h3>
             <p className="text-slate-400 text-[11px] font-medium mt-0.5">
-              Proportional tracking across emergency sectors.
+              Proportional distribution of capital safely loaded into campaign
+              vaults.
             </p>
           </div>
 
-          <div className="w-full h-[260px] relative flex items-center justify-center">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  dataKey="amount"
-                  isAnimationActive={true}
-                  data={formattedGoods}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius="65%"
-                  outerRadius="88%"
-                  paddingAngle={3}
-                  stroke="none"
-                >
-                  {formattedGoods.map((item: ReliefGood, index: number) => (
-                    <Cell
-                      key={item._id || index}
-                      fill={COLORS[index % COLORS.length]}
-                      className="cursor-pointer focus:outline-none"
-                    />
-                  ))}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  iconType="circle"
-                  verticalAlign="bottom"
-                  iconSize={8}
-                  wrapperStyle={{
-                    fontSize: "10px",
-                    fontWeight: "700",
-                    color: "#64748b",
-                    paddingTop: "10px",
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="w-full h-[280px] relative flex items-center justify-center">
+            {pieChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    dataKey="value"
+                    isAnimationActive={true}
+                    data={pieChartData}
+                    cx="50%"
+                    cy="45%"
+                    innerRadius="68%"
+                    outerRadius="90%"
+                    paddingAngle={4}
+                    stroke="none"
+                    // 🎯 ফিক্স নোড ১: অবচিত এরর সৃষ্টিকারী 'expandOnHover' প্রপটি বাদ দেওয়া হলো
+                  >
+                    {pieChartData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={entry.fill}
+                        className="cursor-pointer focus:outline-none transition-all duration-300 hover:opacity-80"
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      background: "#0f172a",
+                      borderRadius: "1rem",
+                      color: "#fff",
+                      border: "none",
+                      fontSize: "11px",
+                      boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.3)",
+                    }}
+                    itemStyle={{ color: "#FDA4AF" }}
+                    // 🎯 ফিক্স নোড ২: অব্যবহৃত 'props' সরিয়ে শুধু রিকোয়ার্ড প্যারামিটার রাখা হলো (eslint ফিক্স)
+                    formatter={(value: number, name: string) => [
+                      `$${value} Injected`,
+                      `${name}`,
+                    ]}
+                  />
+                  <Legend
+                    iconType="circle"
+                    verticalAlign="bottom"
+                    iconSize={8}
+                    wrapperStyle={{
+                      fontSize: "10px",
+                      fontWeight: "700",
+                      color: "#64748b",
+                      paddingTop: "15px",
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <span className="text-slate-400 text-xs font-black uppercase tracking-widest">
+                No Funds Channeled Yet
+              </span>
+            )}
 
-            <div className="absolute inset-0 m-auto w-24 h-24 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+            <div className="absolute inset-0 m-auto w-24 h-24 flex flex-col items-center justify-center pointer-events-none translate-y-[-8px]">
+              <span className="text-slate-400 text-[8px] font-bold uppercase tracking-widest">
                 Aggregate
               </span>
-              <span className="text-xl font-black text-slate-800 tracking-tighter">
-                {totalSuppliesCount}
+              <span className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-violet-600 to-emerald-500 tracking-tighter">
+                ${platformTotalInflow}
               </span>
-              <span className="text-slate-400 text-[9px] font-semibold">
-                Units
+              <span className="text-slate-400 text-[8px] font-bold uppercase">
+                Revenue
               </span>
             </div>
           </div>
         </div>
 
-        {/* 📊 Modern Bar Chart Card */}
-        <div className="lg:col-span-7 bg-white p-6 md:p-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.02)] border border-slate-100 min-h-[460px] hover:shadow-[0_30px_70px_rgba(139,92,246,0.05)] transition-all duration-500 flex flex-col justify-between">
+        {/* 📊 Right Side: Dynamic Bar Chart mapped to Transaction Blocks */}
+        <div className="lg:col-span-7 bg-white p-6 md:p-8 rounded-[2.5rem] shadow-sm border border-slate-100 min-h-[460px] hover:shadow-md transition-all duration-500 flex flex-col justify-between">
           <div className="w-full text-left border-b border-slate-50 pb-4 mb-6">
             <h3 className="text-base font-black text-slate-800 tracking-tight">
-              Itemized Density Metrics
+              Inflow Velocity Stream
             </h3>
             <p className="text-slate-400 text-[11px] font-medium mt-0.5">
-              Granular stock volume graph per token asset.
+              Time-series tracking the cash volume of the last 5 transaction
+              hashes.
             </p>
           </div>
 
           <div className="w-full h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={formattedGoods}
-                margin={{ top: 10, right: 10, left: -25, bottom: 40 }}
-                barSize={13}
+                data={finalBarChartData}
+                margin={{ top: 25, right: 10, left: -25, bottom: 10 }}
+                barSize={16}
               >
                 <CartesianGrid
-                  strokeDasharray="0 0"
-                  stroke="#f8fafc"
+                  strokeDasharray="3 3"
+                  stroke="#f1f5f9"
                   vertical={false}
                 />
                 <XAxis
-                  dataKey="title"
-                  tick={{ fill: "#94a3b8", fontSize: 9, fontWeight: "700" }}
-                  interval={0}
-                  angle={-20}
-                  textAnchor="end"
+                  dataKey="name"
+                  tick={{
+                    fill: "#94a3b8",
+                    fontSize: 10,
+                    fontWeight: "800",
+                    fontFamily: "monospace",
+                  }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis hide />
                 <Tooltip
-                  content={<CustomTooltip />}
-                  cursor={{ fill: "rgba(251, 113, 133, 0.02)", radius: 8 }}
+                  cursor={{ fill: "rgba(15, 23, 42, 0.02)", radius: 10 }}
+                  contentStyle={{
+                    background: "#0f172a",
+                    borderRadius: "1rem",
+                    color: "#fff",
+                    border: "none",
+                    boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.3)",
+                  }}
+                  formatter={(value: number) => [
+                    `$${value}`,
+                    "Amount Received",
+                  ]}
                 />
                 <Bar
                   dataKey="amount"
-                  fill="url(#premiumOverviewGlow)"
-                  radius={[7, 7, 0, 0]}
+                  fill="url(#adminDashboardGlow)"
+                  radius={[8, 8, 0, 0]}
+                  label={{
+                    position: "top",
+                    fill: "#64748b",
+                    fontSize: 10,
+                    fontWeight: "800",
+                    formatter: (v: number) => (v > 0 ? `$${v}` : ""),
+                  }}
                 />
                 <defs>
                   <linearGradient
-                    id="premiumOverviewGlow"
+                    id="adminDashboardGlow"
                     x1="0"
                     y1="0"
                     x2="0"
                     y2="1"
                   >
                     <stop offset="0%" stopColor="#8B5CF6" stopOpacity={1} />
-                    <stop offset="100%" stopColor="#FF6B8B" stopOpacity={0.4} />
+                    <stop
+                      offset="100%"
+                      stopColor="#FF6B8B"
+                      stopOpacity={0.35}
+                    />
                   </linearGradient>
                 </defs>
               </BarChart>
@@ -414,57 +431,60 @@ const PieCharts = () => {
         </div>
       </div>
 
-      {/* 📝 BOTTOM SECTION: DEPLOYMENTS & LIVE OPERATIONAL ACCOUNTS */}
+      {/* 📝 BOTTOM SECTION: LIVE SECURED TRANSACTION STRINGS & OPERATIONAL ACCOUNT ACCESS LEVELS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
-        {/* 1. Recent Works Deployment Table */}
+        {/* 1. Live Paid Transactions History Cluster */}
         <div className="bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-sm">
           <div className="flex justify-between items-center mb-4 border-b border-slate-50 pb-3">
             <div>
               <h3 className="text-base font-black text-slate-800">
-                Deployment Missions
+                Latest System Inflows
               </h3>
               <p className="text-slate-400 text-[10px]">
-                Active disaster recovery and supply chains tracing.
+                Real-time cryptographic confirmation records pooling from global
+                accounts.
               </p>
             </div>
-            <span className="text-[10px] font-bold text-violet-500 bg-violet-50 px-2.5 py-1 rounded-xl">
-              Live Sync
+            <span className="text-[10px] font-black text-rose-500 bg-rose-50 px-2.5 py-1 rounded-xl">
+              Live Audit Feed
             </span>
           </div>
           <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1 scrollbar-thin">
-            {worksData.length > 0 ? (
-              worksData.map((work: RecentWork, idx: number) => (
-                <div
-                  key={work._id || idx}
-                  className="flex items-center justify-between p-3.5 bg-slate-50 rounded-2xl hover:bg-slate-100/60 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-500 shrink-0">
-                      <Heart size={16} />
+            {validPaidLogs.length > 0 ? (
+              validPaidLogs
+                .slice(0, 5)
+                .map((log: TDonationLog, idx: number) => (
+                  <div
+                    key={log._id || idx}
+                    className="flex items-center justify-between p-3.5 bg-slate-50 rounded-2xl hover:bg-slate-100/60 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0">
+                        <Heart size={16} />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-bold text-slate-800 truncate max-w-[170px] sm:max-w-xs uppercase">
+                          {log.campaignTitle || "General Fund Allocation"}
+                        </h4>
+                        <span className="text-[10px] text-slate-400 font-mono block truncate">
+                          Txn: {log.transactionId}
+                        </span>
+                      </div>
                     </div>
-                    <div className="min-w-0">
-                      <h4 className="text-xs font-bold text-slate-800 truncate max-w-[180px] md:max-w-xs">
-                        {work.title}
-                      </h4>
-                      <span className="text-[10px] text-slate-400 font-medium block">
-                        {work.location || "National Target"}
-                      </span>
-                    </div>
+                    <span className="text-sm font-black text-emerald-600 shrink-0">
+                      +${log.amount}
+                    </span>
                   </div>
-                  <span className="text-xs font-black text-slate-700 shrink-0">
-                    ${work.budget || "Active"}
-                  </span>
-                </div>
-              ))
+                ))
             ) : (
-              <p className="text-xs text-slate-400 py-6 text-center">
-                No operational missions found in database.
+              <p className="text-xs text-slate-400 py-12 text-center font-medium">
+                No verified audit records inside this scope.
               </p>
             )}
           </div>
         </div>
 
-        {/* 2. Live Operational User Accounts (এখন ডাটাবেজ থেকে ডায়নামিক!) */}
+        {/* 2. Central Profiles Gateways Access List */}
         <div className="bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-sm">
           <div className="flex justify-between items-center mb-4 border-b border-slate-50 pb-3">
             <div>
@@ -472,11 +492,12 @@ const PieCharts = () => {
                 Operational Gateways
               </h3>
               <p className="text-slate-400 text-[10px]">
-                Ecosystem encryption tokens and access levels live tracking.
+                Ecosystem encryption tokens and structural identity access level
+                logs.
               </p>
             </div>
             <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2.5 py-1 rounded-xl">
-              Security Live Node
+              Live Accounts
             </span>
           </div>
           <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1 scrollbar-thin">
@@ -500,19 +521,15 @@ const PieCharts = () => {
                     </div>
                   </div>
                   <span
-                    className={`text-[9px] font-black uppercase tracking-wider px-2 py-1 rounded-md shrink-0 ${
-                      usr.role === "admin"
-                        ? "bg-rose-50 text-[#fb7185]"
-                        : "bg-slate-200 text-slate-600"
-                    }`}
+                    className={`text-[9px] font-black uppercase tracking-wider px-2 py-1 rounded-md shrink-0 ${usr.role === "admin" ? "bg-rose-50 text-[#fb7185] border border-rose-100" : "bg-slate-200 text-slate-600"}`}
                   >
                     {usr.role || "user"}
                   </span>
                 </div>
               ))
             ) : (
-              <p className="text-xs text-slate-400 py-6 text-center">
-                No active users found in database sequences.
+              <p className="text-xs text-slate-400 py-12 text-center font-medium">
+                No active identity records found inside system files.
               </p>
             )}
           </div>

@@ -18,6 +18,7 @@ import { Link, useLocation } from "react-router-dom";
 import PieCharts from "./pieChart/PieCharts";
 import UserPieCharts from "./pieChart/UserPieCharts";
 import DashboardLayout from "../../../components/layout/DashboardLayout";
+import PaymentSuccessModal from "../../../components/donateForm/PaymentSuccessModal";
 
 function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -62,7 +63,10 @@ function Dashboard() {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen bg-slate-50 overflow-hidden">
+    <div className="flex min-h-screen bg-slate-50 overflow-hidden relative">
+      {/* 🚀 পেমেন্ট সাকসেস মোডাল গেটওয়ে এখানে ইনজেক্ট করা হলো */}
+      <PaymentSuccessModal />
+
       {/* Mobile Menu Open/Close Action Toggle */}
       <button
         onClick={toggleMobileMenu}

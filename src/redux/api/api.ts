@@ -1,12 +1,23 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+// export interface TDonationLog {
+//   _id?: string;
+//   userEmail: string;
+//   campaignTitle: string;
+//   category: string;
+//   amount: number;
+//   timestamp: string;
+// }
+
 export interface TDonationLog {
-  _id?: string;
-  userEmail: string;
+  _id: string;
+  transactionId: string;
   campaignTitle: string;
-  category: string;
   amount: number;
-  timestamp: string;
+  email: string;
+  status: string;
+  createdAt: string;
+  paidAt?: string;
 }
 
 export interface UserAccount {
@@ -16,16 +27,32 @@ export interface UserAccount {
   role: string;
 }
 
+interface RootStateCustom {
+  auth?: {
+    token?: string | null;
+  };
+}
+
+export interface IPaymentPayload {
+  id: string;
+  amount: number;
+  email: string;
+  campaignTitle?: string;
+}
+
 export const baseApi = createApi({
   reducerPath: "baseApi",
 
   // 🎯 Configuration with automated JWT Bearer token injection
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
+    // baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
+    baseUrl: "http://localhost:5000/",
 
-    // baseUrl: "http://localhost:5000/",
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
+    prepareHeaders: (headers: Headers, { getState }) => {
+      const token =
+        localStorage.getItem("token") ||
+        (getState() as RootStateCustom)?.auth?.token;
+
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
       }
@@ -35,7 +62,6 @@ export const baseApi = createApi({
 
   // 🎯 Declaring centralized cache tags for automated UI state synchronization
   tagTypes: ["supplies", "user", "reliefGoods", "donationHistory"],
-
   endpoints: (builder) => ({
     // 👑 AUTH ENDPOINT: Fetch authenticated active profile data
     getLoggedUser: builder.query({
@@ -46,21 +72,28 @@ export const baseApi = createApi({
       providesTags: ["user"],
     }),
 
-    // Inside your endpoints block:
     getUserHistory: builder.query<TDonationLog[], string>({
       query: (email) => ({
-        url: `user/donation-history/${email}`,
+        url: `user/donation-history/${email.trim().toLowerCase()}`,
         method: "GET",
       }),
-      // 🎯 Fix: Strongly typing the response parameter as an array of TDonationLog or an object container
       transformResponse: (
-        response: TDonationLog[] | { data: TDonationLog[] },
-      ) => {
-        return Array.isArray(response) ? response : response?.data || [];
+        response:
+          | TDonationLog[]
+          | { data: TDonationLog[] }
+          | { result: TDonationLog[] },
+      ): TDonationLog[] => {
+        if (Array.isArray(response)) return response;
+        if (response && typeof response === "object") {
+          if ("data" in response && Array.isArray(response.data))
+            return response.data;
+          if ("result" in response && Array.isArray(response.result))
+            return response.result;
+        }
+        return [];
       },
       providesTags: ["donationHistory"],
     }),
-
     // 📡 LEDGER QUERY: Get all active relief campaign packages
     getReliefGoods: builder.query({
       query: () => ({
@@ -126,6 +159,24 @@ export const baseApi = createApi({
         "donationHistory",
       ],
     }),
+    initiatePayment: builder.mutation<
+      { url: string },
+      {
+        id: string;
+        amount: number;
+        email: string;
+        campaignTitle?: string;
+        campaignId?: string;
+      }
+    >({
+      query: (paymentInfo) => ({
+        url: "/api/payment/initiate",
+        method: "POST",
+        body: paymentInfo,
+      }),
+
+      invalidatesTags: ["reliefGoods"],
+    }),
 
     getAllUsersHistory: builder.query<TDonationLog[], void>({
       query: () => ({
@@ -133,11 +184,20 @@ export const baseApi = createApi({
         method: "GET",
       }),
       transformResponse: (
-        response: TDonationLog[] | { data: TDonationLog[] },
+        response:
+          | TDonationLog[]
+          | { data: TDonationLog[] }
+          | { result: TDonationLog[] },
       ): TDonationLog[] => {
-        return Array.isArray(response) ? response : response?.data || [];
+        if (Array.isArray(response)) return response;
+        if (response && typeof response === "object") {
+          if ("data" in response && Array.isArray(response.data))
+            return response.data;
+          if ("result" in response && Array.isArray(response.result))
+            return response.result;
+        }
+        return [];
       },
-      // 'donationHistory' ট্যাগ অ্যাড করা হলো যাতে ইউজার ডোনেট করলে অ্যাডমিন প্যানেলও অটো-রিফেচ হয়
       providesTags: ["donationHistory"],
     }),
 
@@ -200,10 +260,24 @@ export const baseApi = createApi({
       transformResponse: (
         response: UserAccount[] | { data: UserAccount[] },
       ): UserAccount[] => {
-        // 🛡️ ব্যাকেন্ড থেকে অবজেক্ট বা এরে যেটাই আসুক, ফ্রন্টএন্ডের জন্য স্যানিটাইজড এরে রিটার্ন করবে
         return Array.isArray(response) ? response : response?.data || [];
       },
       providesTags: ["user"],
+    }),
+
+    // endpoints ব্লকের ভেতরে এটি পেস্ট করো:
+    getClimateAlerts: builder.query<
+      {
+        success: boolean;
+        alerts: Record<string, { hazardLevel: string; reasons: string[] }>;
+      },
+      void
+    >({
+      query: () => ({
+        url: "api/climate-alerts",
+        method: "GET",
+      }),
+      providesTags: ["reliefGoods"], // পেমেন্ট আপডেট হলে যেন আবহাওয়া ট্র্যাকারও রিফ্রেশ হয়
     }),
     // 👑 AUTH MUTATION: Exchange system verification matrices for a session authentication token
     loginUser: builder.mutation({
@@ -235,4 +309,6 @@ export const {
   useGetUserHistoryQuery,
   useGetAllUsersHistoryQuery,
   useGetAllUsersQuery,
+  useInitiatePaymentMutation,
+  useGetClimateAlertsQuery,
 } = baseApi;

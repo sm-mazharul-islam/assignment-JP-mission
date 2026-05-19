@@ -1,18 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-// type TReliefGoods = {
-//   id: string;
-//   title: string;
-//   category: string;
-//   description: string;
-//   amount: string;
-//   image: string;
-// };
-
-// type TInitialState ={
-//   reliefGoods: TSupplyProps[]
-// }
-
 export interface Supply {
   _id: string;
   title: string;
@@ -40,15 +27,19 @@ const initialState: SuppliesState = {
   loading: false,
   error: null,
 };
+
 const ReliefGoodsSlice = createSlice({
   name: "supplies",
   initialState,
   reducers: {
-    addReliefGoods() {},
+    // 🎯 addReliefGoods মেথডটি টাইপ-সেফ অ্যাকশন সহ কমপ্লিট করা হলো
+    addReliefGoods(state, action: PayloadAction<Supply>) {
+      state.reliefGoods.push(action.payload);
+    },
 
     updateSupply(
       state,
-      action: PayloadAction<{ id: string; updatedData: Partial<Supply> }>
+      action: PayloadAction<{ id: string; updatedData: Partial<Supply> }>,
     ) {
       const { id, updatedData } = action.payload;
       const index = state.reliefGoods.findIndex((supply) => supply._id === id);
@@ -60,14 +51,16 @@ const ReliefGoodsSlice = createSlice({
       }
     },
 
-    // removeReliefGoods(state, action) {},
-    // updateReliefGoods: (state, action: PayloadAction<string>) => {
-    //   const task = state.reliefGoods.find((item) => item.id === action.payload);
-    //   // task!.isCompleted = !task?.isCompleted;
-    // },
+    // 🗑️ ফিউচার ইউজের জন্য ডিলিট মেথড লাগলে এভাবে আইডি দিয়ে ট্র্যাকিং করতে পারো
+    removeReliefGoods(state, action: PayloadAction<string>) {
+      state.reliefGoods = state.reliefGoods.filter(
+        (item) => item._id !== action.payload,
+      );
+    },
   },
 });
 
-export const { addReliefGoods, updateSupply } = ReliefGoodsSlice.actions;
+export const { addReliefGoods, updateSupply, removeReliefGoods } =
+  ReliefGoodsSlice.actions;
 
 export default ReliefGoodsSlice.reducer;

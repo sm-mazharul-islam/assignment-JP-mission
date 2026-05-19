@@ -1,221 +1,508 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
+import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
+
+import type { EventClickArg } from "@fullcalendar/core";
+
 import {
-  Calendar as CalendarIcon,
-  MapPin,
-  Clock,
-  Users,
-  ArrowRight,
+  Thermometer,
+  CloudRain,
+  Wind,
+  AlertTriangle,
+  ShieldCheck,
+  Bot,
 } from "lucide-react";
 
-import { EventClickArg } from "@fullcalendar/core";
+import { useGetClimateAlertsQuery } from "../../../../redux/api/api";
 
-interface ReliefEvent {
+// ======================================================
+// TYPES
+// ======================================================
+
+type HazardLevel = "CRITICAL" | "WARNING" | "SAFE";
+
+interface IClimateMetrics {
+  temp?: number | string;
+  rain?: number | string;
+}
+
+interface IClimateAlert {
+  hazardLevel: HazardLevel;
+  reasons: string[];
+  metrics?: IClimateMetrics;
+}
+
+interface IApiAlert {
+  hazardLevel?: string;
+  reasons?: unknown;
+  metrics?: {
+    temp?: number | string;
+    rain?: number | string;
+  };
+}
+
+interface IClimateApiResponse {
+  alerts?: Record<string, IApiAlert>;
+}
+
+interface TAiReliefEvent {
   id: string;
   title: string;
   start: string;
+  backgroundColor: string;
+  borderColor: string;
+  textColor: string;
+
   extendedProps: {
     location: string;
     volunteerCount: number;
     timeSlot: string;
     status: "Urgent" | "Processing" | "Completed";
     category: string;
+    hazardLevel: HazardLevel;
+    reasons: string[];
+    metrics?: IClimateMetrics;
+    aiGenerated: boolean;
   };
-  backgroundColor: string;
 }
 
+// ======================================================
+// COMPONENT
+// ======================================================
+
 export default function CalendarPage() {
-  // ডামি লাইভ ডাটা (তোমার MongoDB/RTK Query এর সাথে সিঙ্ক করে নিও)
-  const [events] = useState<ReliefEvent[]>([
-    {
-      id: "1",
-      title: "Dhaka Slum Food Distribution",
-      start: "2026-05-20",
-      backgroundColor: "#fb7185", // Urgent (Rose)
-      extendedProps: {
-        location: "Korail Slum, Dhaka",
-        volunteerCount: 8,
-        timeSlot: "10:00 AM - 02:00 PM",
-        status: "Urgent",
-        category: "Food Supplies",
-      },
-    },
-    {
-      id: "2",
-      title: "Medical Camp Stock Arrival",
-      start: "2026-05-25",
-      backgroundColor: "#8B5CF6", // Processing (Violet)
-      extendedProps: {
-        location: "Central Warehouse, Dhaka",
-        volunteerCount: 4,
-        timeSlot: "04:00 PM - 07:00 PM",
-        status: "Processing",
-        category: "Medicine",
-      },
-    },
-    {
-      id: "3",
-      title: "Flood Area Winter Clothes Logistics",
-      start: "2026-05-15",
-      backgroundColor: "#10B981", // Completed (Emerald)
-      extendedProps: {
-        location: "Kurigram Operations Hub",
-        volunteerCount: 15,
-        timeSlot: "08:00 AM - 06:00 PM",
-        status: "Completed",
-        category: "Clothing",
-      },
-    },
-  ]);
+  const today = new Date().toISOString().split("T")[0];
 
-  const [selectedEvent, setSelectedEvent] = useState<ReliefEvent | null>(
-    events[0],
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(today);
 
-  // ক্যালেন্ডারের ইভেন্টে ক্লিক করলে সাইড প্যানেল আপডেট করার ফাংশন
-  const handleEventClick = (info: EventClickArg): void => {
-    const clickedEvent = events.find((e) => e.id === info.event.id);
-    if (clickedEvent) {
-      setSelectedEvent(clickedEvent);
+  const [activeEvent, setActiveEvent] = useState<TAiReliefEvent | null>(null);
+
+  // ======================================================
+  // API
+  // ======================================================
+
+  const { data } = useGetClimateAlertsQuery() as {
+    data?: IClimateApiResponse;
+  };
+
+  // ======================================================
+  // SAFE AI ALERT MAP
+  // ======================================================
+
+  const alertMap = useMemo<Record<string, IClimateAlert>>(() => {
+    if (!data?.alerts) return {};
+
+    const safeAlerts: Record<string, IClimateAlert> = {};
+
+    Object.entries(data.alerts).forEach(([date, alert]) => {
+      const level: HazardLevel =
+        alert.hazardLevel === "CRITICAL"
+          ? "CRITICAL"
+          : alert.hazardLevel === "WARNING"
+            ? "WARNING"
+            : "SAFE";
+
+      safeAlerts[date] = {
+        hazardLevel: level,
+
+        reasons: Array.isArray(alert.reasons)
+          ? alert.reasons.filter(
+              (reason): reason is string => typeof reason === "string",
+            )
+          : [],
+
+        metrics: {
+          temp: alert.metrics?.temp ?? "N/A",
+
+          rain: alert.metrics?.rain ?? 0,
+        },
+      };
+    });
+
+    return safeAlerts;
+  }, [data]);
+
+  // ======================================================
+  // AI GENERATED EVENTS
+  // ======================================================
+
+  const aiEvents = useMemo<TAiReliefEvent[]>(() => {
+    return Object.entries(alertMap).map(([dateKey, alert], index) => {
+      const isCritical = alert.hazardLevel === "CRITICAL";
+
+      const isWarning = alert.hazardLevel === "WARNING";
+
+      return {
+        id: `ai-event-${index}`,
+
+        title: isCritical
+          ? "🚨 AI Critical"
+          : isWarning
+            ? "⚠ AI Warning"
+            : "🟢 AI Safe",
+
+        start: dateKey,
+
+        backgroundColor: isCritical
+          ? "#ef4444"
+          : isWarning
+            ? "#f59e0b"
+            : "#10b981",
+
+        borderColor: isCritical ? "#dc2626" : isWarning ? "#d97706" : "#059669",
+
+        textColor: "#ffffff",
+
+        extendedProps: {
+          location: "AI Climate Node",
+
+          volunteerCount: isCritical ? 25 : isWarning ? 10 : 0,
+
+          timeSlot: "AI Monitoring",
+
+          status: isCritical
+            ? "Urgent"
+            : isWarning
+              ? "Processing"
+              : "Completed",
+
+          category: "AI Climate Analysis",
+
+          hazardLevel: alert.hazardLevel,
+
+          reasons: alert.reasons,
+
+          metrics: alert.metrics,
+
+          aiGenerated: true,
+        },
+      };
+    });
+  }, [alertMap]);
+
+  // ======================================================
+  // EVENT CLICK
+  // ======================================================
+
+  const handleEventClick = (info: EventClickArg) => {
+    const foundEvent =
+      aiEvents.find((event) => event.id === info.event.id) ?? null;
+
+    setActiveEvent(foundEvent);
+
+    if (foundEvent) {
+      setSelectedDate(foundEvent.start);
     }
   };
 
-  return (
-    <div className="space-y-8 py-2 text-left animate-fade-in">
-      {/* 👑 TOP BANNER */}
-      <div className="relative bg-white border border-slate-100 rounded-[2.5rem] p-6 md:p-8 shadow-sm overflow-hidden flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-        <div>
-          <div className="inline-block px-3 py-1 mb-2 rounded-full bg-rose-50 border border-rose-100">
-            <span className="text-[#fb7185] font-black uppercase tracking-[0.2em] text-[9px]">
-              Mission Control Timeline
-            </span>
+  // ======================================================
+  // DATE CLICK
+  // ======================================================
+
+  const handleDateClick = (info: DateClickArg) => {
+    setSelectedDate(info.dateStr);
+
+    const matchedEvent =
+      aiEvents.find((event) => event.start === info.dateStr) ?? null;
+
+    setActiveEvent(matchedEvent);
+  };
+
+  // ======================================================
+  // CUSTOM DAY CELL
+  // ======================================================
+
+  const renderDayCell = (arg: { date: Date; dayNumberText: string }) => {
+    const dateKey = arg.date.toISOString().split("T")[0];
+
+    const alert = alertMap[dateKey];
+
+    return (
+      <div className="flex h-full min-h-[90px] flex-col gap-1 p-1">
+        <span className="text-[11px] font-black text-slate-700">
+          {arg.dayNumberText}
+        </span>
+
+        {alert && (
+          <div
+            className={`
+              rounded-xl px-2 py-1
+              text-[8px] font-black uppercase text-white shadow-sm
+
+              ${
+                alert.hazardLevel === "CRITICAL"
+                  ? "bg-rose-500"
+                  : alert.hazardLevel === "WARNING"
+                    ? "bg-amber-500"
+                    : "bg-emerald-500"
+              }
+            `}
+          >
+            {alert.hazardLevel}
           </div>
-          <h2 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">
-            Logistics & Operations Calendar
-          </h2>
-          <p className="text-slate-400 text-xs mt-1 font-medium">
-            Coordinate emergency dispatches, field deployments, and supply chain
-            tracking links.
-          </p>
-        </div>
-        <div className="p-4 bg-rose-50 rounded-2xl text-[#fb7185] self-start sm:self-center">
-          <CalendarIcon size={24} />
-        </div>
+        )}
+
+        {alert?.reasons?.[0] && (
+          <div className="line-clamp-2 text-[8px] font-medium text-slate-500">
+            {alert.reasons[0]}
+          </div>
+        )}
       </div>
+    );
+  };
 
-      {/* 📊 BENTO DUAL PANEL LAYOUT */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* 🗺️ Left Side: Gorgeous Glassmorphic Calendar */}
-        <div className="lg:col-span-8 bg-white p-4 md:p-6 rounded-[2.5rem] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.01)] customized-calendar">
-          <FullCalendar
-            plugins={[dayGridPlugin, interactionPlugin]}
-            initialView="dayGridMonth"
-            events={events}
-            eventClick={handleEventClick}
-            headerToolbar={{
-              left: "title",
-              center: "",
-              right: "prev,next today",
-            }}
-            height="auto"
-            fixedWeekCount={false}
-          />
+  // ======================================================
+  // CURRENT ALERT
+  // ======================================================
+
+  const currentAlert = alertMap[selectedDate];
+
+  // ======================================================
+  // UI
+  // ======================================================
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-blue-50 p-4">
+      <div className="mx-auto max-w-7xl space-y-6">
+        {/* HEADER */}
+        <div className="rounded-[2rem] border border-white/40 bg-white/80 p-6 shadow-xl backdrop-blur">
+          <div className="flex items-center gap-4">
+            <div className="rounded-2xl bg-slate-900 p-4 text-white">
+              <Bot size={28} />
+            </div>
+
+            <div>
+              <h1 className="text-3xl font-black tracking-tight text-slate-800">
+                AI Climate Calendar
+              </h1>
+
+              <p className="mt-1 text-sm text-slate-500">
+                AI generated climate alerts & disaster prediction system
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* 💎 Right Side: Dynamic Mission Information Bento Box */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className="bg-slate-900 text-white p-6 md:p-8 rounded-[2.5rem] shadow-xl relative overflow-hidden border border-slate-800 min-h-[420px] flex flex-col justify-between">
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-violet-500/20 to-transparent rounded-full blur-2xl pointer-events-none" />
+        {/* MAIN GRID */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          {/* CALENDAR */}
+          <div className="rounded-[2rem] border border-white/40 bg-white/80 p-4 shadow-xl backdrop-blur lg:col-span-8">
+            <FullCalendar
+              plugins={[dayGridPlugin, interactionPlugin]}
+              initialView="dayGridMonth"
+              events={aiEvents}
+              eventClick={handleEventClick}
+              dateClick={handleDateClick}
+              dayCellContent={renderDayCell}
+              height="auto"
+            />
+          </div>
 
-            {selectedEvent ? (
-              <>
-                <div className="space-y-5">
-                  <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                    <div>
-                      <span className="text-[9px] font-black uppercase tracking-widest text-[#FDA4AF] bg-white/10 px-2.5 py-1 rounded-md">
-                        {selectedEvent.extendedProps.category}
-                      </span>
-                    </div>
-                    <span
-                      className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md ${
-                        selectedEvent.extendedProps.status === "Urgent"
-                          ? "bg-rose-500/20 text-rose-400"
-                          : selectedEvent.extendedProps.status === "Processing"
-                            ? "bg-amber-500/20 text-amber-400"
-                            : "bg-emerald-500/20 text-emerald-400"
-                      }`}
+          {/* SIDE PANEL */}
+          <div className="rounded-[2rem] border border-white/40 bg-white/80 p-6 shadow-xl backdrop-blur lg:col-span-4">
+            {/* TOP */}
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-black uppercase tracking-wider text-slate-400">
+                  Selected Date
+                </p>
+
+                <h2 className="text-lg font-black text-slate-800">
+                  {selectedDate}
+                </h2>
+              </div>
+
+              {currentAlert?.hazardLevel === "CRITICAL" ? (
+                <AlertTriangle size={28} className="text-rose-500" />
+              ) : (
+                <ShieldCheck size={28} className="text-emerald-500" />
+              )}
+            </div>
+
+            {/* STATUS */}
+            <div
+              className={`
+                mb-6 rounded-2xl p-5 text-white shadow-lg
+
+                ${
+                  currentAlert?.hazardLevel === "CRITICAL"
+                    ? "bg-gradient-to-r from-rose-500 to-red-600"
+                    : currentAlert?.hazardLevel === "WARNING"
+                      ? "bg-gradient-to-r from-amber-400 to-orange-500"
+                      : "bg-gradient-to-r from-emerald-500 to-green-600"
+                }
+              `}
+            >
+              <p className="text-xs uppercase opacity-80">AI Hazard Status</p>
+
+              <h3 className="mt-1 text-2xl font-black">
+                {currentAlert?.hazardLevel ?? "SAFE"}
+              </h3>
+            </div>
+
+            {/* METRICS */}
+            <div className="grid grid-cols-3 gap-3">
+              {/* TEMP */}
+              <div className="rounded-2xl bg-slate-50 p-4 text-center shadow-sm">
+                <Thermometer
+                  size={18}
+                  className="mx-auto mb-2 text-orange-500"
+                />
+
+                <p className="text-[10px] font-bold uppercase text-slate-400">
+                  Temp
+                </p>
+
+                <p className="mt-1 text-lg font-black text-slate-800">
+                  {currentAlert?.metrics?.temp ?? "N/A"}
+                </p>
+              </div>
+
+              {/* RAIN */}
+              <div className="rounded-2xl bg-slate-50 p-4 text-center shadow-sm">
+                <CloudRain size={18} className="mx-auto mb-2 text-blue-500" />
+
+                <p className="text-[10px] font-bold uppercase text-slate-400">
+                  Rain
+                </p>
+
+                <p className="mt-1 text-lg font-black text-slate-800">
+                  {currentAlert?.metrics?.rain ?? 0}
+                  mm
+                </p>
+              </div>
+
+              {/* AQI */}
+              <div className="rounded-2xl bg-slate-50 p-4 text-center shadow-sm">
+                <Wind size={18} className="mx-auto mb-2 text-emerald-500" />
+
+                <p className="text-[10px] font-bold uppercase text-slate-400">
+                  AQI
+                </p>
+
+                <p className="mt-1 text-lg font-black text-slate-800">Good</p>
+              </div>
+            </div>
+
+            {/* REASONS */}
+            <div className="mt-6">
+              <h4 className="mb-3 text-sm font-black text-slate-700">
+                AI Analysis Reasons
+              </h4>
+
+              <div className="space-y-2">
+                {currentAlert?.reasons?.length ? (
+                  currentAlert.reasons.map((reason, index) => (
+                    <div
+                      key={index}
+                      className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-sm text-slate-600"
                     >
-                      {selectedEvent.extendedProps.status}
-                    </span>
+                      {reason}
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-xl border border-dashed border-slate-200 p-4 text-center text-sm text-slate-400">
+                    No AI alerts for this date
                   </div>
+                )}
+              </div>
+            </div>
 
-                  <h3 className="text-lg font-black tracking-tight text-white leading-snug">
-                    {selectedEvent.title}
-                  </h3>
+            {/* ACTIVE EVENT */}
+            {activeEvent && (
+              <div className="mt-6 rounded-2xl bg-slate-900 p-5 text-white shadow-xl">
+                <div className="mb-3 flex items-center gap-2">
+                  <Bot size={18} className="text-cyan-400" />
 
-                  <div className="space-y-3.5 pt-2 text-slate-300 font-medium text-xs">
-                    <div className="flex items-center gap-3">
-                      <MapPin size={16} className="text-rose-400 shrink-0" />
-                      <span className="truncate">
-                        {selectedEvent.extendedProps.location}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Clock size={16} className="text-violet-400 shrink-0" />
-                      <span>
-                        {selectedEvent.extendedProps.timeSlot} (
-                        {selectedEvent.start})
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Users size={16} className="text-emerald-400 shrink-0" />
-                      <span>
-                        {selectedEvent.extendedProps.volunteerCount} Responders
-                        Registered
-                      </span>
-                    </div>
-                  </div>
+                  <p className="text-xs uppercase tracking-wider text-slate-400">
+                    AI Generated Event
+                  </p>
                 </div>
 
-                <button className="w-full mt-6 bg-gradient-to-r from-[#FDA4AF] to-[#fb7185] hover:opacity-90 text-white font-bold text-xs uppercase tracking-widest py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-rose-500/20 group">
-                  Mission Details Control{" "}
-                  <ArrowRight
-                    size={14}
-                    className="group-hover:translate-x-1 transition-transform"
-                  />
-                </button>
-              </>
-            ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-center text-slate-400 space-y-2">
-                <p className="text-xs font-bold">
-                  No Operational Mission Selected.
-                </p>
-                <p className="text-[10px] text-slate-500 font-medium">
-                  Click any active colored slot on the timeline grid to populate
-                  secure logs.
-                </p>
+                <h3 className="text-lg font-black">{activeEvent.title}</h3>
+
+                <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-slate-400">Location</p>
+
+                    <p className="font-semibold">
+                      {activeEvent.extendedProps.location}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-slate-400">Volunteers</p>
+
+                    <p className="font-semibold">
+                      {activeEvent.extendedProps.volunteerCount}
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* 🔮 CUSTOM CSS FOR PREMIUM FULLCALENDAR INNER OVERRIDES */}
-      <style>{`
-        .customized-calendar .fc { --fc-border-color: #f1f5f9; font-family: inherit; }
-        .customized-calendar .fc-header-toolbar { margin-bottom: 1.5rem !important; }
-        .customized-calendar .fc-toolbar-title { font-size: 1rem !important; font-weight: 900; color: #1e293b; text-transform: uppercase; letter-spacing: -0.02em; }
-        .customized-calendar .fc-button { background: #f8fafc !important; border: 1px solid #f1f5f9 !important; color: #64748b !important; font-weight: 700 !important; font-size: 11px !important; text-transform: uppercase !important; border-radius: 0.75rem !important; padding: 0.5rem 0.75rem !important; box-shadow: none !important; transition: all 0.2s; }
-        .customized-calendar .fc-button:hover { background: #f1f5f9 !important; color: #0f172a !important; }
-        .customized-calendar .fc-button-active { background: #0f172a !important; color: white !important; border-color: #0f172a !important; }
-        .customized-calendar .fc-daygrid-day-number { font-size: 11px; font-weight: 800; color: #64748b; padding: 6px !important; }
-        .customized-calendar .fc-day-today { background: #fff1f2/40 !important; }
-        .customized-calendar .fc-event { border: none !important; padding: 3px 6px !important; border-radius: 6px !important; cursor: pointer; transition: transform 0.2s; }
-        .customized-calendar .fc-event:hover { transform: scale(1.02); }
-        .customized-calendar .fc-event-title { font-size: 10px !important; font-weight: 700 !important; color: white !important; }
-      `}</style>
+      {/* FULLCALENDAR STYLE */}
+      <style>
+        {`
+          .fc {
+            font-family: inherit;
+          }
+
+          .fc-toolbar-title {
+            font-size: 1.25rem !important;
+            font-weight: 900 !important;
+            color: #0f172a;
+          }
+
+          .fc-button {
+            background: #0f172a !important;
+            border: none !important;
+            border-radius: 14px !important;
+            padding: 8px 14px !important;
+            font-weight: 700 !important;
+          }
+
+          .fc-button:hover {
+            opacity: 0.92;
+          }
+
+          .fc-daygrid-event {
+            border: none !important;
+            border-radius: 12px !important;
+            padding: 2px 6px !important;
+            font-size: 10px !important;
+            font-weight: 800 !important;
+          }
+
+          .fc-daygrid-day {
+            transition: 0.2s ease;
+          }
+
+          .fc-daygrid-day:hover {
+            background: rgba(
+              59,
+              130,
+              246,
+              0.05
+            );
+          }
+
+          .fc-scrollgrid,
+          .fc-theme-standard td,
+          .fc-theme-standard th {
+            border-color: #e2e8f0 !important;
+          }
+
+          .fc-daygrid-day-number {
+            display: none !important;
+          }
+        `}
+      </style>
     </div>
   );
 }

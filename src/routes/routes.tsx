@@ -14,7 +14,7 @@ import { EditSupplyWrapper } from "../lib/EditSupplyWrapper";
 import AddReview from "../pages/dashboard/dashboard/addReview/AddReview";
 import Dashboard from "../pages/dashboard/dashboard/Dashboard";
 import CalenderPage from "../pages/dashboard/dashboard/calender/Calender";
-import ProtectedRoute from "./ProtectedRoute"; // ✅ আমাদের তৈরি করা গার্ডটি ইমপোর্ট করো
+import ProtectedRoute from "./ProtectedRoute";
 import Reporting from "../pages/dashboard/dashboard/reporting/Reporting";
 import HelpSection from "../pages/dashboard/dashboard/help/Help";
 import SettingsSection from "../pages/dashboard/dashboard/settings/Settings";

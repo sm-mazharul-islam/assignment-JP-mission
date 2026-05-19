@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import DetailsQuestion from "../../components/ui/detailsQuestion/DetailsQuestion";
 import { toast } from "sonner";
-import { jwtDecode } from "jwt-decode"; // 🎯 JWT Decoder ইম্পোর্ট করা হলো
+import { jwtDecode } from "jwt-decode"; // 🎯 JWT Decoder
 import {
   ShieldCheck,
   Tag,
@@ -14,18 +14,26 @@ import {
   Info,
   CheckCircle2,
   X,
+  Loader2,
 } from "lucide-react";
 import {
-  useDonateToPackageMutation,
   useGetReliefGoodsByIdQuery,
+  useInitiatePaymentMutation, // 🎯 SSLCommerz পেমেন্ট ইনিশিয়েট হুক যুক্ত করা হলো
 } from "../../redux/api/api";
 
-// 🎯 টোকেনের ভেতরের ইমেইল অবজেক্ট টাইপ ডিক্লেয়ারেশন
+// 🎯 টোকেনের ভেতরের ইমেইল অবজেক্ট টাইপ ডিক্লেয়ারেশন
 interface IDecodedToken {
   email?: string;
   exp?: number;
   iat?: number;
 }
+
+// 🎯 RTK Query এরর রেসপন্সের টাইপ সেফগার্ড
+// interface IRtkQueryError {
+//   data?: {
+//     error?: string;
+//   };
+// }
 
 const AllReliefGoodsDetail = () => {
   const { id } = useParams();
@@ -39,9 +47,9 @@ const AllReliefGoodsDetail = () => {
     isError,
   } = useGetReliefGoodsByIdQuery(id);
 
-  // 📡 ২. ডোনেশন সাবমিট মিউটেশন হুক
-  const [donateToPackage, { isLoading: isDonating }] =
-    useDonateToPackageMutation();
+  // 📡 ২. ডোনেশন পেমেন্ট গেটওয়ে গেট ট্রিপল-হ্যান্ডশেক ট্রিগার হুক
+  const [initiatePayment, { isLoading: isDonating }] =
+    useInitiatePaymentMutation();
 
   if (isLoading) {
     return (
@@ -80,7 +88,7 @@ const AllReliefGoodsDetail = () => {
   // ফান্ড কি ফুল ফিলাপ হয়েছে কিনা চেক করা
   const isFullyFunded = raisedAmount >= targetAmount && targetAmount > 0;
 
-  // 🎯 ৪. [THE BETTER OPTION]: লোকাল স্টোরেজের টোকেন থেকে সরাসরি ইমেইল ডিকোড করা
+  // 🎯 ৪. লোকাল স্টোরেজের টোকেন থেকে সরাসরি ইমেইল ডিকোড করা
   const token = localStorage.getItem("token");
   let loggedUserEmail = "anonymous@responder.node"; // ডিফল্ট ফলব্যাক মেইল
 
@@ -95,7 +103,6 @@ const AllReliefGoodsDetail = () => {
     }
   }
 
-  // 🎯 ৫. ডোনেশন সাবমিট হ্যান্ডলার
   const handleDonationSubmit = async () => {
     if (isFullyFunded) {
       setIsModalOpen(true);
@@ -107,32 +114,29 @@ const AllReliefGoodsDetail = () => {
       return;
     }
 
-    // BUDGET OVERFLOW PROTECTION: বাকি থাকা টাকার চেয়ে বেশি ডোনেট করতে বাধা দেবে
     if (customAmount > remainingAmount) {
       toast.error(
-        `Over-budget alert! You can only donate up to $${remainingAmount} to complete this fund.`,
-        { duration: 5000 },
+        `Over-budget alert! You can only donate up to $${remainingAmount}.`,
       );
-      setCustomAmount(remainingAmount);
       return;
     }
 
     try {
-      // 🚀 ডিকোড হওয়া আসল ইমেইল সহ পেলোড পাঠানো হচ্ছে
-      await donateToPackage({
-        id,
-        donateAmount: customAmount,
-        userEmail: loggedUserEmail,
+      // 🚀 এবার এপিআই টাইপ ম্যাচ করায় এখানে কোনো এরর দেখাবে না
+      const response = await initiatePayment({
+        id: id as string, // 🎯 টাইপ কাস্টিং সেফগার্ড
+        amount: customAmount,
+        email: loggedUserEmail,
         campaignTitle: campaignTitle,
-        category: campaignCategory,
       }).unwrap();
 
-      toast.success(
-        `Successfully committed $${customAmount} to the central ledger!`,
-      );
-    } catch (err) {
+      if (response?.url) {
+        window.location.replace(response.url);
+      } else {
+        toast.error("Gateway handshake failed.");
+      }
+    } catch (err: unknown) {
       console.error("Ledger mutation error:", err);
-      toast.error("Failed to sync transaction with MongoDB ledger.");
     }
   };
 
@@ -296,7 +300,7 @@ const AllReliefGoodsDetail = () => {
                 </h4>
                 <p className="text-[11px] text-slate-400 font-medium">
                   Cover the requirements for this package and trigger immediate
-                  deployment.
+                  deployment via secure gateway.
                 </p>
 
                 {/* Amount Input Box */}
@@ -306,10 +310,12 @@ const AllReliefGoodsDetail = () => {
                   </span>
                   <input
                     type="number"
-                    value={customAmount}
+                    value={customAmount || ""}
                     disabled={isFullyFunded}
                     max={remainingAmount}
-                    onChange={(e) => setCustomAmount(Number(e.target.value))}
+                    onChange={(e) =>
+                      setCustomAmount(Number(e.target.value) || 0)
+                    }
                     min="1"
                     className="w-full bg-slate-50 border border-slate-200/80 focus:border-violet-400 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   />
@@ -328,11 +334,16 @@ const AllReliefGoodsDetail = () => {
                 <button
                   onClick={handleDonationSubmit}
                   disabled={isDonating}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-widest py-4 rounded-2xl transition-all active:scale-95 disabled:opacity-50 mt-4"
+                  className="w-full bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs uppercase tracking-widest py-4 rounded-2xl transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
                 >
-                  {isDonating
-                    ? "Processing..."
-                    : `Donate $${customAmount || 0}`}
+                  {isDonating ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" /> Connecting
+                      Gateway...
+                    </>
+                  ) : (
+                    `Proceed to Pay $${customAmount || 0}`
+                  )}
                 </button>
               )}
             </div>

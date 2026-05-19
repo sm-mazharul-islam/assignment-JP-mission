@@ -132,7 +132,6 @@ export default function Sidebar({ children }: SidebarProps) {
 
         {/* PROFILE SECTION WITH LOGOUT POPUP (NOW 100% DYNAMIC) */}
         <div className="border-t flex p-3 relative items-center">
-          {/* ডাইনামিক লেটারস সহ গর্জিয়াস গ্রেডিয়েন্ট অ্যাভাটার */}
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#FDA4AF] to-[#fb7185] flex items-center justify-center text-white font-black text-xs shrink-0 select-none shadow-sm">
             {avatarLetters}
           </div>
