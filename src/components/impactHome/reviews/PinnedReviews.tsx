@@ -14,10 +14,22 @@ export const PinnedReviews = () => {
   if (!pinnedReviews || pinnedReviews.length === 0) return null;
 
   return (
-    <section className="py-16 overflow-hidden ">
-      <h2 className="text-3xl font-black text-slate-900 text-center mb-12">
-        Featured <span className="text-[#FDA4AF]">Community Voices</span>
+    <section className="py-16  overflow-hidden ">
+      <h2 className="text-5xl font-black text-slate-900 text-center mb-12">
+        <span className="text-[#FDA4AF]"></span>
       </h2>
+
+      <div className="relative text-center mb-10 group">
+        <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight">
+          Community{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-[#FDA4AF]">
+            Voices
+          </span>
+        </h2>
+        <div className="flex justify-center items-center gap-2 mt-6">
+          <div className="h-1 w-12 bg-gradient-to-r from-[#FDA4AF] to-violet-400 rounded-full transition-all duration-500 group-hover:w-24" />
+        </div>
+      </div>
 
       {/* লাইন ১: বাম থেকে ডানে (Left to Right) */}
       <div className="flex mb-6 overflow-hidden">
