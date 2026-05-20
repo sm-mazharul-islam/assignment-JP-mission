@@ -163,7 +163,7 @@ export const baseApi = createApi({
         method: "GET",
       }),
       // 👇 Coupled with dynamic ID tags for immediate selective background caching
-      providesTags: (_result, _error, id) => [{ type: "reliefGoods", id }],
+      providesTags: (_, __, id) => [{ type: "reliefGoods", id }],
     }),
 
     // 📡 MUTATION: Insert a brand new campaign pack into the centralized database
@@ -179,20 +179,6 @@ export const baseApi = createApi({
       invalidatesTags: ["supplies"],
     }),
 
-    // // 📡 MUTATION: Transmit multi-layered contribution logs and increment package funding metrics
-    // donateToPackage: builder.mutation({
-    //   query: ({ id, donateAmount, userEmail, campaignTitle, category }) => ({
-    //     url: `relief-goods/${id}`,
-    //     method: "PUT",
-    //     body: { donateAmount, userEmail, campaignTitle, category },
-    //   }),
-    //   // 👇 Simultaneously destroys targeted package cache and active user history logs to force a silent refetch
-    //   invalidatesTags: (_result, _error, arg) => [
-    //     { type: "reliefGoods", id: arg.id },
-    //     "donationHistory",
-    //   ],
-    // }),
-
     // ৩. টাইপ-সেফ মিউটেশন
     donateToPackage: builder.mutation<DonationResponse, DonationPayload>({
       query: (donationData) => ({
@@ -206,7 +192,7 @@ export const baseApi = createApi({
         },
       }),
       // ইনভ্যালিডেশন লজিক
-      invalidatesTags: (result, error, arg) => [
+      invalidatesTags: (_, __, arg) => [
         { type: "reliefGoods" as const, id: arg.id },
         "donationHistory",
       ],
