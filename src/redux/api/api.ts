@@ -9,6 +9,39 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 //   timestamp: string;
 // }
 
+interface DonationPayload {
+  id: string;
+  donateAmount: number;
+  userEmail: string;
+  campaignTitle: string;
+  category: string;
+}
+
+// ২. রেসপন্স টাইপ (আপনার ডাটাবেস থেকে যা ফিরছে)
+interface DonationResponse {
+  success: boolean;
+  message?: string;
+  // updatedGoods?: any;
+}
+
+//!
+// ১. পেমেন্ট রিকোয়েস্টের জন্য টাইপ
+interface PaymentRequest {
+  id: string;
+  amount: number;
+  email: string;
+  campaignTitle?: string;
+  campaignId?: string;
+}
+
+// ২. পেমেন্ট রেসপন্সের জন্য টাইপ
+interface PaymentResponse {
+  url: string;
+  success?: boolean;
+}
+
+//!
+
 export interface TDonationLog {
   _id: string;
   transactionId: string;
@@ -45,8 +78,8 @@ export const baseApi = createApi({
 
   // 🎯 Configuration with automated JWT Bearer token injection
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
-    // baseUrl: "http://localhost:5000/",
+    // baseUrl: "https://l2-b2-frontend-path-assignment-6-server-jet.vercel.app/",
+    baseUrl: "http://localhost:5000/",
 
     prepareHeaders: (headers: Headers, { getState }) => {
       const token =
@@ -146,38 +179,68 @@ export const baseApi = createApi({
       invalidatesTags: ["supplies"],
     }),
 
-    // 📡 MUTATION: Transmit multi-layered contribution logs and increment package funding metrics
-    donateToPackage: builder.mutation({
-      query: ({ id, donateAmount, userEmail, campaignTitle, category }) => ({
-        url: `relief-goods/${id}`,
+    // // 📡 MUTATION: Transmit multi-layered contribution logs and increment package funding metrics
+    // donateToPackage: builder.mutation({
+    //   query: ({ id, donateAmount, userEmail, campaignTitle, category }) => ({
+    //     url: `relief-goods/${id}`,
+    //     method: "PUT",
+    //     body: { donateAmount, userEmail, campaignTitle, category },
+    //   }),
+    //   // 👇 Simultaneously destroys targeted package cache and active user history logs to force a silent refetch
+    //   invalidatesTags: (_result, _error, arg) => [
+    //     { type: "reliefGoods", id: arg.id },
+    //     "donationHistory",
+    //   ],
+    // }),
+
+    // ৩. টাইপ-সেফ মিউটেশন
+    donateToPackage: builder.mutation<DonationResponse, DonationPayload>({
+      query: (donationData) => ({
+        url: `relief-goods/${donationData.id}`,
         method: "PUT",
-        body: { donateAmount, userEmail, campaignTitle, category },
+        body: {
+          donateAmount: donationData.donateAmount,
+          userEmail: donationData.userEmail,
+          campaignTitle: donationData.campaignTitle,
+          category: donationData.category,
+        },
       }),
-      // 👇 Simultaneously destroys targeted package cache and active user history logs to force a silent refetch
-      invalidatesTags: (_result, _error, arg) => [
-        { type: "reliefGoods", id: arg.id },
+      // ইনভ্যালিডেশন লজিক
+      invalidatesTags: (result, error, arg) => [
+        { type: "reliefGoods" as const, id: arg.id },
         "donationHistory",
       ],
     }),
-    initiatePayment: builder.mutation<
-      { url: string },
-      {
-        id: string;
-        amount: number;
-        email: string;
-        campaignTitle?: string;
-        campaignId?: string;
-      }
-    >({
+
+    // initiatePayment: builder.mutation<
+    //   { url: string },
+    //   {
+    //     id: string;
+    //     amount: number;
+    //     email: string;
+    //     campaignTitle?: string;
+    //     campaignId?: string;
+    //   }
+    // >({
+    //   query: (paymentInfo) => ({
+    //     url: "/api/payment/initiate",
+    //     method: "POST",
+    //     body: paymentInfo,
+    //   }),
+
+    //   invalidatesTags: ["reliefGoods"],
+    // }),
+    initiatePayment: builder.mutation<PaymentResponse, PaymentRequest>({
       query: (paymentInfo) => ({
         url: "/api/payment/initiate",
         method: "POST",
-        body: paymentInfo,
+        body: {
+          ...paymentInfo,
+          campaignId: paymentInfo.campaignId || paymentInfo.id,
+        },
       }),
-
       invalidatesTags: ["reliefGoods"],
     }),
-
     getAllUsersHistory: builder.query<TDonationLog[], void>({
       query: () => ({
         url: "admin/all-donation-history",
