@@ -1,14 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// export interface TDonationLog {
-//   _id?: string;
-//   userEmail: string;
-//   campaignTitle: string;
-//   category: string;
-//   amount: number;
-//   timestamp: string;
-// }
-
 interface DonationPayload {
   id: string;
   donateAmount: number;
@@ -94,7 +85,7 @@ export const baseApi = createApi({
   }),
 
   // 🎯 Declaring centralized cache tags for automated UI state synchronization
-  tagTypes: ["supplies", "user", "reliefGoods", "donationHistory"],
+  tagTypes: ["supplies", "user", "reliefGoods", "donationHistory", "reviews"],
   endpoints: (builder) => ({
     // 👑 AUTH ENDPOINT: Fetch authenticated active profile data
     getLoggedUser: builder.query({
@@ -197,25 +188,6 @@ export const baseApi = createApi({
         "donationHistory",
       ],
     }),
-
-    // initiatePayment: builder.mutation<
-    //   { url: string },
-    //   {
-    //     id: string;
-    //     amount: number;
-    //     email: string;
-    //     campaignTitle?: string;
-    //     campaignId?: string;
-    //   }
-    // >({
-    //   query: (paymentInfo) => ({
-    //     url: "/api/payment/initiate",
-    //     method: "POST",
-    //     body: paymentInfo,
-    //   }),
-
-    //   invalidatesTags: ["reliefGoods"],
-    // }),
     initiatePayment: builder.mutation<PaymentResponse, PaymentRequest>({
       query: (paymentInfo) => ({
         url: "/api/payment/initiate",
@@ -326,7 +298,7 @@ export const baseApi = createApi({
         url: "api/climate-alerts",
         method: "GET",
       }),
-      providesTags: ["reliefGoods"], // পেমেন্ট আপডেট হলে যেন আবহাওয়া ট্র্যাকারও রিফ্রেশ হয়
+      providesTags: ["reliefGoods"],
     }),
     // 👑 AUTH MUTATION: Exchange system verification matrices for a session authentication token
     loginUser: builder.mutation({
@@ -336,6 +308,33 @@ export const baseApi = createApi({
         body: credentials,
       }),
       invalidatesTags: ["user"],
+    }),
+
+    // api.ts
+    addReview: builder.mutation({
+      query: (reviewData) => ({
+        url: "/reviews",
+        method: "POST",
+        body: reviewData,
+      }),
+      invalidatesTags: ["reviews"],
+    }),
+    getMyReviews: builder.query({ query: (email) => `/reviews/${email}` }),
+    getAllReviews: builder.query({
+      query: () => "/admin/reviews",
+      providesTags: ["reviews"],
+    }),
+    deleteReview: builder.mutation({
+      query: (id) => ({ url: `/reviews/${id}`, method: "DELETE" }),
+    }),
+    // api.ts এ এটি আপডেট করো
+    pinReview: builder.mutation({
+      query: ({ id, isPinned }) => ({
+        url: `/reviews/pin/${id}`,
+        method: "PATCH",
+        body: { isPinned },
+      }),
+      invalidatesTags: ["reviews"],
     }),
   }),
 });
@@ -360,4 +359,9 @@ export const {
   useGetAllUsersQuery,
   useInitiatePaymentMutation,
   useGetClimateAlertsQuery,
+  useAddReviewMutation,
+  useGetMyReviewsQuery,
+  useGetAllReviewsQuery,
+  useDeleteReviewMutation,
+  usePinReviewMutation,
 } = baseApi;

@@ -95,7 +95,7 @@ const OurWorks = () => {
   ];
 
   return (
-    <section className=" bg-white overflow-hidden">
+    <section className=" mb-16 overflow-hidden">
       <Container>
         {/* Header Section */}
         <div className="flex flex-col items-center text-center mb-24 relative">

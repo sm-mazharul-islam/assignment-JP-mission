@@ -87,8 +87,6 @@ const AllReliefGoodsDetail = () => {
     );
   }
 
-  // 🎯 ৩. ডাটাবেজ স্ট্রাকচার অনুযায়ী এماউন্ট ও টাইটেল ট্র্যাক করা
-
   const targetAmount = reliefGoods?.amount || reliefGoods?.data?.amount || 0;
 
   const raisedAmount =

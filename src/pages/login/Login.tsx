@@ -2,9 +2,12 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useLoginUserMutation } from "../../redux/api/api";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../../redux/features/auth/authSlice"; // ইমপোর্ট নিশ্চিত করো
 
 const Login = () => {
   const [loginUser, { isLoading }] = useLoginUserMutation();
+  const dispatch = useDispatch(); // হুকটি এখানে কম্পোনেন্টের শুরুতে ডিফাইন করো
 
   const [formData, setFormData] = useState({
     email: "",
@@ -19,7 +22,6 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      // 🎯 Standardizing payload text arrays before committing authentication pipeline
       const loginPayload = {
         email: formData.email.trim().toLowerCase(),
         password: formData.password,
@@ -27,33 +29,38 @@ const Login = () => {
 
       const response = await loginUser(loginPayload).unwrap();
 
-      // 🎯 [CRITICAL TOKEN MAPPING FIXED]: Fallback checks to catch token regardless of response design
+      // রেসপন্স থেকে টোকেন এবং ইউজার ডাটা বের করা
       const token =
         response?.token || response?.data?.token || response?.accessToken;
-      const isSuccess = response?.success || (token ? true : false);
+      const userData = response?.data?.user || response?.user;
 
-      if (isSuccess && token) {
-        // 🔒 Store security context in local storage for interceptor baseApi.ts usage
-        localStorage.setItem("token", token);
+      if (token && userData) {
+        // ✅ রিডাক্স স্টেট আপডেট করা হচ্ছে
+        dispatch(
+          setCredentials({
+            user: {
+              email: userData.email,
+              name: userData.name,
+              image: userData.image,
+              role: userData.role,
+            },
+            token: token,
+          }),
+        );
 
         toast.success("Welcome back!");
-
-        // ✅ Immediate location relocation to trigger fresh state sync across layout boundaries
         window.location.href = "/dashboard";
       } else {
-        toast.error(
-          "Invalid response matrix received from the authentication provider.",
-        );
+        toast.error("Invalid response matrix received.");
       }
     } catch (err) {
       console.error("Login compilation fault:", err);
-      const error = err as { data?: { message?: string } };
-      toast.error(error.data?.message || "Login failed. Please try again.");
+      toast.error("Login failed. Please check your credentials.");
     }
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-slate-50/50 py-12 px-4">
+    <div className="flex justify-center items-center py-12 px-4">
       <div className="card w-full max-w-md bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden">
         <div className="h-2 w-full bg-gradient-to-r from-[#FDA4AF] to-[#fb7185]" />
 
@@ -66,7 +73,6 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email Input */}
             <div className="form-control w-full">
               <label className="label-text font-bold text-slate-700 mb-2">
                 Email Address
@@ -82,7 +88,6 @@ const Login = () => {
               />
             </div>
 
-            {/* Password Input */}
             <div className="form-control w-full">
               <div className="flex justify-between mb-2">
                 <label className="label-text font-bold text-slate-700">
@@ -103,7 +108,6 @@ const Login = () => {
               />
             </div>
 
-            {/* Submit Button */}
             <button
               disabled={isLoading}
               type="submit"
@@ -117,7 +121,6 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Account Creation Link */}
           <div className="text-center mt-6">
             <p className="text-slate-500 text-sm font-medium">
               New to Relief Project?{" "}

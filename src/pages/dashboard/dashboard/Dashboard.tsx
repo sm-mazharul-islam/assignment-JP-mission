@@ -113,6 +113,14 @@ function Dashboard() {
                   active={isActive("/dashboard/create-supply")}
                 />
               </Link>
+              <Link to="all-review" onClick={() => setIsMobileMenuOpen(false)}>
+                <SidebarItem
+                  icon={<StickyNote size={20} />}
+                  text="All Review"
+                  alert={false}
+                  active={isActive("/dashboard/all-review")}
+                />
+              </Link>
               <Link
                 to="all-user-history"
                 onClick={() => setIsMobileMenuOpen(false)}

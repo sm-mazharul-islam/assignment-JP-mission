@@ -21,6 +21,7 @@ import SettingsSection from "../pages/dashboard/dashboard/settings/Settings";
 import AboutPage from "../pages/about/About";
 import UserHistoryDashboard from "../pages/dashboard/dashboard/donationHistory/UserHistoryDashboard";
 import AdminHistoryDashboard from "../pages/dashboard/dashboard/donationHistory/AdminHistoryDashboard";
+import { AllReviewPage } from "../pages/dashboard/dashboard/allReview/page";
 
 const router = createBrowserRouter([
   {
@@ -93,6 +94,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute isAdminRoute={true}>
             <EditSupplyWrapper />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "all-review",
+        element: (
+          <ProtectedRoute isAdminRoute={true}>
+            <AllReviewPage />
           </ProtectedRoute>
         ),
       },

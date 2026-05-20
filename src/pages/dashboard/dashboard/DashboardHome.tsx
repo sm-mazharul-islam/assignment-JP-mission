@@ -143,11 +143,10 @@ export default function Sidebar({ children }: SidebarProps) {
             } `}
           >
             <div className="leading-4 max-w-[120px] truncate">
-              {/* লাইভ ডিকোডেড নাম */}
               <h4 className="font-bold text-slate-800 truncate text-xs uppercase tracking-wide">
                 {profile.name}
               </h4>
-              {/* লাইভ ডিকোডেড রোল ব্যাজ বা ইমেইল */}
+
               <span className="text-[10px] font-black text-[#fb7185] uppercase tracking-wider block mt-0.5">
                 {profile.role}
               </span>

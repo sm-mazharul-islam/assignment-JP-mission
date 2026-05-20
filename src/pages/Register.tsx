@@ -62,12 +62,12 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-slate-50/50 py-12 px-4">
+    <div className=" flex justify-center items-center  py-12 px-4">
       <div className="card w-full max-w-md bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden">
         <div className="h-2 w-full bg-gradient-to-r from-[#FDA4AF] to-[#fb7185]" />
         <div className="p-10">
           <h2 className="text-3xl font-black text-center text-slate-800 mb-8">
-            Join Us
+            Join Now
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
