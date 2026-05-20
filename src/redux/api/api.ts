@@ -325,7 +325,11 @@ export const baseApi = createApi({
       providesTags: ["reviews"],
     }),
     deleteReview: builder.mutation({
-      query: (id) => ({ url: `/reviews/${id}`, method: "DELETE" }),
+      query: (id) => ({
+        url: `/reviews/${id}`,
+        method: "DELETE",
+        invalidatesTags: ["reviews"],
+      }),
     }),
     // api.ts এ এটি আপডেট করো
     pinReview: builder.mutation({
